@@ -602,7 +602,7 @@ function Scene({
 
 // ── Detail Overlay (floats over top of the moon) ────────────────────────────
 
-function DetailOverlay({ item, onClose }: { item: DetailItem; onClose: () => void }) {
+function DetailOverlay({ item, onClose, onExplorePlots }: { item: DetailItem; onClose: () => void; onExplorePlots: (t: Territory) => void }) {
   if (!item) return null;
 
   let content: React.ReactNode = null;
@@ -641,7 +641,17 @@ function DetailOverlay({ item, onClose }: { item: DetailItem; onClose: () => voi
             <div className="text-gray-500 text-[10px] uppercase tracking-wider mt-0.5">Terrain</div>
           </div>
         </div>
-        <p className="text-gray-500 text-xs mt-3">Click the marker on the globe to explore available plots</p>
+        <button
+          onClick={() => onExplorePlots(t)}
+          className="mt-4 w-full rounded-lg py-3 px-4 font-semibold text-sm transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+          style={{
+            background: `linear-gradient(135deg, ${t.color}, ${t.color}cc)`,
+            color: "#fff",
+            boxShadow: `0 4px 20px ${t.color}40`,
+          }}
+        >
+          Explore & Claim Plots
+        </button>
       </>
     );
   }
@@ -792,7 +802,7 @@ export default function MoonGlobe({ onTerritoryClick }: MoonGlobeProps) {
           <div className="absolute inset-0 bg-gradient-radial from-cosmic-teal/5 via-transparent to-transparent pointer-events-none z-10" />
 
           {/* Detail overlay — floats OVER the top of the moon, click only */}
-          <DetailOverlay item={selectedItem} onClose={handleCloseOverlay} />
+          <DetailOverlay item={selectedItem} onClose={handleCloseOverlay} onExplorePlots={onTerritoryClick} />
 
           <Canvas camera={{ position: [0, 0, 6.2], fov: 45 }}>
             <Scene
