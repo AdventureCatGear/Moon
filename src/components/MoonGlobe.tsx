@@ -190,18 +190,22 @@ function FutureClaimPin({
   );
 }
 
-// ── Moon Mesh with high-detail procedural textures + bump map ────────────────
+// ── Photorealistic Moon Mesh ─────────────────────────────────────────────────
+// Procedurally generated texture based on real selenographic data.
+// Accurate maria, named craters, ray systems, and highland/lowland albedo.
 
 function MoonMesh() {
   const { colorMap, bumpMap } = useMemo(() => {
     const W = 4096, H = 2048;
 
+    /* ── seeded RNG ─────────────────────────────────────────────── */
     const rng = (seed: number) => {
       let s = seed;
       return () => { s = (s * 16807 + 0) % 2147483647; return s / 2147483647; };
     };
     const rand = rng(42);
 
+    /* ── Perlin noise + fBm ─────────────────────────────────────── */
     const PERM = new Uint8Array(512);
     { const tmp = new Uint8Array(256); for (let i = 0; i < 256; i++) tmp[i] = i;
       for (let i = 255; i > 0; i--) { const j = (rand() * (i + 1)) | 0; [tmp[i], tmp[j]] = [tmp[j], tmp[i]]; }
@@ -240,168 +244,287 @@ function MoonMesh() {
     colorCanvas.width = W; colorCanvas.height = H;
     const ctx = colorCanvas.getContext("2d")!;
 
+    /* ── 1. Highland base: realistic grey with subtle latitude variation ─── */
+    // Real lunar highlands are ~albedo 0.12-0.18 → RGB 155-195 grey
+    const baseData = ctx.createImageData(W, H);
     for (let y = 0; y < H; y++) {
-      const latFactor = Math.abs(y / H - 0.5) * 2;
-      const r = 168 + latFactor * 12;
-      const g = 162 + latFactor * 8;
-      const b = 148 + latFactor * 4;
-      ctx.fillStyle = `rgb(${r},${g},${b})`;
-      ctx.fillRect(0, y, W, 1);
-    }
-
-    const terrainData = ctx.getImageData(0, 0, W, H);
-    for (let y = 0; y < H; y++) {
+      const latFactor = Math.abs(y / H - 0.5) * 2; // 0 at equator, 1 at poles
+      // Slightly brighter at poles (like real moon)
+      const base = 178 + latFactor * 14;
       for (let x = 0; x < W; x++) {
-        const nx = x / W * 8, ny = y / H * 4;
-        const n1 = fbm(nx, ny, 6, 2.0, 0.55) * 20;
-        const n2 = fbm(nx * 3.7 + 100, ny * 3.7 + 100, 4) * 10;
+        const nx = x / W * 10, ny = y / H * 5;
+        // Large-scale terrain variation
+        const n1 = fbm(nx, ny, 7, 2.0, 0.52) * 18;
+        // Medium-scale regolith texture
+        const n2 = fbm(nx * 4.3 + 200, ny * 4.3 + 200, 5, 2.1, 0.48) * 8;
+        // Fine grain
+        const n3 = fbm(nx * 12 + 500, ny * 12 + 500, 3, 2.0, 0.5) * 4;
+
+        const lum = Math.max(120, Math.min(210, base + n1 + n2 + n3));
+        // Very subtle warm tint for highlands (barely perceptible)
         const idx = (y * W + x) * 4;
-        terrainData.data[idx] = Math.max(0, Math.min(255, terrainData.data[idx] + n1 + n2));
-        terrainData.data[idx + 1] = Math.max(0, Math.min(255, terrainData.data[idx + 1] + n1 + n2 * 0.9));
-        terrainData.data[idx + 2] = Math.max(0, Math.min(255, terrainData.data[idx + 2] + n1 + n2 * 0.7));
+        baseData.data[idx] = Math.min(255, lum + 2);     // R: tiny warm
+        baseData.data[idx + 1] = Math.min(255, lum);     // G: neutral
+        baseData.data[idx + 2] = Math.max(0, lum - 3);   // B: slightly less
+        baseData.data[idx + 3] = 255;
       }
     }
-    ctx.putImageData(terrainData, 0, 0);
+    ctx.putImageData(baseData, 0, 0);
 
-    const maria: { lat: number; lon: number; rx: number; ry: number; angle?: number; depth: number }[] = [
-      { lat: 8.5, lon: 31.4, rx: 200, ry: 155, depth: 0.45 },
-      { lat: 36, lon: -16, rx: 300, ry: 260, depth: 0.5 },
-      { lat: 28, lon: 17.5, rx: 155, ry: 130, depth: 0.45 },
-      { lat: 18.4, lon: -57.4, rx: 340, ry: 300, depth: 0.5 },
-      { lat: 17, lon: 59.1, rx: 110, ry: 88, depth: 0.4 },
-      { lat: -15, lon: -22, rx: 110, ry: 90, depth: 0.35 },
-      { lat: 7, lon: 1, rx: 95, ry: 75, angle: 0.3, depth: 0.3 },
-      { lat: 15, lon: -3.5, rx: 65, ry: 55, depth: 0.25 },
-      { lat: 45, lon: -32, rx: 110, ry: 55, angle: -0.2, depth: 0.35 },
-      { lat: -20, lon: 28, rx: 88, ry: 65, depth: 0.3 },
-      { lat: -14, lon: 52, rx: 130, ry: 108, depth: 0.38 },
-      { lat: 13, lon: 38, rx: 65, ry: 55, depth: 0.25 },
-      { lat: 56, lon: 2, rx: 200, ry: 45, depth: 0.28 },
-      { lat: -19.3, lon: -3.2, rx: 75, ry: 55, depth: 0.25 },
-      { lat: 2, lon: -47, rx: 108, ry: 78, depth: 0.35 },
-      { lat: -18, lon: -162, rx: 50, ry: 45, depth: 0.2 },
-      { lat: -4, lon: 175, rx: 55, ry: 50, depth: 0.18 },
-      { lat: 24, lon: -93, rx: 40, ry: 35, depth: 0.15 },
+    /* ── 2. Maria (lunar seas) — accurate selenographic coordinates ─────── */
+    // Real maria are darker basalt plains (albedo ~0.07-0.10)
+    // Each entry: multiple overlapping ellipses for organic shapes
+    const maria: { lat: number; lon: number; rx: number; ry: number; angle?: number; depth: number; tint?: [number, number, number] }[] = [
+      // Mare Tranquillitatis — Sea of Tranquility
+      { lat: 8.5, lon: 31.4, rx: 220, ry: 170, depth: 0.65, tint: [78, 76, 72] },
+      { lat: 6.0, lon: 28.0, rx: 160, ry: 120, depth: 0.55, tint: [75, 73, 70] },
+      { lat: 10.5, lon: 35.0, rx: 130, ry: 100, depth: 0.50 },
+      // Mare Imbrium — Sea of Showers (largest)
+      { lat: 36, lon: -16, rx: 340, ry: 290, depth: 0.70, tint: [72, 70, 68] },
+      { lat: 33, lon: -18, rx: 280, ry: 240, depth: 0.60, tint: [68, 66, 64] },
+      { lat: 38, lon: -12, rx: 200, ry: 180, depth: 0.50 },
+      // Sinus Iridum (Bay of Rainbows) — part of Imbrium
+      { lat: 45, lon: -32, rx: 120, ry: 60, angle: -0.2, depth: 0.55, tint: [74, 72, 70] },
+      // Mare Serenitatis — Sea of Serenity
+      { lat: 28, lon: 17.5, rx: 175, ry: 150, depth: 0.60, tint: [80, 78, 74] },
+      { lat: 26, lon: 19, rx: 140, ry: 110, depth: 0.50 },
+      // Oceanus Procellarum — Ocean of Storms (huge)
+      { lat: 18.4, lon: -57.4, rx: 380, ry: 340, depth: 0.60, tint: [82, 80, 76] },
+      { lat: 10, lon: -50, rx: 300, ry: 260, depth: 0.55 },
+      { lat: 25, lon: -55, rx: 220, ry: 180, depth: 0.50 },
+      { lat: 5, lon: -65, rx: 200, ry: 160, depth: 0.45 },
+      { lat: -5, lon: -45, rx: 180, ry: 140, depth: 0.40 },
+      // Mare Crisium — Sea of Crises (isolated)
+      { lat: 17, lon: 59.1, rx: 125, ry: 95, depth: 0.62, tint: [76, 74, 70] },
+      // Mare Nubium — Sea of Clouds
+      { lat: -21, lon: -17, rx: 130, ry: 105, depth: 0.45, tint: [85, 83, 78] },
+      { lat: -18, lon: -14, rx: 100, ry: 80, depth: 0.40 },
+      // Mare Vaporum — Sea of Vapors
+      { lat: 13, lon: 3.5, rx: 72, ry: 58, depth: 0.40, tint: [88, 86, 82] },
+      // Mare Humorum — Sea of Moisture
+      { lat: -24, lon: -39, rx: 100, ry: 85, depth: 0.48, tint: [80, 78, 74] },
+      // Sinus Medii — Central Bay
+      { lat: 2, lon: -1, rx: 85, ry: 68, angle: 0.3, depth: 0.35 },
+      // Mare Fecunditatis — Sea of Fertility
+      { lat: -8, lon: 52, rx: 155, ry: 120, depth: 0.50, tint: [84, 82, 78] },
+      { lat: -5, lon: 48, rx: 110, ry: 90, depth: 0.42 },
+      // Mare Nectaris — Sea of Nectar
+      { lat: -15, lon: 35, rx: 95, ry: 75, depth: 0.45, tint: [82, 80, 76] },
+      // Mare Frigoris — Sea of Cold (elongated)
+      { lat: 56, lon: 2, rx: 240, ry: 50, depth: 0.38, tint: [86, 84, 80] },
+      { lat: 57, lon: -15, rx: 180, ry: 40, depth: 0.35 },
+      { lat: 55, lon: 20, rx: 160, ry: 42, depth: 0.32 },
+      // Lacus Somniorum — Lake of Dreams
+      { lat: 38, lon: 29, rx: 80, ry: 55, depth: 0.35 },
+      // Palus Putredinis
+      { lat: 27, lon: 0.4, rx: 55, ry: 45, depth: 0.35 },
+      // Far side small patches (much fewer maria)
+      { lat: -18, lon: -162, rx: 55, ry: 48, depth: 0.22 },
+      { lat: -4, lon: 175, rx: 60, ry: 52, depth: 0.20 },
+      { lat: 5.5, lon: 160, rx: 50, ry: 45, depth: 0.18 },
+      { lat: 24, lon: -93, rx: 45, ry: 38, depth: 0.18 },
     ];
 
     for (const mare of maria) {
       const [mx, my] = ll2px(mare.lat, mare.lon);
+      const tR = mare.tint?.[0] ?? 80;
+      const tG = mare.tint?.[1] ?? 78;
+      const tB = mare.tint?.[2] ?? 74;
       ctx.save();
       ctx.translate(mx, my);
       if (mare.angle) ctx.rotate(mare.angle);
-      for (let layer = 0; layer < 5; layer++) {
-        const scale = 1 - layer * 0.12;
-        const darkness = mare.depth * (0.4 + layer * 0.12);
-        const g = ctx.createRadialGradient(
-          rand() * 8 - 4, rand() * 8 - 4, 0,
-          rand() * 4 - 2, rand() * 4 - 2, mare.rx * scale
-        );
-        g.addColorStop(0, `rgba(48, 44, 38, ${darkness})`);
-        g.addColorStop(0.35, `rgba(52, 48, 40, ${darkness * 0.85})`);
-        g.addColorStop(0.65, `rgba(58, 52, 44, ${darkness * 0.5})`);
-        g.addColorStop(0.85, `rgba(62, 56, 46, ${darkness * 0.2})`);
-        g.addColorStop(1, `rgba(70, 63, 52, 0)`);
+
+      // Multiple layered fills for organic shape
+      for (let layer = 0; layer < 8; layer++) {
+        const scale = 1 - layer * 0.08;
+        const opacity = mare.depth * (0.3 + layer * 0.08);
+        const jx = rand() * 10 - 5, jy = rand() * 10 - 5;
+        const g = ctx.createRadialGradient(jx, jy, 0, jx * 0.5, jy * 0.5, mare.rx * scale);
+        g.addColorStop(0, `rgba(${tR - 10}, ${tG - 10}, ${tB - 10}, ${opacity})`);
+        g.addColorStop(0.3, `rgba(${tR - 5}, ${tG - 5}, ${tB - 5}, ${opacity * 0.9})`);
+        g.addColorStop(0.55, `rgba(${tR}, ${tG}, ${tB}, ${opacity * 0.7})`);
+        g.addColorStop(0.75, `rgba(${tR + 8}, ${tG + 8}, ${tB + 8}, ${opacity * 0.35})`);
+        g.addColorStop(0.90, `rgba(${tR + 15}, ${tG + 15}, ${tB + 10}, ${opacity * 0.1})`);
+        g.addColorStop(1, `rgba(${tR + 20}, ${tG + 20}, ${tB + 15}, 0)`);
         ctx.fillStyle = g;
         ctx.beginPath();
-        ctx.ellipse(rand() * 6 - 3, rand() * 6 - 3, mare.rx * scale, mare.ry * scale, rand() * 0.05, 0, Math.PI * 2);
+        ctx.ellipse(rand() * 8 - 4, rand() * 8 - 4, mare.rx * scale, mare.ry * scale, rand() * 0.04, 0, Math.PI * 2);
         ctx.fill();
       }
-      for (let i = 0; i < 6; i++) {
-        const ox = (rand() - 0.5) * mare.rx * 1.2;
-        const oy = (rand() - 0.5) * mare.ry * 0.8;
-        const len = 20 + rand() * mare.rx * 0.4;
+
+      // Subtle internal wrinkle ridges
+      for (let i = 0; i < 4; i++) {
+        const ox = (rand() - 0.5) * mare.rx * 0.8;
+        const oy = (rand() - 0.5) * mare.ry * 0.6;
+        const len = 15 + rand() * mare.rx * 0.3;
         const angle = rand() * Math.PI;
         ctx.beginPath();
         ctx.moveTo(ox, oy);
         ctx.quadraticCurveTo(
-          ox + Math.cos(angle) * len * 0.5 + (rand() - 0.5) * 20,
-          oy + Math.sin(angle) * len * 0.5 + (rand() - 0.5) * 20,
+          ox + Math.cos(angle) * len * 0.5 + (rand() - 0.5) * 15,
+          oy + Math.sin(angle) * len * 0.5 + (rand() - 0.5) * 15,
           ox + Math.cos(angle) * len,
           oy + Math.sin(angle) * len
         );
-        ctx.strokeStyle = `rgba(90, 82, 70, ${0.08 + rand() * 0.08})`;
+        ctx.strokeStyle = `rgba(${tR + 15}, ${tG + 15}, ${tB + 12}, ${0.04 + rand() * 0.06})`;
         ctx.lineWidth = 1 + rand() * 2;
         ctx.stroke();
       }
       ctx.restore();
     }
 
-    const namedCraters: { lat: number; lon: number; r: number; bright?: boolean; depth?: number }[] = [
-      { lat: -43.31, lon: -11.36, r: 24, bright: true, depth: 0.8 },
-      { lat: 9.62, lon: -20.08, r: 26, bright: true, depth: 0.7 },
-      { lat: 23.73, lon: -47.49, r: 18, bright: true, depth: 0.9 },
-      { lat: 51.6, lon: -9.3, r: 28, depth: 0.6 },
-      { lat: -58.4, lon: -14.4, r: 55, depth: 0.5 },
-      { lat: 29.7, lon: -4.0, r: 22, depth: 0.5 },
-      { lat: 21.4, lon: -5.0, r: 12, depth: 0.4 },
-      { lat: -10.5, lon: -20.1, r: 18, depth: 0.5 },
-      { lat: 32.8, lon: 35.5, r: 18, depth: 0.45 },
-      { lat: -34.7, lon: -17.0, r: 16, depth: 0.4 },
-      { lat: 45.4, lon: 2.4, r: 14, depth: 0.45 },
-      { lat: -8.0, lon: -10.0, r: 17, depth: 0.4 },
-      { lat: -13.7, lon: -4.0, r: 14, depth: 0.4 },
-      { lat: -22.0, lon: 46.0, r: 16, depth: 0.5 },
-      { lat: -5.0, lon: -2.0, r: 13, depth: 0.35 },
-      { lat: -20.7, lon: -12.0, r: 12, depth: 0.4 },
-      { lat: 47.3, lon: 7.4, r: 10, depth: 0.35 },
-      { lat: -46.2, lon: -51.4, r: 18, depth: 0.45 },
-      { lat: 58.1, lon: -43.5, r: 14, depth: 0.4 },
-      { lat: 1.3, lon: 65.5, r: 15, depth: 0.5 },
-      { lat: -3.2, lon: -43.0, r: 14, depth: 0.45 },
-      { lat: 14.5, lon: 24.0, r: 10, depth: 0.35 },
-      { lat: -32.6, lon: -2.1, r: 22, depth: 0.5 },
-      { lat: 40.8, lon: 1.2, r: 11, depth: 0.4 },
-      { lat: 44.4, lon: 11.5, r: 14, depth: 0.45 },
-      { lat: 5.5, lon: 159.6, r: 22, depth: 0.5 },
-      { lat: -33.2, lon: 162.0, r: 30, depth: 0.4 },
-      { lat: 19.8, lon: -148.2, r: 45, depth: 0.4 },
-      { lat: -43.4, lon: -169.4, r: 35, depth: 0.35 },
-      { lat: 6.1, lon: -136.5, r: 28, depth: 0.4 },
+    /* ── 3. Named craters — accurate selenographic positions ────────────── */
+    const namedCraters: { lat: number; lon: number; r: number; bright?: boolean; depth?: number; rays?: number }[] = [
+      // Tycho — young, spectacular ray system
+      { lat: -43.31, lon: -11.36, r: 28, bright: true, depth: 0.85, rays: 16 },
+      // Copernicus — prominent rays
+      { lat: 9.62, lon: -20.08, r: 30, bright: true, depth: 0.75, rays: 14 },
+      // Aristarchus — brightest spot on moon
+      { lat: 23.73, lon: -47.49, r: 20, bright: true, depth: 0.95, rays: 10 },
+      // Kepler — bright with rays
+      { lat: 8.12, lon: -38.01, r: 16, bright: true, depth: 0.6, rays: 8 },
+      // Plato — dark floor
+      { lat: 51.6, lon: -9.3, r: 32, depth: 0.65 },
+      // Clavius — huge southern crater
+      { lat: -58.4, lon: -14.4, r: 60, depth: 0.5 },
+      // Archimedes — mare-floored
+      { lat: 29.7, lon: -4.0, r: 26, depth: 0.5 },
+      // Aristillus
+      { lat: 33.9, lon: 1.2, r: 18, bright: true, depth: 0.45, rays: 6 },
+      // Autolycus
+      { lat: 30.7, lon: 1.5, r: 14, depth: 0.4 },
+      // Eratosthenes
+      { lat: 14.5, lon: -11.3, r: 20, depth: 0.55 },
+      // Ptolemaeus
+      { lat: -9.3, lon: -1.8, r: 44, depth: 0.35 },
+      // Alphonsus
+      { lat: -13.4, lon: -2.8, r: 36, depth: 0.4 },
+      // Arzachel
+      { lat: -18.2, lon: -1.9, r: 30, depth: 0.45 },
+      // Theophilus
+      { lat: -11.4, lon: 26.4, r: 30, depth: 0.55 },
+      // Petavius
+      { lat: -25.3, lon: 60.4, r: 28, depth: 0.5 },
+      // Langrenus
+      { lat: -8.9, lon: 61.0, r: 24, depth: 0.5 },
+      // Grimaldi — very dark floor
+      { lat: -5.2, lon: -68.6, r: 28, depth: 0.55 },
+      // Schickard
+      { lat: -44.4, lon: -55.1, r: 35, depth: 0.4 },
+      // Posidonius
+      { lat: 31.8, lon: 29.9, r: 22, depth: 0.4 },
+      // Cleomedes
+      { lat: 27.7, lon: 56.0, r: 24, depth: 0.45 },
+      // Proclus — bright, asymmetric rays
+      { lat: 16.1, lon: 46.8, r: 12, bright: true, depth: 0.6, rays: 6 },
+      // Stevinus
+      { lat: -32.5, lon: 54.2, r: 20, depth: 0.45 },
+      // Maginus
+      { lat: -50.5, lon: -6.3, r: 42, depth: 0.4 },
+      // Longomontanus
+      { lat: -49.5, lon: -21.7, r: 38, depth: 0.4 },
+      // Far side craters
+      { lat: 5.5, lon: 159.6, r: 28, depth: 0.5 },
+      { lat: -33.2, lon: 162.0, r: 35, depth: 0.45 },
+      { lat: 19.8, lon: -148.2, r: 50, depth: 0.4 },
+      { lat: -43.4, lon: -169.4, r: 40, depth: 0.35 },
+      { lat: 6.1, lon: -136.5, r: 32, depth: 0.4 },
+      { lat: -36.0, lon: -137.0, r: 45, depth: 0.35 },
     ];
 
-    const lightAngle = -Math.PI * 0.75;
+    const lightAngle = -Math.PI * 0.72;
     const lx = Math.cos(lightAngle), ly = Math.sin(lightAngle);
 
-    function drawCrater(cx: number, cy: number, r: number, bright: boolean, depth: number) {
-      const ejectaG = ctx.createRadialGradient(cx, cy, r * 0.9, cx, cy, r * 2.5);
-      ejectaG.addColorStop(0, `rgba(155, 148, 135, ${0.06 * depth})`);
-      ejectaG.addColorStop(1, `rgba(155, 148, 135, 0)`);
-      ctx.fillStyle = ejectaG;
-      ctx.beginPath(); ctx.arc(cx, cy, r * 2.5, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(cx + lx * r * 0.15, cy + ly * r * 0.15, r * 0.85, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(25, 22, 18, ${0.3 * depth})`; ctx.fill();
-      ctx.beginPath(); ctx.arc(cx, cy, r * 0.7, 0, Math.PI * 2);
-      ctx.fillStyle = bright ? `rgba(195, 190, 175, ${0.25 * depth})` : `rgba(35, 32, 28, ${0.25 * depth})`; ctx.fill();
-      ctx.beginPath(); ctx.arc(cx - lx * r * 0.08, cy - ly * r * 0.08, r * 1.05, 0, Math.PI * 2);
-      ctx.strokeStyle = bright ? `rgba(230, 225, 210, ${0.35 * depth})` : `rgba(175, 168, 155, ${0.25 * depth})`;
-      ctx.lineWidth = 1.5 + r * 0.06; ctx.stroke();
-      ctx.beginPath(); ctx.arc(cx + lx * r * 0.08, cy + ly * r * 0.08, r * 1.02, 0, Math.PI * 2);
-      ctx.strokeStyle = `rgba(30, 28, 25, ${0.15 * depth})`; ctx.lineWidth = 1 + r * 0.04; ctx.stroke();
-      if (r > 14) { ctx.beginPath(); ctx.arc(cx, cy, r * 0.12, 0, Math.PI * 2); ctx.fillStyle = `rgba(180, 175, 160, ${0.15 * depth})`; ctx.fill(); }
+    function drawCrater(cx: number, cy: number, r: number, bright: boolean, depth: number, rays = 0) {
+      // Ejecta blanket
+      if (r > 6) {
+        const ej = ctx.createRadialGradient(cx, cy, r * 0.8, cx, cy, r * (bright ? 2.0 : 1.8));
+        ej.addColorStop(0, `rgba(165, 162, 158, ${0.06 * depth})`);
+        ej.addColorStop(1, `rgba(165, 162, 158, 0)`);
+        ctx.fillStyle = ej;
+        ctx.beginPath(); ctx.arc(cx, cy, r * 2.0, 0, Math.PI * 2); ctx.fill();
+      }
+      // Shadow (inside, offset toward light source)
+      ctx.beginPath();
+      ctx.arc(cx + lx * r * 0.12, cy + ly * r * 0.12, r * 0.88, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(20, 20, 18, ${0.35 * depth})`;
+      ctx.fill();
+      // Floor
+      ctx.beginPath(); ctx.arc(cx, cy, r * 0.72, 0, Math.PI * 2);
       if (bright) {
-        const rayCount = 10 + Math.floor(rand() * 8);
+        ctx.fillStyle = `rgba(200, 198, 192, ${0.3 * depth})`;
+      } else {
+        ctx.fillStyle = `rgba(30, 28, 26, ${0.2 * depth})`;
+      }
+      ctx.fill();
+      // Lit rim (opposite light side — catches light)
+      ctx.beginPath();
+      ctx.arc(cx - lx * r * 0.06, cy - ly * r * 0.06, r * 1.04, 0, Math.PI * 2);
+      ctx.strokeStyle = bright ? `rgba(220, 218, 212, ${0.35 * depth})` : `rgba(185, 182, 176, ${0.2 * depth})`;
+      ctx.lineWidth = 1.5 + r * 0.05;
+      ctx.stroke();
+      // Shadow rim
+      ctx.beginPath();
+      ctx.arc(cx + lx * r * 0.06, cy + ly * r * 0.06, r * 1.02, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(25, 24, 22, ${0.18 * depth})`;
+      ctx.lineWidth = 1 + r * 0.04;
+      ctx.stroke();
+      // Central peak for large craters
+      if (r > 18) {
+        ctx.beginPath(); ctx.arc(cx, cy, r * 0.1, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(190, 188, 182, ${0.18 * depth})`;
+        ctx.fill();
+      }
+      // Ray system for bright craters
+      if (bright && rays > 0) {
+        const rayCount = rays + Math.floor(rand() * 6);
         for (let i = 0; i < rayCount; i++) {
-          const angle = (i / rayCount) * Math.PI * 2 + rand() * 0.4;
-          const len = r * (4 + rand() * 10);
+          const angle = (i / rayCount) * Math.PI * 2 + rand() * 0.5;
+          const len = r * (5 + rand() * 12);
+          const width = 1.5 + rand() * 4;
           ctx.beginPath();
           ctx.moveTo(cx + Math.cos(angle) * r * 1.1, cy + Math.sin(angle) * r * 1.1);
-          ctx.quadraticCurveTo(cx + Math.cos(angle + 0.15) * len * 0.4, cy + Math.sin(angle + 0.15) * len * 0.4, cx + Math.cos(angle) * len, cy + Math.sin(angle) * len);
-          ctx.strokeStyle = `rgba(210, 205, 190, ${0.04 + rand() * 0.04})`; ctx.lineWidth = 1 + rand() * 4; ctx.stroke();
+          const mid = 0.3 + rand() * 0.3;
+          ctx.quadraticCurveTo(
+            cx + Math.cos(angle + 0.12) * len * mid,
+            cy + Math.sin(angle + 0.12) * len * mid,
+            cx + Math.cos(angle + (rand() - 0.5) * 0.2) * len,
+            cy + Math.sin(angle + (rand() - 0.5) * 0.2) * len
+          );
+          ctx.strokeStyle = `rgba(210, 208, 202, ${0.035 + rand() * 0.04})`;
+          ctx.lineWidth = width;
+          ctx.stroke();
         }
-        const cg = ctx.createRadialGradient(cx, cy, 0, cx, cy, r * 1.5);
-        cg.addColorStop(0, `rgba(220, 215, 200, 0.2)`); cg.addColorStop(1, `rgba(220, 215, 200, 0)`);
-        ctx.fillStyle = cg; ctx.beginPath(); ctx.arc(cx, cy, r * 1.5, 0, Math.PI * 2); ctx.fill();
+        // Central glow
+        const cg = ctx.createRadialGradient(cx, cy, 0, cx, cy, r * 1.8);
+        cg.addColorStop(0, `rgba(225, 222, 216, 0.22)`);
+        cg.addColorStop(0.5, `rgba(210, 208, 202, 0.08)`);
+        cg.addColorStop(1, `rgba(210, 208, 202, 0)`);
+        ctx.fillStyle = cg;
+        ctx.beginPath(); ctx.arc(cx, cy, r * 1.8, 0, Math.PI * 2); ctx.fill();
       }
     }
 
-    for (const c of namedCraters) { const [cx, cy] = ll2px(c.lat, c.lon); drawCrater(cx, cy, c.r, !!c.bright, c.depth || 0.5); }
+    // Draw named craters
+    for (const c of namedCraters) {
+      const [cx, cy] = ll2px(c.lat, c.lon);
+      drawCrater(cx, cy, c.r, !!c.bright, c.depth || 0.5, c.rays || 0);
+    }
 
+    /* ── 4. Mountain ranges ─────────────────────────────────────── */
     const mountains: { points: [number, number][]; width: number; brightness: number }[] = [
-      { points: [[20, -5], [22, -3], [25, 0], [27, 3], [28, 6]], width: 18, brightness: 0.2 },
-      { points: [[14, -23], [16, -26], [18, -29], [20, -32]], width: 14, brightness: 0.15 },
-      { points: [[44, -30], [45, -34], [46, -38]], width: 12, brightness: 0.15 },
-      { points: [[25, 17], [27, 19], [28, 21]], width: 10, brightness: 0.12 },
-      { points: [[46, -3], [48, -1], [50, 1]], width: 10, brightness: 0.1 },
+      // Montes Apenninus (border of Imbrium)
+      { points: [[18, -5], [20, -3.5], [22.5, -1.5], [25, 1], [27, 3.5], [28.5, 6]], width: 22, brightness: 0.2 },
+      // Montes Carpatus
+      { points: [[14, -23], [15.5, -26], [17, -29], [19, -33]], width: 16, brightness: 0.16 },
+      // Montes Caucasus
+      { points: [[35, 8], [37, 9.5], [39, 10.5]], width: 14, brightness: 0.14 },
+      // Montes Alpes
+      { points: [[44, -3], [46, -2], [48, 0], [49.5, 2]], width: 14, brightness: 0.14 },
+      // Montes Haemus
+      { points: [[19, 9], [20.5, 11], [22, 13]], width: 10, brightness: 0.12 },
+      // Montes Jura (Sinus Iridum rim)
+      { points: [[45, -37], [46.5, -34], [47, -31]], width: 12, brightness: 0.14 },
     ];
     for (const range of mountains) {
       ctx.beginPath();
@@ -409,39 +532,70 @@ function MoonMesh() {
       ctx.moveTo(pts[0][0], pts[0][1]);
       for (let i = 1; i < pts.length; i++) {
         const prev = pts[i - 1], cur = pts[i];
-        ctx.quadraticCurveTo((prev[0] + cur[0]) / 2 + (rand() - 0.5) * 10, (prev[1] + cur[1]) / 2 + (rand() - 0.5) * 10, cur[0], cur[1]);
+        ctx.quadraticCurveTo(
+          (prev[0] + cur[0]) / 2 + (rand() - 0.5) * 8,
+          (prev[1] + cur[1]) / 2 + (rand() - 0.5) * 8,
+          cur[0], cur[1]
+        );
       }
-      ctx.strokeStyle = `rgba(200, 195, 180, ${range.brightness})`; ctx.lineWidth = range.width; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.stroke();
+      // Sunlit side
+      ctx.strokeStyle = `rgba(210, 208, 200, ${range.brightness})`;
+      ctx.lineWidth = range.width; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.stroke();
+      // Shadow side
       ctx.beginPath(); ctx.moveTo(pts[0][0] + 3, pts[0][1] + 3);
-      for (let i = 1; i < pts.length; i++) { const prev = pts[i - 1], cur = pts[i]; ctx.quadraticCurveTo((prev[0] + cur[0]) / 2 + 3, (prev[1] + cur[1]) / 2 + 3, cur[0] + 3, cur[1] + 3); }
-      ctx.strokeStyle = `rgba(30, 28, 25, ${range.brightness * 0.6})`; ctx.lineWidth = range.width * 0.7; ctx.stroke();
+      for (let i = 1; i < pts.length; i++) {
+        const prev = pts[i - 1], cur = pts[i];
+        ctx.quadraticCurveTo((prev[0] + cur[0]) / 2 + 3, (prev[1] + cur[1]) / 2 + 3, cur[0] + 3, cur[1] + 3);
+      }
+      ctx.strokeStyle = `rgba(25, 24, 22, ${range.brightness * 0.6})`; ctx.lineWidth = range.width * 0.65; ctx.stroke();
     }
 
-    for (let i = 0; i < 30; i++) { const cx = rand() * W, cy = rand() * H; drawCrater(cx, cy, 25 + rand() * 35, rand() > 0.9, 0.2 + rand() * 0.2); }
-    for (let i = 0; i < 400; i++) { const cx = rand() * W, cy = rand() * H; drawCrater(cx, cy, 8 + rand() * 20, false, 0.2 + rand() * 0.25); }
-    for (let i = 0; i < 1200; i++) {
-      const cx = rand() * W, cy = rand() * H, r = 3 + rand() * 7;
-      ctx.beginPath(); ctx.arc(cx + lx * r * 0.1, cy + ly * r * 0.1, r * 0.8, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(30, 28, 25, ${rand() * 0.15 + 0.03})`; ctx.fill();
-      ctx.beginPath(); ctx.arc(cx - lx * r * 0.08, cy - ly * r * 0.08, r, 0, Math.PI * 2);
-      ctx.strokeStyle = `rgba(175, 168, 155, ${rand() * 0.15 + 0.04})`; ctx.lineWidth = 1; ctx.stroke();
+    /* ── 5. Random crater populations ───────────────────────────── */
+    // Large (basin-size)
+    for (let i = 0; i < 25; i++) {
+      const cx = rand() * W, cy = rand() * H;
+      drawCrater(cx, cy, 28 + rand() * 40, rand() > 0.92, 0.18 + rand() * 0.18);
     }
-    for (let i = 0; i < 4000; i++) {
+    // Medium
+    for (let i = 0; i < 350; i++) {
+      const cx = rand() * W, cy = rand() * H;
+      drawCrater(cx, cy, 9 + rand() * 22, false, 0.15 + rand() * 0.2);
+    }
+    // Small
+    for (let i = 0; i < 1400; i++) {
+      const cx = rand() * W, cy = rand() * H, r = 3 + rand() * 7;
+      ctx.beginPath();
+      ctx.arc(cx + lx * r * 0.1, cy + ly * r * 0.1, r * 0.78, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(22, 22, 20, ${rand() * 0.12 + 0.03})`;
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(cx - lx * r * 0.08, cy - ly * r * 0.08, r, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(185, 182, 176, ${rand() * 0.12 + 0.04})`;
+      ctx.lineWidth = 0.8;
+      ctx.stroke();
+    }
+    // Micro craters (texture)
+    for (let i = 0; i < 5000; i++) {
       const cx = rand() * W, cy = rand() * H, r = 1 + rand() * 3;
       ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(40, 38, 35, ${rand() * 0.18 + 0.03})`; ctx.fill();
-      ctx.beginPath(); ctx.arc(cx - lx * r * 0.3, cy - ly * r * 0.3, r * 0.6, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(185, 178, 165, ${rand() * 0.08 + 0.02})`; ctx.fill();
+      ctx.fillStyle = `rgba(35, 34, 32, ${rand() * 0.15 + 0.03})`;
+      ctx.fill();
+      ctx.beginPath(); ctx.arc(cx - lx * r * 0.25, cy - ly * r * 0.25, r * 0.55, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(195, 192, 186, ${rand() * 0.06 + 0.02})`;
+      ctx.fill();
     }
-    for (let i = 0; i < 6000; i++) {
-      const cx = rand() * W, cy = rand() * H, r = 0.3 + rand() * 1.2;
+    // Dust specks
+    for (let i = 0; i < 8000; i++) {
+      const cx = rand() * W, cy = rand() * H, r = 0.3 + rand() * 1.0;
       ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(50, 47, 42, ${rand() * 0.25 + 0.05})`; ctx.fill();
+      ctx.fillStyle = `rgba(45, 44, 40, ${rand() * 0.2 + 0.04})`;
+      ctx.fill();
     }
 
+    /* ── 6. Film grain for regolith realism ─────────────────────── */
     const imgData = ctx.getImageData(0, 0, W, H);
     for (let i = 0; i < imgData.data.length; i += 4) {
-      const n = (rand() - 0.5) * 14;
+      const n = (rand() - 0.5) * 10;
       imgData.data[i] = Math.max(0, Math.min(255, imgData.data[i] + n));
       imgData.data[i + 1] = Math.max(0, Math.min(255, imgData.data[i + 1] + n));
       imgData.data[i + 2] = Math.max(0, Math.min(255, imgData.data[i + 2] + n));
@@ -451,6 +605,7 @@ function MoonMesh() {
     const colorTex = new THREE.CanvasTexture(colorCanvas);
     colorTex.colorSpace = THREE.SRGBColorSpace;
 
+    /* ── 7. Bump map from luminance + extra noise ───────────────── */
     const bumpCanvas = document.createElement("canvas");
     const BW = 2048, BH = 1024;
     bumpCanvas.width = BW; bumpCanvas.height = BH;
@@ -463,8 +618,11 @@ function MoonMesh() {
         const idx = (y * BW + x) * 4;
         let lum = bData.data[idx] * 0.299 + bData.data[idx + 1] * 0.587 + bData.data[idx + 2] * 0.114;
         const nx = x / BW * 16, ny = y / BH * 8;
-        lum += fbm(nx + 50, ny + 50, 5, 2.2, 0.6) * 30;
-        lum += (rand2() - 0.5) * 12;
+        // Terrain-scale height variation
+        lum += fbm(nx + 50, ny + 50, 6, 2.2, 0.55) * 28;
+        // Fine detail
+        lum += fbm(nx * 4 + 300, ny * 4 + 300, 4, 2.0, 0.5) * 10;
+        lum += (rand2() - 0.5) * 10;
         lum = Math.max(0, Math.min(255, lum));
         bData.data[idx] = lum; bData.data[idx + 1] = lum; bData.data[idx + 2] = lum;
       }
@@ -479,11 +637,18 @@ function MoonMesh() {
     <>
       <mesh>
         <sphereGeometry args={[2, 256, 128]} />
-        <meshStandardMaterial map={colorMap} bumpMap={bumpMap} bumpScale={0.04} roughness={0.95} metalness={0.02} />
+        <meshStandardMaterial
+          map={colorMap}
+          bumpMap={bumpMap}
+          bumpScale={0.06}
+          roughness={0.92}
+          metalness={0.01}
+        />
       </mesh>
+      {/* Subtle atmospheric limb glow */}
       <mesh>
-        <sphereGeometry args={[2.04, 64, 32]} />
-        <meshBasicMaterial color="#8899bb" transparent opacity={0.04} side={THREE.BackSide} />
+        <sphereGeometry args={[2.03, 64, 32]} />
+        <meshBasicMaterial color="#9aa8c0" transparent opacity={0.03} side={THREE.BackSide} />
       </mesh>
     </>
   );
