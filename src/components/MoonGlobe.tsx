@@ -789,7 +789,7 @@ export default function MoonGlobe({ onTerritoryClick }: MoonGlobeProps) {
           {/* Detail overlay — floats OVER the top of the moon */}
           <DetailOverlay item={displayItem} onClose={handleCloseOverlay} />
 
-          <Canvas camera={{ position: [0, 0, 4.8], fov: 45 }}>
+          <Canvas camera={{ position: [0, 0, 6.2], fov: 45 }}>
             <Scene
               setHoverItem={handleSetHoverItem}
               onTerritoryClick={onTerritoryClick}
