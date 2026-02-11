@@ -104,11 +104,13 @@ function LandmarkPin({
   landmark,
   isHovered,
   onHover,
+  onClick,
   dimmed,
 }: {
   landmark: Landmark;
   isHovered: boolean;
   onHover: (id: string | null) => void;
+  onClick: (id: string) => void;
   dimmed: boolean;
 }) {
   const pos = useMemo(() => latLonToVec3(landmark.lat, landmark.lon, 2.01), [landmark]);
@@ -122,6 +124,7 @@ function LandmarkPin({
       quaternion={quat}
       onPointerEnter={(e) => { e.stopPropagation(); onHover(landmark.id); }}
       onPointerLeave={() => onHover(null)}
+      onClick={(e) => { e.stopPropagation(); onClick(landmark.id); }}
     >
       <mesh position={[0, 0.05, 0]}>
         <cylinderGeometry args={[0.006, 0.006, 0.10, 6]} />
@@ -147,11 +150,13 @@ function FutureClaimPin({
   claim,
   isHovered,
   onHover,
+  onClick,
   dimmed,
 }: {
   claim: FutureClaim;
   isHovered: boolean;
   onHover: (id: string | null) => void;
+  onClick: (id: string) => void;
   dimmed: boolean;
 }) {
   const pos = useMemo(() => latLonToVec3(claim.lat, claim.lon, 2.01), [claim]);
@@ -171,6 +176,7 @@ function FutureClaimPin({
       quaternion={quat}
       onPointerEnter={(e) => { e.stopPropagation(); onHover(claim.id); }}
       onPointerLeave={() => onHover(null)}
+      onClick={(e) => { e.stopPropagation(); onClick(claim.id); }}
     >
       <mesh position={[0, 0.05, 0]} rotation={[0, 0, Math.PI / 4]}>
         <boxGeometry args={[0.04, 0.04, 0.008]} />
@@ -486,12 +492,12 @@ function MoonMesh() {
 // ── Scene ───────────────────────────────────────────────────────────────────
 
 function Scene({
-  setHoverItem,
+  onClickItem,
   onTerritoryClick,
   highlightedTerritory,
   activeFilters,
 }: {
-  setHoverItem: (item: DetailItem) => void;
+  onClickItem: (item: DetailItem) => void;
   onTerritoryClick: (t: Territory) => void;
   highlightedTerritory: string | null;
   activeFilters: Set<string>;
@@ -499,30 +505,32 @@ function Scene({
   const [hoveredTerritoryId, setHoveredTerritoryId] = useState<string | null>(null);
   const [hoveredPinId, setHoveredPinId] = useState<string | null>(null);
 
+  // Hover only sets glow — no popup
   const handleTerritoryHover = useCallback((t: Territory | null) => {
     setHoveredTerritoryId(t?.id ?? null);
-    setHoverItem(t ? { kind: "territory", data: t } : null);
-  }, [setHoverItem]);
+  }, []);
+
+  const handleTerritoryMarkerClick = useCallback((t: Territory) => {
+    onClickItem({ kind: "territory", data: t });
+  }, [onClickItem]);
 
   const handleLandmarkHover = useCallback((id: string | null) => {
     setHoveredPinId(id);
-    if (id) {
-      const lm = landmarks.find((l) => l.id === id);
-      if (lm) setHoverItem({ kind: "landmark", data: lm });
-    } else {
-      setHoverItem(null);
-    }
-  }, [setHoverItem]);
+  }, []);
+
+  const handleLandmarkClick = useCallback((id: string) => {
+    const lm = landmarks.find((l) => l.id === id);
+    if (lm) onClickItem({ kind: "landmark", data: lm });
+  }, [onClickItem]);
 
   const handleClaimHover = useCallback((id: string | null) => {
     setHoveredPinId(id);
-    if (id) {
-      const fc = futureClaims.find((c) => c.id === id);
-      if (fc) setHoverItem({ kind: "claim", data: fc });
-    } else {
-      setHoverItem(null);
-    }
-  }, [setHoverItem]);
+  }, []);
+
+  const handleClaimClick = useCallback((id: string) => {
+    const fc = futureClaims.find((c) => c.id === id);
+    if (fc) onClickItem({ kind: "claim", data: fc });
+  }, [onClickItem]);
 
   const visibleLandmarks = useMemo(() =>
     landmarks.filter((lm) => lm.type !== "geographic" && activeFilters.has(lm.type)),
@@ -546,7 +554,7 @@ function Scene({
             key={t.id}
             territory={t}
             onHover={handleTerritoryHover}
-            onClick={onTerritoryClick}
+            onClick={handleTerritoryMarkerClick}
             isHovered={hoveredTerritoryId === t.id}
             isHighlighted={highlightedTerritory === t.id}
           />
@@ -558,6 +566,7 @@ function Scene({
             landmark={lm}
             isHovered={hoveredPinId === lm.id}
             onHover={handleLandmarkHover}
+            onClick={handleLandmarkClick}
             dimmed={false}
           />
         ))}
@@ -568,6 +577,7 @@ function Scene({
             claim={fc}
             isHovered={hoveredPinId === fc.id}
             onHover={handleClaimHover}
+            onClick={handleClaimClick}
             dimmed={false}
           />
         ))}
@@ -691,7 +701,7 @@ function DetailOverlay({ item, onClose }: { item: DetailItem; onClose: () => voi
       <div
         className="rounded-2xl p-5 text-white shadow-2xl border max-w-2xl mx-auto"
         style={{
-          background: "rgba(8, 12, 30, 0.92)",
+          background: "rgba(8, 12, 30, 0.80)",
           backdropFilter: "blur(20px)",
           borderColor: `${accentColor}30`,
         }}
@@ -724,18 +734,13 @@ const FILTER_BUTTONS: { key: FilterCategory; label: string; color: string; dot: 
 ];
 
 export default function MoonGlobe({ onTerritoryClick }: MoonGlobeProps) {
-  const [hoverItem, setHoverItem] = useState<DetailItem>(null);
   const [selectedItem, setSelectedItem] = useState<DetailItem>(null);
   const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set());
   const [highlightedTerritory, setHighlightedTerritory] = useState<string | null>(null);
 
-  // Show selected item (click) or hovered item in the overlay
-  const displayItem = selectedItem || hoverItem;
-
-  const handleSetHoverItem = useCallback((item: DetailItem) => {
-    setHoverItem(item);
-    // Auto-select on hover so the overlay shows immediately
-    if (item) setSelectedItem(item);
+  // Only show popup on click, not hover
+  const handleClickItem = useCallback((item: DetailItem) => {
+    setSelectedItem(item);
   }, []);
 
   const toggleFilter = useCallback((key: string) => {
@@ -786,12 +791,12 @@ export default function MoonGlobe({ onTerritoryClick }: MoonGlobeProps) {
         <div className="relative w-full max-w-4xl mx-auto rounded-2xl overflow-hidden" style={{ aspectRatio: "1 / 1" }}>
           <div className="absolute inset-0 bg-gradient-radial from-cosmic-teal/5 via-transparent to-transparent pointer-events-none z-10" />
 
-          {/* Detail overlay — floats OVER the top of the moon */}
-          <DetailOverlay item={displayItem} onClose={handleCloseOverlay} />
+          {/* Detail overlay — floats OVER the top of the moon, click only */}
+          <DetailOverlay item={selectedItem} onClose={handleCloseOverlay} />
 
           <Canvas camera={{ position: [0, 0, 6.2], fov: 45 }}>
             <Scene
-              setHoverItem={handleSetHoverItem}
+              onClickItem={handleClickItem}
               onTerritoryClick={onTerritoryClick}
               highlightedTerritory={highlightedTerritory}
               activeFilters={activeFilters}
