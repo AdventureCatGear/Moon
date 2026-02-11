@@ -220,67 +220,107 @@ function FutureClaimPin({ claim, isHovered, onHover }: {
   );
 }
 
-// ── Moon Mesh with detailed procedural texture ──────────────────────────────
+// ── Moon Mesh with high-detail procedural textures + bump map ────────────────
 
 function MoonMesh() {
-  const moonTexture = useMemo(() => {
+  const { colorMap, bumpMap } = useMemo(() => {
     const W = 4096, H = 2048;
-    const canvas = document.createElement("canvas");
-    canvas.width = W;
-    canvas.height = H;
-    const ctx = canvas.getContext("2d")!;
 
-    // Seeded RNG
+    // ── Seeded RNG ──────────────────────────────────────────────────────────
     const rng = (seed: number) => {
       let s = seed;
       return () => { s = (s * 16807 + 0) % 2147483647; return s / 2147483647; };
     };
     const rand = rng(42);
 
-    // Helper: lat/lon to canvas pixel
-    const ll2px = (lat: number, lon: number): [number, number] => {
-      const x = ((lon + 180) / 360) * W;
-      const y = ((90 - lat) / 180) * H;
-      return [x, y];
-    };
+    // ── Simple coherent value noise (seeded) ────────────────────────────────
+    const PERM = new Uint8Array(512);
+    { const tmp = new Uint8Array(256); for (let i = 0; i < 256; i++) tmp[i] = i;
+      for (let i = 255; i > 0; i--) { const j = (rand() * (i + 1)) | 0; [tmp[i], tmp[j]] = [tmp[j], tmp[i]]; }
+      for (let i = 0; i < 512; i++) PERM[i] = tmp[i & 255]; }
 
-    // Base highland color
-    const baseGrad = ctx.createLinearGradient(0, 0, 0, H);
-    baseGrad.addColorStop(0, "#a8a090");
-    baseGrad.addColorStop(0.3, "#b0a898");
-    baseGrad.addColorStop(0.5, "#bab2a0");
-    baseGrad.addColorStop(0.7, "#a09888");
-    baseGrad.addColorStop(1, "#989080");
-    ctx.fillStyle = baseGrad;
-    ctx.fillRect(0, 0, W, H);
-
-    // Subtle latitude banding
-    for (let y = 0; y < H; y += 4) {
-      const alpha = 0.02 + rand() * 0.03;
-      const bright = 100 + rand() * 60;
-      ctx.fillStyle = `rgba(${bright},${bright - 5},${bright - 15},${alpha})`;
-      ctx.fillRect(0, y, W, 4);
+    function fade(t: number) { return t * t * t * (t * (t * 6 - 15) + 10); }
+    function lerp(a: number, b: number, t: number) { return a + (b - a) * t; }
+    function grad2d(hash: number, x: number, y: number) {
+      const h = hash & 3;
+      return (h < 2 ? (h === 0 ? x : -x) : 0) + (h < 2 ? 0 : (h === 2 ? y : -y));
+    }
+    function noise2d(x: number, y: number): number {
+      const X = Math.floor(x) & 255, Y = Math.floor(y) & 255;
+      const xf = x - Math.floor(x), yf = y - Math.floor(y);
+      const u = fade(xf), v = fade(yf);
+      const aa = PERM[PERM[X] + Y], ab = PERM[PERM[X] + Y + 1];
+      const ba = PERM[PERM[X + 1] + Y], bb = PERM[PERM[X + 1] + Y + 1];
+      return lerp(lerp(grad2d(aa, xf, yf), grad2d(ba, xf - 1, yf), u),
+                  lerp(grad2d(ab, xf, yf - 1), grad2d(bb, xf - 1, yf - 1), u), v);
+    }
+    function fbm(x: number, y: number, octaves: number, lacunarity = 2.0, gain = 0.5): number {
+      let val = 0, amp = 1, freq = 1, max = 0;
+      for (let i = 0; i < octaves; i++) {
+        val += noise2d(x * freq, y * freq) * amp;
+        max += amp; amp *= gain; freq *= lacunarity;
+      }
+      return val / max;
     }
 
-    // ── Accurate maria ──────────────────────────────────────────────────────
-    // Painted at correct lat/lon positions with realistic shapes
-    const maria: { lat: number; lon: number; rx: number; ry: number; angle?: number; name: string }[] = [
-      // Near side major maria
-      { lat: 8.5, lon: 31.4, rx: 180, ry: 140, name: "Tranquillitatis" },
-      { lat: 36, lon: -16, rx: 280, ry: 240, name: "Imbrium" },
-      { lat: 28, lon: 17.5, rx: 140, ry: 120, name: "Serenitatis" },
-      { lat: 18.4, lon: -57.4, rx: 320, ry: 280, name: "Procellarum" },
-      { lat: 17, lon: 59.1, rx: 100, ry: 80, name: "Crisium" },
-      { lat: -15, lon: -22, rx: 100, ry: 80, name: "Nubium" },
-      { lat: 7, lon: 1, rx: 90, ry: 70, angle: 0.3, name: "Vaporum" },
-      { lat: 15, lon: -3.5, rx: 60, ry: 50, name: "Aestuum" },
-      { lat: 45, lon: -32, rx: 100, ry: 50, angle: -0.2, name: "Sinus Iridum" },
-      { lat: -20, lon: 28, rx: 80, ry: 60, name: "Nectaris" },
-      { lat: -14, lon: 52, rx: 120, ry: 100, name: "Fecunditatis" },
-      { lat: 13, lon: 38, rx: 60, ry: 50, name: "Somniorum fringe" },
-      { lat: 56, lon: 2, rx: 180, ry: 40, name: "Frigoris" },
-      { lat: -19.3, lon: -3.2, rx: 70, ry: 50, name: "Medii" },
-      { lat: 2, lon: -47, rx: 100, ry: 70, name: "Humorum" },
+    // ── Lat/lon to pixel ────────────────────────────────────────────────────
+    const ll2px = (lat: number, lon: number): [number, number] => [
+      ((lon + 180) / 360) * W,
+      ((90 - lat) / 180) * H,
+    ];
+
+    // ── COLOR CANVAS ────────────────────────────────────────────────────────
+    const colorCanvas = document.createElement("canvas");
+    colorCanvas.width = W; colorCanvas.height = H;
+    const ctx = colorCanvas.getContext("2d")!;
+
+    // Base highland — slightly warm gray with latitude variation
+    for (let y = 0; y < H; y++) {
+      const latFactor = Math.abs(y / H - 0.5) * 2; // 0 at equator, 1 at poles
+      const r = 168 + latFactor * 12;
+      const g = 162 + latFactor * 8;
+      const b = 148 + latFactor * 4;
+      ctx.fillStyle = `rgb(${r},${g},${b})`;
+      ctx.fillRect(0, y, W, 1);
+    }
+
+    // ── Coherent terrain noise overlay ──────────────────────────────────────
+    // Multi-scale noise to break up uniform highlands
+    const terrainData = ctx.getImageData(0, 0, W, H);
+    for (let y = 0; y < H; y++) {
+      for (let x = 0; x < W; x++) {
+        const nx = x / W * 8, ny = y / H * 4;
+        const n1 = fbm(nx, ny, 6, 2.0, 0.55) * 20;
+        const n2 = fbm(nx * 3.7 + 100, ny * 3.7 + 100, 4) * 10;
+        const idx = (y * W + x) * 4;
+        terrainData.data[idx] = Math.max(0, Math.min(255, terrainData.data[idx] + n1 + n2));
+        terrainData.data[idx + 1] = Math.max(0, Math.min(255, terrainData.data[idx + 1] + n1 + n2 * 0.9));
+        terrainData.data[idx + 2] = Math.max(0, Math.min(255, terrainData.data[idx + 2] + n1 + n2 * 0.7));
+      }
+    }
+    ctx.putImageData(terrainData, 0, 0);
+
+    // ── Maria (dark basalt plains) ──────────────────────────────────────────
+    const maria: { lat: number; lon: number; rx: number; ry: number; angle?: number; depth: number }[] = [
+      { lat: 8.5, lon: 31.4, rx: 200, ry: 155, depth: 0.45 },       // Tranquillitatis
+      { lat: 36, lon: -16, rx: 300, ry: 260, depth: 0.5 },           // Imbrium
+      { lat: 28, lon: 17.5, rx: 155, ry: 130, depth: 0.45 },         // Serenitatis
+      { lat: 18.4, lon: -57.4, rx: 340, ry: 300, depth: 0.5 },       // Procellarum
+      { lat: 17, lon: 59.1, rx: 110, ry: 88, depth: 0.4 },           // Crisium
+      { lat: -15, lon: -22, rx: 110, ry: 90, depth: 0.35 },          // Nubium
+      { lat: 7, lon: 1, rx: 95, ry: 75, angle: 0.3, depth: 0.3 },   // Vaporum
+      { lat: 15, lon: -3.5, rx: 65, ry: 55, depth: 0.25 },           // Aestuum
+      { lat: 45, lon: -32, rx: 110, ry: 55, angle: -0.2, depth: 0.35 }, // Sinus Iridum
+      { lat: -20, lon: 28, rx: 88, ry: 65, depth: 0.3 },             // Nectaris
+      { lat: -14, lon: 52, rx: 130, ry: 108, depth: 0.38 },          // Fecunditatis
+      { lat: 13, lon: 38, rx: 65, ry: 55, depth: 0.25 },             // Somniorum fringe
+      { lat: 56, lon: 2, rx: 200, ry: 45, depth: 0.28 },             // Frigoris
+      { lat: -19.3, lon: -3.2, rx: 75, ry: 55, depth: 0.25 },        // Medii
+      { lat: 2, lon: -47, rx: 108, ry: 78, depth: 0.35 },            // Humorum
+      // Far-side small maria
+      { lat: -18, lon: -162, rx: 50, ry: 45, depth: 0.2 },           // Mare Ingenii
+      { lat: -4, lon: 175, rx: 55, ry: 50, depth: 0.18 },            // Mare Marginis fringe
+      { lat: 24, lon: -93, rx: 40, ry: 35, depth: 0.15 },            // Lacus Somniorum far
     ];
 
     for (const mare of maria) {
@@ -289,143 +329,321 @@ function MoonMesh() {
       ctx.translate(mx, my);
       if (mare.angle) ctx.rotate(mare.angle);
 
-      // Multiple layers for depth
-      for (let layer = 0; layer < 3; layer++) {
-        const scale = 1 - layer * 0.15;
-        const darkness = 0.25 + layer * 0.1;
-        const g = ctx.createRadialGradient(0, 0, 0, 0, 0, mare.rx * scale);
-        g.addColorStop(0, `rgba(55, 50, 42, ${darkness})`);
-        g.addColorStop(0.5, `rgba(60, 55, 45, ${darkness * 0.7})`);
-        g.addColorStop(0.8, `rgba(65, 58, 48, ${darkness * 0.3})`);
+      // 5 overlapping layers with irregular edges
+      for (let layer = 0; layer < 5; layer++) {
+        const scale = 1 - layer * 0.12;
+        const darkness = mare.depth * (0.4 + layer * 0.12);
+        const g = ctx.createRadialGradient(
+          rand() * 8 - 4, rand() * 8 - 4, 0,
+          rand() * 4 - 2, rand() * 4 - 2, mare.rx * scale
+        );
+        g.addColorStop(0, `rgba(48, 44, 38, ${darkness})`);
+        g.addColorStop(0.35, `rgba(52, 48, 40, ${darkness * 0.85})`);
+        g.addColorStop(0.65, `rgba(58, 52, 44, ${darkness * 0.5})`);
+        g.addColorStop(0.85, `rgba(62, 56, 46, ${darkness * 0.2})`);
         g.addColorStop(1, `rgba(70, 63, 52, 0)`);
         ctx.fillStyle = g;
         ctx.beginPath();
-        ctx.ellipse(0, 0, mare.rx * scale, mare.ry * scale, 0, 0, Math.PI * 2);
+        ctx.ellipse(rand() * 6 - 3, rand() * 6 - 3, mare.rx * scale, mare.ry * scale, rand() * 0.05, 0, Math.PI * 2);
         ctx.fill();
       }
+
+      // Internal wrinkle ridges
+      for (let i = 0; i < 6; i++) {
+        const ox = (rand() - 0.5) * mare.rx * 1.2;
+        const oy = (rand() - 0.5) * mare.ry * 0.8;
+        const len = 20 + rand() * mare.rx * 0.4;
+        const angle = rand() * Math.PI;
+        ctx.beginPath();
+        ctx.moveTo(ox, oy);
+        ctx.quadraticCurveTo(
+          ox + Math.cos(angle) * len * 0.5 + (rand() - 0.5) * 20,
+          oy + Math.sin(angle) * len * 0.5 + (rand() - 0.5) * 20,
+          ox + Math.cos(angle) * len,
+          oy + Math.sin(angle) * len
+        );
+        ctx.strokeStyle = `rgba(90, 82, 70, ${0.08 + rand() * 0.08})`;
+        ctx.lineWidth = 1 + rand() * 2;
+        ctx.stroke();
+      }
+
       ctx.restore();
     }
 
-    // ── Named craters at real positions ──────────────────────────────────────
-    const namedCraters: { lat: number; lon: number; r: number; name: string; bright?: boolean }[] = [
-      { lat: -43.31, lon: -11.36, r: 22, name: "Tycho", bright: true },
-      { lat: 9.62, lon: -20.08, r: 24, name: "Copernicus", bright: true },
-      { lat: 23.73, lon: -47.49, r: 16, name: "Aristarchus", bright: true },
-      { lat: 51.6, lon: -9.3, r: 26, name: "Plato" },
-      { lat: -58.4, lon: -14.4, r: 50, name: "Clavius" },
-      { lat: 29.7, lon: -4.0, r: 20, name: "Archimedes" },
-      { lat: 21.4, lon: -5.0, r: 10, name: "Autolycus" },
-      { lat: -10.5, lon: -20.1, r: 16, name: "Bullialdus" },
-      { lat: 32.8, lon: 35.5, r: 16, name: "Posidonius" },
-      { lat: -34.7, lon: -17.0, r: 14, name: "Pitatus" },
-      { lat: 45.4, lon: 2.4, r: 12, name: "Aristillus" },
-      { lat: -8.0, lon: -10.0, r: 15, name: "Ptolemaeus" },
-      { lat: -13.7, lon: -4.0, r: 12, name: "Alphonsus" },
-      { lat: -22.0, lon: 46.0, r: 14, name: "Petavius" },
-      { lat: -5.0, lon: -2.0, r: 11, name: "Hipparchus" },
+    // ── Named craters with proper 3D shading ────────────────────────────────
+    const namedCraters: { lat: number; lon: number; r: number; bright?: boolean; depth?: number }[] = [
+      { lat: -43.31, lon: -11.36, r: 24, bright: true, depth: 0.8 },   // Tycho
+      { lat: 9.62, lon: -20.08, r: 26, bright: true, depth: 0.7 },     // Copernicus
+      { lat: 23.73, lon: -47.49, r: 18, bright: true, depth: 0.9 },    // Aristarchus
+      { lat: 51.6, lon: -9.3, r: 28, depth: 0.6 },                     // Plato
+      { lat: -58.4, lon: -14.4, r: 55, depth: 0.5 },                   // Clavius
+      { lat: 29.7, lon: -4.0, r: 22, depth: 0.5 },                     // Archimedes
+      { lat: 21.4, lon: -5.0, r: 12, depth: 0.4 },                     // Autolycus
+      { lat: -10.5, lon: -20.1, r: 18, depth: 0.5 },                   // Bullialdus
+      { lat: 32.8, lon: 35.5, r: 18, depth: 0.45 },                    // Posidonius
+      { lat: -34.7, lon: -17.0, r: 16, depth: 0.4 },                   // Pitatus
+      { lat: 45.4, lon: 2.4, r: 14, depth: 0.45 },                     // Aristillus
+      { lat: -8.0, lon: -10.0, r: 17, depth: 0.4 },                    // Ptolemaeus
+      { lat: -13.7, lon: -4.0, r: 14, depth: 0.4 },                    // Alphonsus
+      { lat: -22.0, lon: 46.0, r: 16, depth: 0.5 },                    // Petavius
+      { lat: -5.0, lon: -2.0, r: 13, depth: 0.35 },                    // Hipparchus
+      { lat: -20.7, lon: -12.0, r: 12, depth: 0.4 },                   // Arzachel
+      { lat: 47.3, lon: 7.4, r: 10, depth: 0.35 },                     // Cassini
+      { lat: -46.2, lon: -51.4, r: 18, depth: 0.45 },                  // Schickard
+      { lat: 58.1, lon: -43.5, r: 14, depth: 0.4 },                    // Pythagoras
+      { lat: 1.3, lon: 65.5, r: 15, depth: 0.5 },                      // Langrenus
+      { lat: -3.2, lon: -43.0, r: 14, depth: 0.45 },                   // Gassendi
+      { lat: 14.5, lon: 24.0, r: 10, depth: 0.35 },                    // Plinius
+      { lat: -32.6, lon: -2.1, r: 22, depth: 0.5 },                    // Walter
+      { lat: 40.8, lon: 1.2, r: 11, depth: 0.4 },                      // Aristoteles
+      { lat: 44.4, lon: 11.5, r: 14, depth: 0.45 },                    // Eudoxus
+      // Far-side large craters
+      { lat: 5.5, lon: 159.6, r: 22, depth: 0.5 },                     // Tsiolkovsky
+      { lat: -33.2, lon: 162.0, r: 30, depth: 0.4 },                   // Apollo (basin)
+      { lat: 19.8, lon: -148.2, r: 45, depth: 0.4 },                   // Hertzsprung
+      { lat: -43.4, lon: -169.4, r: 35, depth: 0.35 },                 // Planck
+      { lat: 6.1, lon: -136.5, r: 28, depth: 0.4 },                    // Korolev
     ];
 
-    for (const crater of namedCraters) {
-      const [cx, cy] = ll2px(crater.lat, crater.lon);
+    // Light direction for crater shading (from upper left)
+    const lightAngle = -Math.PI * 0.75;
+    const lx = Math.cos(lightAngle), ly = Math.sin(lightAngle);
+
+    function drawCrater(cx: number, cy: number, r: number, bright: boolean, depth: number) {
+      // Outer ejecta blanket
+      const ejectaG = ctx.createRadialGradient(cx, cy, r * 0.9, cx, cy, r * 2.5);
+      ejectaG.addColorStop(0, `rgba(155, 148, 135, ${0.06 * depth})`);
+      ejectaG.addColorStop(1, `rgba(155, 148, 135, 0)`);
+      ctx.fillStyle = ejectaG;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r * 2.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Shadow side (inside crater)
+      ctx.beginPath();
+      ctx.arc(cx + lx * r * 0.15, cy + ly * r * 0.15, r * 0.85, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(25, 22, 18, ${0.3 * depth})`;
+      ctx.fill();
 
       // Dark floor
       ctx.beginPath();
-      ctx.arc(cx, cy, crater.r, 0, Math.PI * 2);
-      ctx.fillStyle = crater.bright
-        ? `rgba(180, 175, 160, 0.3)`
-        : `rgba(35, 32, 28, 0.35)`;
+      ctx.arc(cx, cy, r * 0.7, 0, Math.PI * 2);
+      ctx.fillStyle = bright
+        ? `rgba(195, 190, 175, ${0.25 * depth})`
+        : `rgba(35, 32, 28, ${0.25 * depth})`;
       ctx.fill();
 
-      // Rim highlight
+      // Lit rim (opposite light direction)
       ctx.beginPath();
-      ctx.arc(cx - crater.r * 0.1, cy - crater.r * 0.1, crater.r * 1.05, 0, Math.PI * 2);
-      ctx.strokeStyle = crater.bright
-        ? `rgba(220, 215, 200, 0.4)`
-        : `rgba(145, 138, 125, 0.3)`;
-      ctx.lineWidth = 2;
+      ctx.arc(cx - lx * r * 0.08, cy - ly * r * 0.08, r * 1.05, 0, Math.PI * 2);
+      ctx.strokeStyle = bright
+        ? `rgba(230, 225, 210, ${0.35 * depth})`
+        : `rgba(175, 168, 155, ${0.25 * depth})`;
+      ctx.lineWidth = 1.5 + r * 0.06;
       ctx.stroke();
 
-      // Shadow inside
+      // Shadow rim
       ctx.beginPath();
-      ctx.arc(cx + crater.r * 0.15, cy + crater.r * 0.15, crater.r * 0.7, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(30, 28, 25, 0.15)`;
-      ctx.fill();
+      ctx.arc(cx + lx * r * 0.08, cy + ly * r * 0.08, r * 1.02, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(30, 28, 25, ${0.15 * depth})`;
+      ctx.lineWidth = 1 + r * 0.04;
+      ctx.stroke();
 
-      // Bright rays for Tycho / Copernicus / Aristarchus
-      if (crater.bright) {
-        for (let i = 0; i < 8; i++) {
-          const angle = (i / 8) * Math.PI * 2 + rand() * 0.3;
-          const len = crater.r * (3 + rand() * 5);
+      // Central peak for larger craters
+      if (r > 14) {
+        ctx.beginPath();
+        ctx.arc(cx, cy, r * 0.12, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(180, 175, 160, ${0.15 * depth})`;
+        ctx.fill();
+      }
+
+      // Bright rays
+      if (bright) {
+        const rayCount = 10 + Math.floor(rand() * 8);
+        for (let i = 0; i < rayCount; i++) {
+          const angle = (i / rayCount) * Math.PI * 2 + rand() * 0.4;
+          const len = r * (4 + rand() * 10);
+          const cp1x = cx + Math.cos(angle + 0.15) * len * 0.4;
+          const cp1y = cy + Math.sin(angle + 0.15) * len * 0.4;
           ctx.beginPath();
-          ctx.moveTo(cx, cy);
-          ctx.lineTo(cx + Math.cos(angle) * len, cy + Math.sin(angle) * len);
-          ctx.strokeStyle = `rgba(200, 195, 180, ${0.06 + rand() * 0.04})`;
-          ctx.lineWidth = 2 + rand() * 3;
+          ctx.moveTo(cx + Math.cos(angle) * r * 1.1, cy + Math.sin(angle) * r * 1.1);
+          ctx.quadraticCurveTo(cp1x, cp1y, cx + Math.cos(angle) * len, cy + Math.sin(angle) * len);
+          ctx.strokeStyle = `rgba(210, 205, 190, ${0.04 + rand() * 0.04})`;
+          ctx.lineWidth = 1 + rand() * 4;
           ctx.stroke();
         }
+        // Bright central patch
+        const cg = ctx.createRadialGradient(cx, cy, 0, cx, cy, r * 1.5);
+        cg.addColorStop(0, `rgba(220, 215, 200, 0.2)`);
+        cg.addColorStop(1, `rgba(220, 215, 200, 0)`);
+        ctx.fillStyle = cg;
+        ctx.beginPath();
+        ctx.arc(cx, cy, r * 1.5, 0, Math.PI * 2);
+        ctx.fill();
       }
     }
 
-    // ── Random small craters (multi-scale) ──────────────────────────────────
+    for (const c of namedCraters) {
+      const [cx, cy] = ll2px(c.lat, c.lon);
+      drawCrater(cx, cy, c.r, !!c.bright, c.depth || 0.5);
+    }
+
+    // ── Mountain ranges ─────────────────────────────────────────────────────
+    const mountains: { points: [number, number][]; width: number; brightness: number }[] = [
+      { points: [[20, -5], [22, -3], [25, 0], [27, 3], [28, 6]], width: 18, brightness: 0.2 },   // Montes Apenninus
+      { points: [[14, -23], [16, -26], [18, -29], [20, -32]], width: 14, brightness: 0.15 },      // Montes Carpatus
+      { points: [[44, -30], [45, -34], [46, -38]], width: 12, brightness: 0.15 },                  // Montes Jura
+      { points: [[25, 17], [27, 19], [28, 21]], width: 10, brightness: 0.12 },                     // Montes Haemus
+      { points: [[46, -3], [48, -1], [50, 1]], width: 10, brightness: 0.1 },                       // Montes Alpes
+    ];
+
+    for (const range of mountains) {
+      ctx.beginPath();
+      const pts = range.points.map(([lat, lon]) => ll2px(lat, lon));
+      ctx.moveTo(pts[0][0], pts[0][1]);
+      for (let i = 1; i < pts.length; i++) {
+        const prev = pts[i - 1], cur = pts[i];
+        const cpx = (prev[0] + cur[0]) / 2 + (rand() - 0.5) * 10;
+        const cpy = (prev[1] + cur[1]) / 2 + (rand() - 0.5) * 10;
+        ctx.quadraticCurveTo(cpx, cpy, cur[0], cur[1]);
+      }
+      ctx.strokeStyle = `rgba(200, 195, 180, ${range.brightness})`;
+      ctx.lineWidth = range.width;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.stroke();
+      // Shadow side
+      ctx.beginPath();
+      ctx.moveTo(pts[0][0] + 3, pts[0][1] + 3);
+      for (let i = 1; i < pts.length; i++) {
+        const prev = pts[i - 1], cur = pts[i];
+        ctx.quadraticCurveTo((prev[0] + cur[0]) / 2 + 3, (prev[1] + cur[1]) / 2 + 3, cur[0] + 3, cur[1] + 3);
+      }
+      ctx.strokeStyle = `rgba(30, 28, 25, ${range.brightness * 0.6})`;
+      ctx.lineWidth = range.width * 0.7;
+      ctx.stroke();
+    }
+
+    // ── Random craters (multi-scale, far more dense) ────────────────────────
+    // Extra-large (basin scale)
+    for (let i = 0; i < 30; i++) {
+      const cx = rand() * W, cy = rand() * H;
+      const r = 25 + rand() * 35;
+      drawCrater(cx, cy, r, rand() > 0.9, 0.2 + rand() * 0.2);
+    }
     // Large craters
-    for (let i = 0; i < 200; i++) {
-      const cx = rand() * W;
-      const cy = rand() * H;
-      const r = 8 + rand() * 18;
-      ctx.beginPath();
-      ctx.arc(cx, cy, r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(40, 38, 35, ${rand() * 0.2 + 0.05})`;
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(cx - r * 0.2, cy - r * 0.2, r * 0.85, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(170, 165, 150, ${rand() * 0.15 + 0.03})`;
-      ctx.fill();
+    for (let i = 0; i < 400; i++) {
+      const cx = rand() * W, cy = rand() * H;
+      const r = 8 + rand() * 20;
+      drawCrater(cx, cy, r, false, 0.2 + rand() * 0.25);
     }
     // Medium craters
-    for (let i = 0; i < 600; i++) {
-      const cx = rand() * W;
-      const cy = rand() * H;
-      const r = 2 + rand() * 7;
+    for (let i = 0; i < 1200; i++) {
+      const cx = rand() * W, cy = rand() * H;
+      const r = 3 + rand() * 7;
+      // Simplified draw for performance
       ctx.beginPath();
-      ctx.arc(cx, cy, r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(45, 42, 38, ${rand() * 0.2 + 0.05})`;
+      ctx.arc(cx + lx * r * 0.1, cy + ly * r * 0.1, r * 0.8, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(30, 28, 25, ${rand() * 0.15 + 0.03})`;
       ctx.fill();
       ctx.beginPath();
-      ctx.arc(cx - r * 0.2, cy - r * 0.2, r * 0.7, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(160, 155, 140, ${rand() * 0.1 + 0.02})`;
+      ctx.arc(cx - lx * r * 0.08, cy - ly * r * 0.08, r, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(175, 168, 155, ${rand() * 0.15 + 0.04})`;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+    // Small craterlets
+    for (let i = 0; i < 4000; i++) {
+      const cx = rand() * W, cy = rand() * H;
+      const r = 1 + rand() * 3;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(40, 38, 35, ${rand() * 0.18 + 0.03})`;
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(cx - lx * r * 0.3, cy - ly * r * 0.3, r * 0.6, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(185, 178, 165, ${rand() * 0.08 + 0.02})`;
       ctx.fill();
     }
-    // Tiny craterlets
-    for (let i = 0; i < 2000; i++) {
-      const cx = rand() * W;
-      const cy = rand() * H;
-      const r = 0.5 + rand() * 2;
+    // Micro craterlets
+    for (let i = 0; i < 6000; i++) {
+      const cx = rand() * W, cy = rand() * H;
+      const r = 0.3 + rand() * 1.2;
       ctx.beginPath();
       ctx.arc(cx, cy, r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(50, 47, 42, ${rand() * 0.3 + 0.05})`;
+      ctx.fillStyle = `rgba(50, 47, 42, ${rand() * 0.25 + 0.05})`;
       ctx.fill();
     }
 
-    // ── Per-pixel noise ─────────────────────────────────────────────────────
-    const imageData = ctx.getImageData(0, 0, W, H);
-    for (let i = 0; i < imageData.data.length; i += 4) {
-      const noise = (rand() - 0.5) * 16;
-      imageData.data[i] = Math.max(0, Math.min(255, imageData.data[i] + noise));
-      imageData.data[i + 1] = Math.max(0, Math.min(255, imageData.data[i + 1] + noise));
-      imageData.data[i + 2] = Math.max(0, Math.min(255, imageData.data[i + 2] + noise));
+    // ── Per-pixel noise pass ────────────────────────────────────────────────
+    const imgData = ctx.getImageData(0, 0, W, H);
+    for (let i = 0; i < imgData.data.length; i += 4) {
+      const n = (rand() - 0.5) * 14;
+      imgData.data[i] = Math.max(0, Math.min(255, imgData.data[i] + n));
+      imgData.data[i + 1] = Math.max(0, Math.min(255, imgData.data[i + 1] + n));
+      imgData.data[i + 2] = Math.max(0, Math.min(255, imgData.data[i + 2] + n));
     }
-    ctx.putImageData(imageData, 0, 0);
+    ctx.putImageData(imgData, 0, 0);
 
-    const texture = new THREE.CanvasTexture(canvas);
-    texture.colorSpace = THREE.SRGBColorSpace;
-    return texture;
+    const colorTex = new THREE.CanvasTexture(colorCanvas);
+    colorTex.colorSpace = THREE.SRGBColorSpace;
+
+    // ── BUMP MAP CANVAS ─────────────────────────────────────────────────────
+    // Derive a greyscale bump map from the color texture + extra noise
+    const bumpCanvas = document.createElement("canvas");
+    const BW = 2048, BH = 1024;
+    bumpCanvas.width = BW; bumpCanvas.height = BH;
+    const bctx = bumpCanvas.getContext("2d")!;
+
+    // Draw scaled-down color as base luminance
+    bctx.drawImage(colorCanvas, 0, 0, BW, BH);
+    const bData = bctx.getImageData(0, 0, BW, BH);
+    const rand2 = rng(999);
+    for (let y = 0; y < BH; y++) {
+      for (let x = 0; x < BW; x++) {
+        const idx = (y * BW + x) * 4;
+        // Convert to luminance
+        let lum = bData.data[idx] * 0.299 + bData.data[idx + 1] * 0.587 + bData.data[idx + 2] * 0.114;
+        // Add coherent noise for extra terrain roughness
+        const nx = x / BW * 16, ny = y / BH * 8;
+        lum += fbm(nx + 50, ny + 50, 5, 2.2, 0.6) * 30;
+        lum += (rand2() - 0.5) * 12;
+        lum = Math.max(0, Math.min(255, lum));
+        bData.data[idx] = lum;
+        bData.data[idx + 1] = lum;
+        bData.data[idx + 2] = lum;
+      }
+    }
+    bctx.putImageData(bData, 0, 0);
+
+    const bumpTex = new THREE.CanvasTexture(bumpCanvas);
+
+    return { colorMap: colorTex, bumpMap: bumpTex };
   }, []);
 
   return (
-    <mesh>
-      <sphereGeometry args={[2, 128, 64]} />
-      <meshStandardMaterial map={moonTexture} roughness={0.9} metalness={0.05} />
-    </mesh>
+    <>
+      <mesh>
+        <sphereGeometry args={[2, 256, 128]} />
+        <meshStandardMaterial
+          map={colorMap}
+          bumpMap={bumpMap}
+          bumpScale={0.04}
+          roughness={0.95}
+          metalness={0.02}
+        />
+      </mesh>
+      {/* Subtle atmosphere rim glow */}
+      <mesh>
+        <sphereGeometry args={[2.04, 64, 32]} />
+        <meshBasicMaterial
+          color="#8899bb"
+          transparent
+          opacity={0.04}
+          side={THREE.BackSide}
+        />
+      </mesh>
+    </>
   );
 }
 
@@ -446,9 +664,10 @@ function Scene({
 }) {
   return (
     <>
-      <ambientLight intensity={0.35} />
-      <directionalLight position={[5, 3, 5]} intensity={1.2} />
-      <pointLight position={[-5, -3, -5]} intensity={0.3} color="#aab" />
+      <ambientLight intensity={0.25} />
+      <directionalLight position={[5, 3, 5]} intensity={1.6} />
+      <directionalLight position={[-3, -1, 2]} intensity={0.3} color="#aabbcc" />
+      <pointLight position={[-5, -3, -5]} intensity={0.15} color="#667" />
 
       {/* Single static group — camera orbits around it via OrbitControls */}
       <group>
