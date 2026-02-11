@@ -146,52 +146,62 @@ export default function TerritoryDetail({ territory, onBack }: TerritoryDetailPr
               <span className="text-sm text-gray-500">{territory.priceRange}</span>
             </div>
 
-            <div className="grid grid-cols-5 sm:grid-cols-7 md:grid-cols-8 lg:grid-cols-10 gap-2">
-              {filteredPlots.map((plot) => (
-                <button
-                  key={plot.id}
-                  onClick={() => setSelectedPlot(plot)}
-                  className={`relative aspect-square rounded-lg border transition-all cursor-pointer group ${
-                    plot.status === "available"
-                      ? "border-cosmic-teal/30 hover:border-cosmic-teal hover:glow-teal bg-cosmic-teal/5 animate-pulse-soft"
-                      : plot.ownerType === "bot"
-                      ? "border-nebula-purple/30 hover:border-nebula-purple bg-nebula-purple/5"
-                      : "border-white/10 hover:border-white/30 bg-white/5"
-                  }`}
-                  title={`${plot.id} — ${plot.status === "available" ? "Available" : `Claimed by ${plot.ownerName}`}`}
-                >
-                  <div className="absolute inset-0 flex items-center justify-center text-xs">
-                    {plot.status === "available" ? (
-                      <span className="text-cosmic-teal opacity-60 group-hover:opacity-100">+</span>
-                    ) : plot.ownerType === "bot" ? (
-                      <span className="text-[10px]">🤖</span>
-                    ) : (
-                      <span className="text-[10px]">🧑</span>
-                    )}
-                  </div>
-                  {/* Hover tooltip */}
-                  <div className="absolute -top-10 left-1/2 -translate-x-1/2 hidden group-hover:block z-20">
-                    <div className="glass rounded px-2 py-1 text-[10px] text-white whitespace-nowrap">
-                      {plot.id}
+            {/* Physical land grid — bot plots (¼ acre) are visually smaller
+                than human plots (1 acre) to represent real allocation sizes */}
+            <div className="flex flex-wrap gap-2">
+              {filteredPlots.map((plot) => {
+                const isBot = plot.ownerType === "bot";
+                // Bot plots are quarter-acre → visually half-width/height of human 1-acre plots
+                const sizeClass = isBot
+                  ? "w-6 h-6 sm:w-7 sm:h-7"
+                  : "w-10 h-10 sm:w-12 sm:h-12";
+
+                return (
+                  <button
+                    key={plot.id}
+                    onClick={() => setSelectedPlot(plot)}
+                    className={`relative rounded-lg border transition-all cursor-pointer group ${sizeClass} ${
+                      plot.status === "available"
+                        ? "border-cosmic-teal/30 hover:border-cosmic-teal hover:glow-teal bg-cosmic-teal/5 animate-pulse-soft"
+                        : isBot
+                        ? "border-nebula-purple/30 hover:border-nebula-purple bg-nebula-purple/5"
+                        : "border-white/10 hover:border-white/30 bg-white/5"
+                    }`}
+                    title={`${plot.id} (${plot.acreage} acre) — ${plot.status === "available" ? "Available" : `Claimed by ${plot.ownerName}`}`}
+                  >
+                    <div className="absolute inset-0 flex items-center justify-center text-xs">
+                      {plot.status === "available" ? (
+                        <span className="text-cosmic-teal opacity-60 group-hover:opacity-100">+</span>
+                      ) : isBot ? (
+                        <span className="text-[10px]">🤖</span>
+                      ) : (
+                        <span className="text-[10px]">🧑</span>
+                      )}
                     </div>
-                  </div>
-                </button>
-              ))}
+                    {/* Hover tooltip */}
+                    <div className="absolute -top-12 left-1/2 -translate-x-1/2 hidden group-hover:block z-20">
+                      <div className="glass rounded px-2 py-1 text-[10px] text-white whitespace-nowrap">
+                        {plot.id} · {plot.acreage === 0.25 ? "¼" : plot.acreage} acre
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
 
             {/* Legend */}
             <div className="mt-6 flex flex-wrap gap-4 text-xs text-gray-500">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded bg-cosmic-teal/20 border border-cosmic-teal/40" />
-                Available
+                <div className="w-4 h-4 rounded bg-cosmic-teal/20 border border-cosmic-teal/40" />
+                Available (1 acre)
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded bg-white/10 border border-white/20" />
-                Human-claimed
+                <div className="w-4 h-4 rounded bg-white/10 border border-white/20" />
+                Human-claimed (1 acre)
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded bg-nebula-purple/10 border border-nebula-purple/30" />
-                Bot-claimed
+                <div className="w-2.5 h-2.5 rounded bg-nebula-purple/10 border border-nebula-purple/30" />
+                Bot-claimed (¼ acre)
               </div>
             </div>
           </div>

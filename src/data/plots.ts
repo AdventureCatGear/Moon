@@ -8,6 +8,8 @@ export interface Plot {
   ownerName?: string;
   dedication?: string;
   claimedAt?: string;
+  /** Humans purchase 1-acre plots; bots purchase quarter-acre plots */
+  acreage: number;
   elevation: number;
   solarExposure: number;
   slope: number;
@@ -48,6 +50,8 @@ function generatePlots(
     const lon = baseLon + (col - gridSize / 2) * (spread / gridSize);
     const isClaimed = i < claimed;
     const plotNum = String(i).padStart(4, "0");
+    const isBot = isClaimed ? Math.random() > 0.6 : undefined;
+    const ownerType = isBot === undefined ? undefined : isBot ? "bot" as const : "human" as const;
 
     plots.push({
       id: `${territoryId}-${plotNum}`,
@@ -55,8 +59,9 @@ function generatePlots(
       lat: Math.round(lat * 100) / 100,
       lon: Math.round(lon * 100) / 100,
       status: isClaimed ? "claimed" : "available",
-      ownerType: isClaimed ? (Math.random() > 0.6 ? "bot" : "human") : undefined,
-      ownerName: isClaimed ? getRandomOwner(Math.random() > 0.6 ? "bot" : "human") : undefined,
+      ownerType,
+      ownerName: isClaimed ? getRandomOwner(ownerType || "human") : undefined,
+      acreage: ownerType === "bot" ? 0.25 : 1,
       dedication: isClaimed && Math.random() > 0.3 ? getRandomDedication() : undefined,
       claimedAt: isClaimed ? getRandomDate() : undefined,
       elevation: (terrainDefaults.elevation || 0) + Math.round((Math.random() - 0.5) * 400),

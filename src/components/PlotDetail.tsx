@@ -158,7 +158,9 @@ export default function PlotDetail({ plot, territory, onBack }: PlotDetailProps)
                   {plot.status === "available" ? "Available" : "Claimed"}
                 </span>
               </div>
-              <p className="text-gray-400 mt-1">{territory.name} &middot; {territory.tagline}</p>
+              <p className="text-gray-400 mt-1">
+                {territory.name} &middot; {plot.acreage === 0.25 ? "¼" : plot.acreage} acre &middot; {territory.tagline}
+              </p>
             </div>
 
             {/* Owner info if claimed */}

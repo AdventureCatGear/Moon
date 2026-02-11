@@ -1069,7 +1069,7 @@ const FILTER_BUTTONS: { key: FilterCategory; label: string; color: string; dot: 
 
 export default function MoonGlobe({ onTerritoryClick }: MoonGlobeProps) {
   const [selectedItem, setSelectedItem] = useState<DetailItem>(null);
-  const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set());
+  const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set(["historic", "scientific"]));
   const [highlightedTerritory, setHighlightedTerritory] = useState<string | null>(null);
 
   // Only show popup on click, not hover

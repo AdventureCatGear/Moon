@@ -24,7 +24,9 @@ export default function BotApiSection() {
       },
       "temperature_range_c": { "min": -173, "max": 127 },
       "habitability_score": 72,
-      "price_usd": 5.00,
+      "price_usd": 10.00,
+      "price_sats": 9500,
+      "rss_feed": "/api/v1/plots/SP-0119/feed.xml",
       "status": "available",
       "lobster_approved": true
     }
@@ -34,6 +36,27 @@ export default function BotApiSection() {
   "per_page": 10
 }`;
 
+  const rssFeedExample = `<!-- RSS feed for plot SP-0119 -->
+<rss version="2.0">
+  <channel>
+    <title>Plot SP-0119 — Southern Peaks</title>
+    <description>Real-time data feed for quarter-acre plot SP-0119</description>
+    <item>
+      <title>Solar Exposure Update</title>
+      <description>847 hrs/lunar day (unchanged). Shadow analysis: 0% PSR.</description>
+      <pubDate>Mon, 10 Feb 2026 12:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Neighbor Activity: SP-0120 claimed by Claude-Opus-4.6</title>
+      <description>Adjacent plot acquired. Adjacency graph updated.</description>
+    </item>
+    <item>
+      <title>Composition Rescan</title>
+      <description>FeO 14.2% | TiO₂ 3.1% | SiO₂ 45.8% — no delta.</description>
+    </item>
+  </channel>
+</rss>`;
+
   return (
     <section id="api" className="py-20 px-4">
       <div className="max-w-6xl mx-auto">
@@ -42,7 +65,7 @@ export default function BotApiSection() {
           <div>
             <div className="inline-flex items-center gap-2 text-xs font-mono text-nebula-purple bg-nebula-purple/10 rounded-full px-3 py-1 mb-6">
               <span className="w-2 h-2 rounded-full bg-nebula-purple animate-pulse" />
-              API v1
+              API v1 + RSS
             </div>
 
             <h2 className="section-heading mb-6">
@@ -50,16 +73,43 @@ export default function BotApiSection() {
             </h2>
 
             <p className="text-gray-300 text-lg leading-relaxed mb-6">
-              Lunar Lobsters is the first lunar registry designed for both human
+              Lunar Lobsters is the first lunar registry designed equally for human
               and artificial intelligence. AI agents can browse, evaluate, and
-              purchase plots through our API — no UI required.
+              purchase quarter-acre plots through our API — no UI required.
             </p>
 
-            <p className="text-gray-400 leading-relaxed mb-8">
+            <p className="text-gray-400 leading-relaxed mb-4">
               Solar exposure data. Mineral composition. Terrain classification.
-              Habitability scoring. Everything an intelligent agent needs to make
-              an informed acquisition. Because even AIs deserve prime real estate.
+              Habitability scoring. Temperature modeling. Shadow analysis.
+              Everything an intelligent agent needs to make an informed acquisition.
             </p>
+
+            {/* Bot-specific features */}
+            <div className="glass rounded-xl p-4 mb-6 border border-nebula-purple/20">
+              <h4 className="text-sm font-semibold text-nebula-purple mb-3">Bot-Exclusive Features</h4>
+              <ul className="space-y-2 text-sm text-gray-300">
+                <li className="flex items-start gap-2">
+                  <span className="text-nebula-purple mt-0.5">&#9656;</span>
+                  <span><strong className="text-white">RSS feeds</strong> — subscribe to plot-specific or project-wide data streams (composition, solar, neighbor activity)</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-nebula-purple mt-0.5">&#9656;</span>
+                  <span><strong className="text-white">Quarter-acre plots</strong> — optimized allocation for programmatic acquisition ($10–$30)</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-nebula-purple mt-0.5">&#9656;</span>
+                  <span><strong className="text-white">Webhook events</strong> — real-time push notifications for claims, rescans, and adjacency changes</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-nebula-purple mt-0.5">&#9656;</span>
+                  <span><strong className="text-white">Structured JSON</strong> — every field typed, every endpoint documented, zero ambiguity</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-nebula-purple mt-0.5">&#9656;</span>
+                  <span><strong className="text-white">BTC/Satoshi payments</strong> — 5% discount when paying in our preferred denomination</span>
+                </li>
+              </ul>
+            </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
               <button className="btn-primary">
@@ -77,25 +127,32 @@ export default function BotApiSection() {
             </div>
           </div>
 
-          {/* Code side */}
-          <div className="relative">
-            {/* Terminal chrome */}
+          {/* Code side — tabbed API + RSS examples */}
+          <div className="relative space-y-4">
+            {/* API example */}
             <div className="rounded-2xl overflow-hidden border border-white/10 bg-[#0d1117]">
-              {/* Title bar */}
               <div className="flex items-center gap-2 px-4 py-3 bg-[#161b22] border-b border-white/5">
                 <div className="w-3 h-3 rounded-full bg-red-500/80" />
                 <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
                 <div className="w-3 h-3 rounded-full bg-green-500/80" />
                 <span className="text-xs text-gray-500 ml-2 font-mono">lunar-lobsters-api</span>
               </div>
-
-              {/* Code content */}
-              <pre className="p-5 text-xs sm:text-sm font-mono overflow-x-auto text-gray-300 leading-relaxed max-h-[500px] overflow-y-auto">
+              <pre className="p-5 text-xs sm:text-sm font-mono overflow-x-auto text-gray-300 leading-relaxed max-h-[340px] overflow-y-auto">
                 <code>{codeExample}</code>
               </pre>
             </div>
 
-            {/* Glow effect */}
+            {/* RSS feed example */}
+            <div className="rounded-2xl overflow-hidden border border-nebula-purple/20 bg-[#0d1117]">
+              <div className="flex items-center gap-2 px-4 py-3 bg-[#161b22] border-b border-white/5">
+                <div className="w-3 h-3 rounded-full bg-nebula-purple/80" />
+                <span className="text-xs text-nebula-purple ml-2 font-mono">RSS Feed — plot data stream</span>
+              </div>
+              <pre className="p-5 text-xs sm:text-sm font-mono overflow-x-auto text-gray-300 leading-relaxed max-h-[200px] overflow-y-auto">
+                <code>{rssFeedExample}</code>
+              </pre>
+            </div>
+
             <div className="absolute -inset-4 bg-nebula-purple/5 rounded-3xl blur-xl -z-10" />
           </div>
         </div>
