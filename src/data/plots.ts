@@ -135,7 +135,7 @@ function getRandomDate(): string {
 }
 
 export const allPlots: Plot[] = [
-  ...generatePlots("TF", 0.6, 23.4, 100, 42, 12, 29, {
+  ...generatePlots("TF", 0.6, 23.4, 100, 42, 12, 58, {
     elevation: -1800,
     solarExposure: 354,
     nearestCrater: "Aldrin",
@@ -143,7 +143,7 @@ export const allPlots: Plot[] = [
     tempMin: -173, tempMax: 127,
     terrainClass: "mare_basalt",
   } as Partial<Plot>),
-  ...generatePlots("IB", 32.8, -15.6, 120, 38, 14, 29, {
+  ...generatePlots("IB", 32.8, -15.6, 120, 38, 14, 58, {
     elevation: -2400,
     solarExposure: 341,
     nearestCrater: "Archimedes",
@@ -151,7 +151,7 @@ export const allPlots: Plot[] = [
     tempMin: -173, tempMax: 127,
     terrainClass: "mare_basalt",
   } as Partial<Plot>),
-  ...generatePlots("AH", 23.7, -47.4, 80, 21, 10, 29, {
+  ...generatePlots("AH", 23.7, -47.4, 80, 21, 10, 58, {
     elevation: 1200,
     solarExposure: 338,
     nearestCrater: "Aristarchus",
@@ -159,7 +159,7 @@ export const allPlots: Plot[] = [
     tempMin: -173, tempMax: 127,
     terrainClass: "volcanic_highland",
   } as Partial<Plot>),
-  ...generatePlots("SP", -85, 0, 100, 55, 8, 5, {
+  ...generatePlots("SP", -85, 0, 100, 55, 8, 10, {
     elevation: 3200,
     solarExposure: 847,
     nearestCrater: "Shackleton",
@@ -167,7 +167,7 @@ export const allPlots: Plot[] = [
     tempMin: -233, tempMax: -30,
     terrainClass: "polar_highland",
   } as Partial<Plot>),
-  ...generatePlots("FR", 9.6, -20.1, 50, 31, 7, 199, {
+  ...generatePlots("FR", 9.6, -20.1, 50, 31, 7, 398, {
     elevation: 800,
     solarExposure: 350,
     nearestCrater: "Copernicus",
