@@ -54,13 +54,13 @@ function TerritoryMarker({ territory, onHover, onClick, isHovered }: TerritoryMa
         <meshBasicMaterial color={color} transparent opacity={isHovered ? 0.5 : 0.2} side={THREE.DoubleSide} />
       </mesh>
       {isHovered && (
-        <Html distanceFactor={8} className="pointer-events-none">
-          <div className="glass-strong rounded-xl p-4 min-w-[240px] text-white shadow-2xl">
-            <h3 className="font-bold text-lg" style={{ color: territory.color }}>
+        <Html distanceFactor={15} className="pointer-events-none" style={{ transform: 'translate(-50%, -110%)' }}>
+          <div className="rounded-lg p-2.5 min-w-[160px] text-white shadow-2xl border border-white/10" style={{ background: 'rgba(11, 16, 38, 0.8)', backdropFilter: 'blur(12px)' }}>
+            <h3 className="font-bold text-[11px] leading-tight" style={{ color: territory.color }}>
               {territory.name}
             </h3>
-            <p className="text-gray-300 text-xs mt-1 italic">{territory.tagline}</p>
-            <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-400">
+            <p className="text-gray-400 text-[9px] mt-0.5 italic">{territory.tagline}</p>
+            <div className="mt-1.5 grid grid-cols-2 gap-x-3 gap-y-0.5 text-[9px] text-gray-400">
               <span>Plots:</span>
               <span className="text-white">{territory.totalPlots}</span>
               <span>Available:</span>
@@ -70,7 +70,7 @@ function TerritoryMarker({ territory, onHover, onClick, isHovered }: TerritoryMa
               <span>Price:</span>
               <span className="text-amber">{territory.priceRange}</span>
             </div>
-            <p className="text-[10px] text-gray-500 mt-2">Click to explore plots</p>
+            <p className="text-[8px] text-gray-500 mt-1.5">Click to explore plots</p>
           </div>
         </Html>
       )}
