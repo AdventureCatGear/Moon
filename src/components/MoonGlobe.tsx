@@ -58,7 +58,7 @@ function TerritoryMarker({
   isHighlighted: boolean;
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
-  const pos = useMemo(() => latLonToVec3(territory.lat, territory.lon, 2.02), [territory]);
+  const pos = useMemo(() => latLonToVec3(territory.lat, territory.lon, 2.09), [territory]);
   const quat = useMemo(() => surfaceQuaternion(pos), [pos]);
   const color = new THREE.Color(territory.color);
 
@@ -113,7 +113,7 @@ function LandmarkPin({
   onClick: (id: string) => void;
   dimmed: boolean;
 }) {
-  const pos = useMemo(() => latLonToVec3(landmark.lat, landmark.lon, 2.01), [landmark]);
+  const pos = useMemo(() => latLonToVec3(landmark.lat, landmark.lon, 2.085), [landmark]);
   const quat = useMemo(() => surfaceQuaternion(pos), [pos]);
   const pinColor = LANDMARK_COLORS[landmark.type] || "#94A3B8";
   const opacity = dimmed ? 0.15 : isHovered ? 1 : 0.85;
@@ -159,7 +159,7 @@ function FutureClaimPin({
   onClick: (id: string) => void;
   dimmed: boolean;
 }) {
-  const pos = useMemo(() => latLonToVec3(claim.lat, claim.lon, 2.01), [claim]);
+  const pos = useMemo(() => latLonToVec3(claim.lat, claim.lon, 2.085), [claim]);
   const quat = useMemo(() => surfaceQuaternion(pos), [pos]);
   const ringRef = useRef<THREE.Mesh>(null);
   const opacity = dimmed ? 0.15 : isHovered ? 1 : 0.7;
@@ -195,7 +195,7 @@ function FutureClaimPin({
 // Accurate maria, named craters, ray systems, and highland/lowland albedo.
 
 function MoonMesh() {
-  const { colorMap, bumpMap } = useMemo(() => {
+  const { colorMap, bumpMap, displacementMap } = useMemo(() => {
     const W = 4096, H = 2048;
 
     /* ── seeded RNG ─────────────────────────────────────────────── */
@@ -630,24 +630,159 @@ function MoonMesh() {
     bctx.putImageData(bData, 0, 0);
     const bumpTex = new THREE.CanvasTexture(bumpCanvas);
 
-    return { colorMap: colorTex, bumpMap: bumpTex };
+    /* ── 8. Displacement map — real heightmap for 3D surface geometry ───── */
+    // Creates actual vertex displacement so crater bowls, maria basins,
+    // mountain ridges, and crater rims are geometrically visible in profile.
+    const dispW = 2048, dispH = 1024;
+    const dispCanvas = document.createElement("canvas");
+    dispCanvas.width = dispW; dispCanvas.height = dispH;
+    const dctx = dispCanvas.getContext("2d")!;
+
+    const dll2px = (lat: number, lon: number): [number, number] => [
+      ((lon + 180) / 360) * dispW,
+      ((90 - lat) / 180) * dispH,
+    ];
+    // Scale factor from color-map pixels to displacement-map pixels
+    const dScale = dispW / W;
+
+    // Highland base: mid-gray (128) = mean surface elevation
+    dctx.fillStyle = "rgb(128, 128, 128)";
+    dctx.fillRect(0, 0, dispW, dispH);
+
+    // Add terrain-scale noise variation to highlands
+    const dispImgData = dctx.getImageData(0, 0, dispW, dispH);
+    const rand3 = rng(777);
+    for (let y = 0; y < dispH; y++) {
+      for (let x = 0; x < dispW; x++) {
+        const idx = (y * dispW + x) * 4;
+        const nx = x / dispW * 10, ny = y / dispH * 5;
+        const terrainN = fbm(nx + 80, ny + 80, 5, 2.0, 0.5) * 15;
+        const detailN = fbm(nx * 3 + 400, ny * 3 + 400, 3, 2.1, 0.48) * 6;
+        const val = Math.max(0, Math.min(255, 128 + terrainN + detailN));
+        dispImgData.data[idx] = val;
+        dispImgData.data[idx + 1] = val;
+        dispImgData.data[idx + 2] = val;
+      }
+    }
+    dctx.putImageData(dispImgData, 0, 0);
+
+    // Maria depressions — basalt plains sit 1-5 km below highland mean
+    for (const mare of maria) {
+      const [mx, my] = dll2px(mare.lat, mare.lon);
+      const srx = mare.rx * dScale, sry = mare.ry * dScale;
+      dctx.save();
+      dctx.translate(mx, my);
+      if (mare.angle) dctx.rotate(mare.angle);
+      const depthVal = Math.round(55 + (1 - mare.depth) * 40);
+      for (let layer = 0; layer < 5; layer++) {
+        const s = 1 - layer * 0.12;
+        const g = dctx.createRadialGradient(0, 0, 0, 0, 0, srx * s);
+        g.addColorStop(0, `rgb(${depthVal}, ${depthVal}, ${depthVal})`);
+        g.addColorStop(0.7, `rgb(${depthVal + 20}, ${depthVal + 20}, ${depthVal + 20})`);
+        g.addColorStop(1, `rgb(128, 128, 128)`);
+        dctx.fillStyle = g;
+        dctx.beginPath();
+        dctx.ellipse(0, 0, srx * s, sry * s, 0, 0, Math.PI * 2);
+        dctx.fill();
+      }
+      dctx.restore();
+    }
+
+    // Named crater depressions with raised rims
+    for (const c of namedCraters) {
+      const [cx2, cy2] = dll2px(c.lat, c.lon);
+      const sr = c.r * dScale;
+      const cd = c.depth || 0.5;
+      // Raised rim
+      const rimVal = Math.round(150 + cd * 50);
+      dctx.beginPath();
+      dctx.arc(cx2, cy2, sr * 1.15, 0, Math.PI * 2);
+      dctx.strokeStyle = `rgb(${rimVal}, ${rimVal}, ${rimVal})`;
+      dctx.lineWidth = sr * 0.25;
+      dctx.stroke();
+      // Depressed floor
+      const floorVal = Math.round(60 + (1 - cd) * 50);
+      const fg = dctx.createRadialGradient(cx2, cy2, 0, cx2, cy2, sr * 0.9);
+      fg.addColorStop(0, `rgb(${floorVal}, ${floorVal}, ${floorVal})`);
+      fg.addColorStop(0.7, `rgb(${floorVal + 10}, ${floorVal + 10}, ${floorVal + 10})`);
+      fg.addColorStop(1, `rgb(${floorVal + 30}, ${floorVal + 30}, ${floorVal + 30})`);
+      dctx.fillStyle = fg;
+      dctx.beginPath();
+      dctx.arc(cx2, cy2, sr * 0.85, 0, Math.PI * 2);
+      dctx.fill();
+      // Central peak for large craters
+      if (sr > 9) {
+        const peakVal = Math.round(145 + cd * 30);
+        dctx.beginPath();
+        dctx.arc(cx2, cy2, sr * 0.12, 0, Math.PI * 2);
+        dctx.fillStyle = `rgb(${peakVal}, ${peakVal}, ${peakVal})`;
+        dctx.fill();
+      }
+    }
+
+    // Mountain ranges — elevated ridges (Montes Apenninus, etc.)
+    for (const range of mountains) {
+      const pts = range.points.map(([lat2, lon2]) => dll2px(lat2, lon2));
+      const sw = range.width * dScale;
+      const ridgeVal = Math.round(160 + range.brightness * 150);
+      dctx.beginPath();
+      dctx.moveTo(pts[0][0], pts[0][1]);
+      for (let i = 1; i < pts.length; i++) {
+        const prev = pts[i - 1], cur = pts[i];
+        dctx.quadraticCurveTo(
+          (prev[0] + cur[0]) / 2, (prev[1] + cur[1]) / 2,
+          cur[0], cur[1]
+        );
+      }
+      dctx.strokeStyle = `rgb(${ridgeVal}, ${ridgeVal}, ${ridgeVal})`;
+      dctx.lineWidth = sw;
+      dctx.lineCap = "round";
+      dctx.lineJoin = "round";
+      dctx.stroke();
+    }
+
+    // Smaller random crater depressions
+    for (let i = 0; i < 180; i++) {
+      const dcx = rand3() * dispW, dcy = rand3() * dispH;
+      const dr = 4 + rand3() * 12;
+      const dd = 0.2 + rand3() * 0.3;
+      dctx.beginPath();
+      dctx.arc(dcx, dcy, dr * 1.1, 0, Math.PI * 2);
+      dctx.strokeStyle = `rgb(${Math.round(140 + dd * 30)}, ${Math.round(140 + dd * 30)}, ${Math.round(140 + dd * 30)})`;
+      dctx.lineWidth = dr * 0.2;
+      dctx.stroke();
+      const fv = Math.round(90 + (1 - dd) * 30);
+      dctx.beginPath();
+      dctx.arc(dcx, dcy, dr * 0.8, 0, Math.PI * 2);
+      dctx.fillStyle = `rgb(${fv}, ${fv}, ${fv})`;
+      dctx.fill();
+    }
+
+    const dispTex = new THREE.CanvasTexture(dispCanvas);
+
+    return { colorMap: colorTex, bumpMap: bumpTex, displacementMap: dispTex };
   }, []);
 
   return (
     <>
       <mesh>
-        <sphereGeometry args={[2, 256, 128]} />
+        {/* Higher segment count (512×256) so displacement vertices resolve
+            crater rims, maria basin edges, and mountain ridges in silhouette */}
+        <sphereGeometry args={[2, 512, 256]} />
         <meshStandardMaterial
           map={colorMap}
           bumpMap={bumpMap}
           bumpScale={0.06}
+          displacementMap={displacementMap}
+          displacementScale={0.15}
+          displacementBias={-0.075}
           roughness={0.92}
           metalness={0.01}
         />
       </mesh>
-      {/* Subtle atmospheric limb glow */}
+      {/* Subtle atmospheric limb glow — radius clears max displacement */}
       <mesh>
-        <sphereGeometry args={[2.03, 64, 32]} />
+        <sphereGeometry args={[2.1, 64, 32]} />
         <meshBasicMaterial color="#9aa8c0" transparent opacity={0.03} side={THREE.BackSide} />
       </mesh>
     </>
@@ -669,6 +804,26 @@ function Scene({
 }) {
   const [hoveredTerritoryId, setHoveredTerritoryId] = useState<string | null>(null);
   const [hoveredPinId, setHoveredPinId] = useState<string | null>(null);
+  const moonGroupRef = useRef<THREE.Group>(null);
+
+  /* ── Scientifically accurate lunar rotation ──────────────────────────────
+     • Sidereal rotation period: 27.321661 days (tidally locked to Earth)
+     • Direction: prograde (counter-clockwise viewed from north celestial pole,
+       i.e. west-to-east, same as Earth)
+     • Axial tilt: 1.5424° relative to the ecliptic normal
+       (6.687° relative to its own orbital plane)
+     • Visualization speed is ~20,000× real-time so the globe visibly rotates
+       (one full rotation ≈ 120 seconds instead of 27.3 days)
+     ──────────────────────────────────────────────────────────────────────── */
+  const MOON_AXIAL_TILT_RAD = THREE.MathUtils.degToRad(1.5424);
+  // Prograde: positive rotation around local Y (CCW from above north pole)
+  const DISPLAY_ROTATION_SPEED = (2 * Math.PI) / 120; // rad/s — one rotation per 2 min
+
+  useFrame((_, delta) => {
+    if (moonGroupRef.current) {
+      moonGroupRef.current.rotation.y += DISPLAY_ROTATION_SPEED * delta;
+    }
+  });
 
   // Hover only sets glow — no popup
   const handleTerritoryHover = useCallback((t: Territory | null) => {
@@ -711,7 +866,10 @@ function Scene({
       <directionalLight position={[-3, -1, 2]} intensity={0.3} color="#aabbcc" />
       <pointLight position={[-5, -3, -5]} intensity={0.15} color="#667" />
 
-      <group>
+      {/* Outer group: fixed axial tilt (1.5424° from ecliptic normal) */}
+      <group rotation={[MOON_AXIAL_TILT_RAD, 0, 0]}>
+      {/* Inner group: prograde spin (west-to-east, same as real Moon) */}
+      <group ref={moonGroupRef}>
         <MoonMesh />
 
         {territories.map((t) => (
@@ -747,9 +905,12 @@ function Scene({
           />
         ))}
       </group>
+      </group>
 
       {/* Disable scroll zoom to prevent page-scroll hijacking.
-          Users can still drag to rotate and pinch-to-zoom on touch. */}
+          Users can still drag to rotate and pinch-to-zoom on touch.
+          autoRotate removed — the moon now self-rotates via useFrame
+          with scientifically accurate prograde direction and axial tilt. */}
       <OrbitControls
         enablePan={false}
         enableZoom={false}
@@ -758,8 +919,6 @@ function Scene({
         enableDamping
         dampingFactor={0.06}
         rotateSpeed={0.4}
-        autoRotate
-        autoRotateSpeed={0.12}
       />
     </>
   );
