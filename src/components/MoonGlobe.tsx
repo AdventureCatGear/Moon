@@ -524,14 +524,12 @@ function Scene({
     }
   }, [setHoverItem]);
 
-  // Filter landmarks: exclude "geographic" type (already on texture), show others by active filter
   const visibleLandmarks = useMemo(() =>
     landmarks.filter((lm) => lm.type !== "geographic" && activeFilters.has(lm.type)),
     [activeFilters]
   );
 
   const showFutureClaims = activeFilters.has("future");
-  const hasAnyLandmarkFilter = activeFilters.has("historic") || activeFilters.has("scientific") || activeFilters.has("rover");
 
   return (
     <>
@@ -560,7 +558,7 @@ function Scene({
             landmark={lm}
             isHovered={hoveredPinId === lm.id}
             onHover={handleLandmarkHover}
-            dimmed={hasAnyLandmarkFilter && !activeFilters.has(lm.type)}
+            dimmed={false}
           />
         ))}
 
@@ -575,98 +573,139 @@ function Scene({
         ))}
       </group>
 
+      {/* Disable scroll zoom to prevent page-scroll hijacking.
+          Users can still drag to rotate and pinch-to-zoom on touch. */}
       <OrbitControls
         enablePan={false}
+        enableZoom={false}
         minDistance={3}
         maxDistance={8}
         enableDamping
-        dampingFactor={0.05}
-        rotateSpeed={0.5}
+        dampingFactor={0.06}
+        rotateSpeed={0.4}
         autoRotate
-        autoRotateSpeed={0.4}
+        autoRotateSpeed={0.12}
       />
     </>
   );
 }
 
-// ── Detail Panel (rendered as DOM above the Canvas) ─────────────────────────
+// ── Detail Overlay (floats over top of the moon) ────────────────────────────
 
-function DetailPanel({ item }: { item: DetailItem }) {
-  if (!item) {
-    return (
-      <div className="h-20 flex items-center justify-center text-gray-500 text-sm">
-        Hover over markers on the moon to see details
-      </div>
-    );
-  }
+function DetailOverlay({ item, onClose }: { item: DetailItem; onClose: () => void }) {
+  if (!item) return null;
+
+  let content: React.ReactNode = null;
+  let accentColor = "#00E5CC";
 
   if (item.kind === "territory") {
     const t = item.data;
-    return (
-      <div className="flex items-start gap-4 p-3">
-        <div className="w-3 h-3 rounded-full mt-1 shrink-0" style={{ backgroundColor: t.color }} />
-        <div className="min-w-0">
-          <h3 className="font-bold text-base leading-tight" style={{ color: t.color }}>
-            {t.name}
-          </h3>
-          <p className="text-gray-400 text-xs mt-0.5 italic">{t.tagline}</p>
-          <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-xs">
-            <span className="text-gray-400">Plots: <span className="text-white font-medium">{t.totalPlots}</span></span>
-            <span className="text-gray-400">Available: <span className="text-cosmic-teal font-medium">{t.totalPlots - t.claimedPlots}</span></span>
-            <span className="text-gray-400">Price: <span className="text-amber font-medium">{t.priceRange}</span></span>
-            <span className="text-gray-400">Terrain: <span className="text-white">{t.terrainType}</span></span>
+    accentColor = t.color;
+    content = (
+      <>
+        <div className="flex items-center gap-3">
+          <div className="w-4 h-4 rounded-full shrink-0" style={{ backgroundColor: t.color, boxShadow: `0 0 12px ${t.color}50` }} />
+          <div>
+            <h3 className="font-bold text-lg leading-tight" style={{ color: t.color }}>
+              {t.name}
+            </h3>
+            <p className="text-gray-400 text-sm italic">{t.tagline}</p>
           </div>
-          <p className="text-[10px] text-gray-500 mt-1">Click marker to explore plots</p>
         </div>
-      </div>
+        <p className="text-gray-300 text-sm mt-3 leading-relaxed">{t.description}</p>
+        <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="rounded-lg bg-white/5 px-3 py-2 text-center">
+            <div className="text-white font-bold text-lg">{t.totalPlots}</div>
+            <div className="text-gray-500 text-[10px] uppercase tracking-wider">Total Plots</div>
+          </div>
+          <div className="rounded-lg bg-white/5 px-3 py-2 text-center">
+            <div className="font-bold text-lg" style={{ color: "#00E5CC" }}>{t.totalPlots - t.claimedPlots}</div>
+            <div className="text-gray-500 text-[10px] uppercase tracking-wider">Available</div>
+          </div>
+          <div className="rounded-lg bg-white/5 px-3 py-2 text-center">
+            <div className="text-amber-400 font-bold text-lg">{t.priceRange}</div>
+            <div className="text-gray-500 text-[10px] uppercase tracking-wider">Price</div>
+          </div>
+          <div className="rounded-lg bg-white/5 px-3 py-2 text-center">
+            <div className="text-white font-bold text-sm leading-tight mt-0.5">{t.terrainType}</div>
+            <div className="text-gray-500 text-[10px] uppercase tracking-wider mt-0.5">Terrain</div>
+          </div>
+        </div>
+        <p className="text-gray-500 text-xs mt-3">Click the marker on the globe to explore available plots</p>
+      </>
     );
   }
 
   if (item.kind === "landmark") {
     const lm = item.data;
-    const pinColor = LANDMARK_COLORS[lm.type] || "#94A3B8";
-    return (
-      <div className="flex items-start gap-3 p-3">
-        <span className="text-lg mt-0.5">{lm.icon}</span>
-        <div className="min-w-0">
-          <h3 className="font-bold text-sm leading-tight" style={{ color: pinColor }}>
-            {lm.name}
-          </h3>
-          <p className="text-gray-300 text-xs mt-1 leading-relaxed">{lm.description}</p>
-          {lm.year && (
-            <span className="inline-block mt-1 text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ color: pinColor, background: `${pinColor}18` }}>
-              {lm.year}
-            </span>
-          )}
+    accentColor = LANDMARK_COLORS[lm.type] || "#94A3B8";
+    content = (
+      <>
+        <div className="flex items-center gap-3">
+          <span className="text-2xl">{lm.icon}</span>
+          <div>
+            <h3 className="font-bold text-lg leading-tight" style={{ color: accentColor }}>
+              {lm.name}
+            </h3>
+            <span className="text-gray-500 text-xs capitalize">{lm.type}</span>
+          </div>
         </div>
-      </div>
+        <p className="text-gray-300 text-sm mt-3 leading-relaxed">{lm.description}</p>
+        {lm.year && (
+          <div className="mt-3 inline-block text-xs font-semibold px-3 py-1 rounded-full" style={{ color: accentColor, background: `${accentColor}18`, border: `1px solid ${accentColor}30` }}>
+            {lm.year}
+          </div>
+        )}
+      </>
     );
   }
 
   if (item.kind === "claim") {
     const fc = item.data;
+    accentColor = fc.color;
     const statusLabel = fc.status === "planned" ? "Planned" : fc.status === "announced" ? "Announced" : "Proposed";
-    return (
-      <div className="flex items-start gap-3 p-3">
-        <div className="w-3 h-3 rotate-45 mt-1.5 shrink-0" style={{ backgroundColor: fc.color }} />
-        <div className="min-w-0">
-          <h3 className="font-bold text-sm leading-tight" style={{ color: fc.color }}>
-            {fc.name}
-          </h3>
-          <p className="text-xs mt-0.5 font-medium" style={{ color: fc.color }}>{fc.entity}</p>
-          <p className="text-gray-300 text-xs mt-1 leading-relaxed">{fc.description}</p>
-          <div className="flex items-center gap-2 mt-1.5">
-            <span className="text-[10px] px-2 py-0.5 rounded-full border font-medium" style={{ borderColor: fc.color, color: fc.color }}>
-              {statusLabel}
-            </span>
-            {fc.year && <span className="text-gray-500 text-[10px]">~{fc.year}</span>}
+    content = (
+      <>
+        <div className="flex items-center gap-3">
+          <div className="w-4 h-4 rotate-45 shrink-0" style={{ backgroundColor: fc.color, boxShadow: `0 0 12px ${fc.color}50` }} />
+          <div>
+            <h3 className="font-bold text-lg leading-tight" style={{ color: fc.color }}>
+              {fc.name}
+            </h3>
+            <p className="text-sm font-medium" style={{ color: fc.color }}>{fc.entity}</p>
           </div>
         </div>
-      </div>
+        <p className="text-gray-300 text-sm mt-3 leading-relaxed">{fc.description}</p>
+        <div className="flex items-center gap-3 mt-3">
+          <span className="text-xs px-3 py-1 rounded-full border font-medium" style={{ borderColor: fc.color, color: fc.color }}>
+            {statusLabel}
+          </span>
+          {fc.year && <span className="text-gray-400 text-sm">Target: ~{fc.year}</span>}
+        </div>
+      </>
     );
   }
 
-  return null;
+  return (
+    <div className="absolute top-4 left-4 right-4 z-30 animate-in fade-in slide-in-from-top-2 duration-200">
+      <div
+        className="rounded-2xl p-5 text-white shadow-2xl border max-w-2xl mx-auto"
+        style={{
+          background: "rgba(8, 12, 30, 0.92)",
+          backdropFilter: "blur(20px)",
+          borderColor: `${accentColor}30`,
+        }}
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-3 w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-gray-400 hover:text-white transition-colors"
+        >
+          <span className="text-sm leading-none">&times;</span>
+        </button>
+        {content}
+      </div>
+    </div>
+  );
 }
 
 // ── Main export ──────────────────────────────────────────────────────────────
@@ -686,8 +725,18 @@ const FILTER_BUTTONS: { key: FilterCategory; label: string; color: string; dot: 
 
 export default function MoonGlobe({ onTerritoryClick }: MoonGlobeProps) {
   const [hoverItem, setHoverItem] = useState<DetailItem>(null);
+  const [selectedItem, setSelectedItem] = useState<DetailItem>(null);
   const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set());
   const [highlightedTerritory, setHighlightedTerritory] = useState<string | null>(null);
+
+  // Show selected item (click) or hovered item in the overlay
+  const displayItem = selectedItem || hoverItem;
+
+  const handleSetHoverItem = useCallback((item: DetailItem) => {
+    setHoverItem(item);
+    // Auto-select on hover so the overlay shows immediately
+    if (item) setSelectedItem(item);
+  }, []);
 
   const toggleFilter = useCallback((key: string) => {
     setActiveFilters((prev) => {
@@ -702,36 +751,47 @@ export default function MoonGlobe({ onTerritoryClick }: MoonGlobeProps) {
   }, []);
 
   const handleTerritoryLegendClick = useCallback((t: Territory) => {
-    setHighlightedTerritory((prev) => (prev === t.id ? null : t.id));
+    setHighlightedTerritory((prev) => {
+      const next = prev === t.id ? null : t.id;
+      // When highlighting a territory, show its details
+      if (next) {
+        setSelectedItem({ kind: "territory", data: t });
+      } else {
+        setSelectedItem(null);
+      }
+      return next;
+    });
   }, []);
+
+  const handleCloseOverlay = useCallback(() => {
+    setSelectedItem(null);
+    setHighlightedTerritory(null);
+  }, []);
+
+  const anyFilterActive = activeFilters.size > 0;
 
   return (
     <section id="globe" className="relative py-20 px-4">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-8">
+        <div className="text-center mb-10">
           <h2 className="section-heading">
             Explore the <span className="text-gradient-teal">Moon</span>
           </h2>
           <p className="mt-4 text-gray-400 text-lg max-w-2xl mx-auto">
-            Click and drag to rotate. Scroll to zoom.
-            Toggle categories below to show markers.
+            Drag to rotate the globe. Tap a territory to see details.
           </p>
         </div>
 
-        {/* Detail panel above the globe */}
-        <div className="max-w-3xl mx-auto mb-4">
-          <div className="glass rounded-xl min-h-[80px] border border-white/5 flex items-center">
-            <DetailPanel item={hoverItem} />
-          </div>
-        </div>
-
-        {/* Globe — much larger */}
+        {/* Globe container with overlay */}
         <div className="relative w-full max-w-4xl mx-auto rounded-2xl overflow-hidden" style={{ aspectRatio: "1 / 1" }}>
           <div className="absolute inset-0 bg-gradient-radial from-cosmic-teal/5 via-transparent to-transparent pointer-events-none z-10" />
 
+          {/* Detail overlay — floats OVER the top of the moon */}
+          <DetailOverlay item={displayItem} onClose={handleCloseOverlay} />
+
           <Canvas camera={{ position: [0, 0, 4.8], fov: 45 }}>
             <Scene
-              setHoverItem={setHoverItem}
+              setHoverItem={handleSetHoverItem}
               onTerritoryClick={onTerritoryClick}
               highlightedTerritory={highlightedTerritory}
               activeFilters={activeFilters}
@@ -739,7 +799,7 @@ export default function MoonGlobe({ onTerritoryClick }: MoonGlobeProps) {
           </Canvas>
         </div>
 
-        {/* Territory legend — clickable to highlight on globe */}
+        {/* Territory selectors */}
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           {territories.map((t) => {
             const active = highlightedTerritory === t.id;
@@ -747,21 +807,21 @@ export default function MoonGlobe({ onTerritoryClick }: MoonGlobeProps) {
               <button
                 key={t.id}
                 onClick={() => handleTerritoryLegendClick(t)}
-                className={`rounded-lg px-4 py-2 flex items-center gap-2 transition-all cursor-pointer border ${
+                className={`group rounded-lg px-4 py-2.5 flex items-center gap-2.5 transition-all duration-200 cursor-pointer border ${
                   active
-                    ? "border-white/40 bg-white/10"
-                    : "glass hover:border-white/30"
+                    ? "border-white/40 bg-white/10 scale-105"
+                    : "glass hover:border-white/30 hover:scale-[1.02]"
                 }`}
               >
                 <div
-                  className="w-3 h-3 rounded-full transition-transform"
+                  className="w-3 h-3 rounded-full transition-all duration-200"
                   style={{
                     backgroundColor: t.color,
-                    transform: active ? "scale(1.3)" : "scale(1)",
-                    boxShadow: active ? `0 0 8px ${t.color}` : "none",
+                    transform: active ? "scale(1.4)" : "scale(1)",
+                    boxShadow: active ? `0 0 10px ${t.color}` : "none",
                   }}
                 />
-                <span className={`text-sm ${active ? "text-white font-medium" : "text-gray-300"}`}>
+                <span className={`text-sm transition-colors ${active ? "text-white font-semibold" : "text-gray-300 group-hover:text-white"}`}>
                   {t.name}
                 </span>
               </button>
@@ -769,43 +829,53 @@ export default function MoonGlobe({ onTerritoryClick }: MoonGlobeProps) {
           })}
         </div>
 
-        {/* Category filter buttons — toggle markers on/off */}
-        <div className="mt-3 flex flex-wrap justify-center gap-3">
-          {FILTER_BUTTONS.map((fb) => {
-            const active = activeFilters.has(fb.key);
-            return (
-              <button
-                key={fb.key}
-                onClick={() => toggleFilter(fb.key)}
-                className={`rounded-lg px-3 py-1.5 flex items-center gap-2 transition-all cursor-pointer border ${
-                  active
-                    ? "border-white/40 bg-white/10"
-                    : "glass hover:border-white/20 opacity-60 hover:opacity-100"
-                }`}
-              >
-                {fb.dot === "circle" ? (
-                  <div
-                    className="w-2 h-2 rounded-full"
-                    style={{
-                      background: fb.color,
-                      boxShadow: active ? `0 0 6px ${fb.color}` : "none",
-                    }}
-                  />
-                ) : (
-                  <div
-                    className="w-2 h-2 rotate-45"
-                    style={{
-                      background: fb.color,
-                      boxShadow: active ? `0 0 6px ${fb.color}` : "none",
-                    }}
-                  />
-                )}
-                <span className={`text-xs ${active ? "text-white" : "text-gray-400"}`}>
-                  {fb.label}
-                </span>
-              </button>
-            );
-          })}
+        {/* Category filter buttons with clear "tap to show" prompt */}
+        <div className="mt-6 text-center">
+          <p className="text-gray-500 text-xs uppercase tracking-widest mb-3">
+            {anyFilterActive ? "Showing on globe" : "Tap to reveal on globe"}
+          </p>
+          <div className="flex flex-wrap justify-center gap-2.5">
+            {FILTER_BUTTONS.map((fb) => {
+              const active = activeFilters.has(fb.key);
+              return (
+                <button
+                  key={fb.key}
+                  onClick={() => toggleFilter(fb.key)}
+                  className={`group rounded-full px-4 py-2 flex items-center gap-2 transition-all duration-200 cursor-pointer border ${
+                    active
+                      ? "border-white/40 bg-white/10 scale-105"
+                      : "border-white/10 bg-white/[0.03] hover:bg-white/[0.08] hover:border-white/25 hover:scale-[1.02]"
+                  }`}
+                >
+                  {fb.dot === "circle" ? (
+                    <div
+                      className="w-2.5 h-2.5 rounded-full transition-all duration-200"
+                      style={{
+                        background: fb.color,
+                        boxShadow: active ? `0 0 8px ${fb.color}` : "none",
+                        opacity: active ? 1 : 0.6,
+                      }}
+                    />
+                  ) : (
+                    <div
+                      className="w-2.5 h-2.5 rotate-45 transition-all duration-200"
+                      style={{
+                        background: fb.color,
+                        boxShadow: active ? `0 0 8px ${fb.color}` : "none",
+                        opacity: active ? 1 : 0.6,
+                      }}
+                    />
+                  )}
+                  <span className={`text-xs transition-colors ${active ? "text-white font-medium" : "text-gray-400 group-hover:text-gray-200"}`}>
+                    {fb.label}
+                  </span>
+                  {active && (
+                    <span className="text-[9px] text-gray-500 ml-0.5">&times;</span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>
