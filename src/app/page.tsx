@@ -11,6 +11,8 @@ import PublicTransparency from "@/components/PublicTransparency";
 import HowItWorks from "@/components/HowItWorks";
 import Pricing from "@/components/Pricing";
 import CommunityFeed from "@/components/CommunityFeed";
+import Ledger from "@/components/Ledger";
+import BotRegistry from "@/components/BotRegistry";
 import BotApiSection from "@/components/BotApiSection";
 import Footer from "@/components/Footer";
 import KonamiEasterEgg from "@/components/KonamiEasterEgg";
@@ -53,6 +55,8 @@ export default function Home() {
             <HowItWorks />
             <Pricing />
             <CommunityFeed />
+            <Ledger />
+            <BotRegistry />
             <BotApiSection />
           </>
         )}

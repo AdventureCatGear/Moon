@@ -1,6 +1,7 @@
 "use client";
 
 import { feedEntries } from "@/data/feed";
+import { territories } from "@/data/territories";
 import { useEffect, useState } from "react";
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -537,8 +538,27 @@ export default function Hero() {
         </a>
       </div>
 
-      {/* Live ticker */}
-      <div className="absolute bottom-8 left-0 right-0 flex justify-center px-4">
+      {/* Plot availability tracker + live ticker */}
+      <div className="absolute bottom-6 left-0 right-0 flex flex-col items-center gap-2 px-4">
+        {/* Territory availability stats */}
+        <div className="flex gap-3 sm:gap-4">
+          {territories.map((t) => {
+            const available = t.totalPlots - t.claimedPlots;
+            const pct = Math.round((t.claimedPlots / t.totalPlots) * 100);
+            return (
+              <div key={t.id} className="flex items-center gap-1.5">
+                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: t.color }} />
+                <div className="text-xs text-gray-400">
+                  <span className="font-semibold text-white">{available.toLocaleString()}</span>
+                  <span className="hidden sm:inline">/{t.totalPlots.toLocaleString()}</span>
+                  <span className="text-gray-500 ml-1 hidden sm:inline">({pct}%)</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Live ticker */}
         <div className="glass rounded-full px-6 py-3 max-w-xl w-full text-center">
           <div key={tickerIndex} className="animate-slide-in text-sm text-gray-300 truncate">
             <span className="mr-2">{"\ud83e\udd16"}</span>
