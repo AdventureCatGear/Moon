@@ -152,6 +152,15 @@
   100% { transform: translate(200vw, 20vh) rotate(720deg); }
 }
 
+@keyframes orbit {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-orbit {
+  animation: orbit 25s linear infinite;
+}
+
 .animate-twinkle {
   animation: twinkle var(--duration, 3s) ease-in-out infinite;
   animation-delay: var(--delay, 0s);
