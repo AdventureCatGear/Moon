@@ -1,132 +1,293 @@
 "use client";
 
 import { feedEntries } from "@/data/feed";
-import { territories, type Territory } from "@/data/territories";
 import { useEffect, useState } from "react";
 
-/* ── Lobster silhouette SVG ───────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════════════════
+   HIGH-DETAIL LOBSTER SILHOUETTE
+   Eye stalks, rostrum, segmented antennae, articulated claws, carapace
+   texture lines, jointed walking legs, swimmerets, detailed tail fan,
+   astronaut helmet with visor & O₂ line.
+   ══════════════════════════════════════════════════════════════════════ */
 
-function LobsterSilhouette({ className }: { className?: string }) {
+function LobsterSilhouette({ className, style }: { className?: string; style?: React.CSSProperties }) {
   return (
     <svg
       viewBox="0 0 200 260"
       className={className}
+      style={style}
       fill="currentColor"
       stroke="currentColor"
       xmlns="http://www.w3.org/2000/svg"
     >
-      {/* Left antenna */}
-      <path
-        d="M92,68 Q72,38 40,8"
-        fill="none"
-        strokeWidth="3"
-        strokeLinecap="round"
-      />
-      {/* Right antenna */}
-      <path
-        d="M108,68 Q128,38 160,8"
-        fill="none"
-        strokeWidth="3"
-        strokeLinecap="round"
-      />
+      {/* ── Eye stalks ── */}
+      <path d="M88,65 Q84,56 82,50" fill="none" strokeWidth="2.5" strokeLinecap="round" />
+      <circle cx="81" cy="48" r="3.5" stroke="none" />
+      <circle cx="81" cy="48" r="1.5" fill="none" strokeWidth="1" opacity="0.5" />
+      <path d="M112,65 Q116,56 118,50" fill="none" strokeWidth="2.5" strokeLinecap="round" />
+      <circle cx="119" cy="48" r="3.5" stroke="none" />
+      <circle cx="119" cy="48" r="1.5" fill="none" strokeWidth="1" opacity="0.5" />
 
-      {/* Left claw — arm */}
-      <path d="M78,74 C62,64 48,56 36,48 L36,56 C48,62 62,72 78,84Z" stroke="none" />
-      {/* Left claw — upper prong */}
-      <path d="M36,48 Q20,30 4,18" fill="none" strokeWidth="8" strokeLinecap="round" />
-      {/* Left claw — lower prong */}
-      <path d="M36,56 Q20,68 4,74" fill="none" strokeWidth="8" strokeLinecap="round" />
+      {/* ── Rostrum (horn between eyes) ── */}
+      <path d="M96,64 L100,42 L104,64" fill="currentColor" stroke="none" />
 
-      {/* Right claw — arm */}
-      <path d="M122,74 C138,64 152,56 164,48 L164,56 C152,62 138,72 122,84Z" stroke="none" />
-      {/* Right claw — upper prong */}
-      <path d="M164,48 Q180,30 196,18" fill="none" strokeWidth="8" strokeLinecap="round" />
-      {/* Right claw — lower prong */}
-      <path d="M164,56 Q180,68 196,74" fill="none" strokeWidth="8" strokeLinecap="round" />
+      {/* ── Antennae — outer pair (long, sweeping) ── */}
+      <path d="M90,62 Q70,32 36,6" fill="none" strokeWidth="2.5" strokeLinecap="round" />
+      <path d="M110,62 Q130,32 164,6" fill="none" strokeWidth="2.5" strokeLinecap="round" />
+      {/* ── Antennae — inner pair (shorter, thinner) ── */}
+      <path d="M94,60 Q82,40 68,22" fill="none" strokeWidth="1.5" strokeLinecap="round" opacity="0.7" />
+      <path d="M106,60 Q118,40 132,22" fill="none" strokeWidth="1.5" strokeLinecap="round" opacity="0.7" />
 
-      {/* Astronaut helmet — glass dome over head */}
-      <ellipse cx="100" cy="72" rx="32" ry="26" fill="none" stroke="currentColor" strokeWidth="3" opacity="0.7" />
-      {/* Helmet visor reflection */}
-      <path
-        d="M78,64 Q86,56 100,54 Q114,56 122,64"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        opacity="0.35"
-      />
-      {/* Helmet rim */}
-      <path
-        d="M70,80 Q70,76 74,74 L126,74 Q130,76 130,80"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2.5"
-        opacity="0.6"
-      />
+      {/* ── Left claw — detailed pincer ── */}
+      <path d="M78,76 C64,66 50,58 38,50" fill="none" strokeWidth="5" strokeLinecap="round" />
+      {/* Upper finger (crusher) — thick, curved */}
+      <path d="M38,50 Q24,34 8,20" fill="none" strokeWidth="7" strokeLinecap="round" />
+      {/* Lower finger (cutter) — thinner */}
+      <path d="M38,50 Q22,56 6,68" fill="none" strokeWidth="6" strokeLinecap="round" />
+      {/* Claw arm fill */}
+      <path d="M78,74 C62,64 48,56 38,48 L38,56 C48,62 62,72 78,84Z" stroke="none" />
+      {/* Claw teeth (serrations) */}
+      <circle cx="18" cy="30" r="1.5" stroke="none" opacity="0.6" />
+      <circle cx="24" cy="25" r="1.2" stroke="none" opacity="0.6" />
+      <circle cx="16" cy="58" r="1.2" stroke="none" opacity="0.6" />
 
-      {/* Body segments — head to tail */}
-      <ellipse cx="100" cy="80" rx="24" ry="18" stroke="none" />
-      <ellipse cx="100" cy="102" rx="21" ry="13" stroke="none" />
-      <ellipse cx="100" cy="120" rx="19" ry="11" stroke="none" />
-      <ellipse cx="100" cy="137" rx="17" ry="10" stroke="none" />
-      <ellipse cx="100" cy="152" rx="15" ry="9" stroke="none" />
-      <ellipse cx="100" cy="166" rx="13" ry="8" stroke="none" />
+      {/* ── Right claw — detailed pincer ── */}
+      <path d="M122,76 C136,66 150,58 162,50" fill="none" strokeWidth="5" strokeLinecap="round" />
+      <path d="M162,50 Q176,34 192,20" fill="none" strokeWidth="7" strokeLinecap="round" />
+      <path d="M162,50 Q178,56 194,68" fill="none" strokeWidth="6" strokeLinecap="round" />
+      <path d="M122,74 C138,64 152,56 162,48 L162,56 C152,62 138,72 122,84Z" stroke="none" />
+      <circle cx="182" cy="30" r="1.5" stroke="none" opacity="0.6" />
+      <circle cx="176" cy="25" r="1.2" stroke="none" opacity="0.6" />
+      <circle cx="184" cy="58" r="1.2" stroke="none" opacity="0.6" />
 
-      {/* Tail fan — three fins */}
-      <ellipse cx="80" cy="186" rx="14" ry="7" transform="rotate(-25 80 186)" stroke="none" />
-      <ellipse cx="100" cy="190" rx="12" ry="8" stroke="none" />
-      <ellipse cx="120" cy="186" rx="14" ry="7" transform="rotate(25 120 186)" stroke="none" />
+      {/* ── Astronaut helmet — glass dome ── */}
+      <ellipse cx="100" cy="72" rx="34" ry="28" fill="none" strokeWidth="3" opacity="0.75" />
+      {/* Visor reflection arc */}
+      <path d="M76,64 Q86,54 100,52 Q114,54 124,64" fill="none" strokeWidth="1.5" opacity="0.3" />
+      {/* Secondary reflection */}
+      <path d="M82,70 Q90,62 100,60 Q110,62 118,70" fill="none" strokeWidth="1" opacity="0.15" />
+      {/* Helmet rim seal */}
+      <path d="M68,82 Q68,76 74,74 L126,74 Q132,76 132,82" fill="none" strokeWidth="3" opacity="0.6" />
+      {/* O₂ line — runs from helmet to back */}
+      <path d="M132,76 Q140,80 142,92 Q142,100 136,106" fill="none" strokeWidth="1.5" opacity="0.35" />
+
+      {/* ── Carapace / body segments ── */}
+      <ellipse cx="100" cy="80" rx="25" ry="18" stroke="none" />
+      {/* Carapace texture lines */}
+      <path d="M82,76 Q100,72 118,76" fill="none" strokeWidth="0.8" opacity="0.2" />
+
+      {/* Thorax-abdomen joint */}
+      <path d="M80,92 L120,92" fill="none" strokeWidth="0.8" opacity="0.25" />
+
+      {/* Abdomen segments — overlapping plates */}
+      <ellipse cx="100" cy="100" rx="22" ry="12" stroke="none" />
+      <path d="M79,106 L121,106" fill="none" strokeWidth="0.7" opacity="0.2" />
+      <ellipse cx="100" cy="116" rx="20" ry="11" stroke="none" />
+      <path d="M81,122 L119,122" fill="none" strokeWidth="0.7" opacity="0.2" />
+      <ellipse cx="100" cy="132" rx="18" ry="10" stroke="none" />
+      <path d="M83,138 L117,138" fill="none" strokeWidth="0.7" opacity="0.2" />
+      <ellipse cx="100" cy="147" rx="16" ry="9" stroke="none" />
+      <path d="M85,152 L115,152" fill="none" strokeWidth="0.7" opacity="0.2" />
+      <ellipse cx="100" cy="161" rx="14" ry="8" stroke="none" />
+      <path d="M87,166 L113,166" fill="none" strokeWidth="0.7" opacity="0.2" />
+
+      {/* ── Walking legs — 4 pairs with joints ── */}
+      {/* Left pair 1 */}
+      <path d="M78,96 L62,88 L50,84" fill="none" strokeWidth="2.5" strokeLinecap="round" />
+      <circle cx="62" cy="88" r="1.2" stroke="none" opacity="0.5" />
+      {/* Left pair 2 */}
+      <path d="M80,114 L62,108 L48,104" fill="none" strokeWidth="2.5" strokeLinecap="round" />
+      <circle cx="62" cy="108" r="1.2" stroke="none" opacity="0.5" />
+      {/* Left pair 3 */}
+      <path d="M82,132 L64,128 L52,126" fill="none" strokeWidth="2" strokeLinecap="round" />
+      <circle cx="64" cy="128" r="1" stroke="none" opacity="0.5" />
+      {/* Left pair 4 */}
+      <path d="M84,148 L68,146 L56,144" fill="none" strokeWidth="1.8" strokeLinecap="round" />
+      <circle cx="68" cy="146" r="1" stroke="none" opacity="0.5" />
+
+      {/* Right pair 1 */}
+      <path d="M122,96 L138,88 L150,84" fill="none" strokeWidth="2.5" strokeLinecap="round" />
+      <circle cx="138" cy="88" r="1.2" stroke="none" opacity="0.5" />
+      {/* Right pair 2 */}
+      <path d="M120,114 L138,108 L152,104" fill="none" strokeWidth="2.5" strokeLinecap="round" />
+      <circle cx="138" cy="108" r="1.2" stroke="none" opacity="0.5" />
+      {/* Right pair 3 */}
+      <path d="M118,132 L136,128 L148,126" fill="none" strokeWidth="2" strokeLinecap="round" />
+      <circle cx="136" cy="128" r="1" stroke="none" opacity="0.5" />
+      {/* Right pair 4 */}
+      <path d="M116,148 L132,146 L144,144" fill="none" strokeWidth="1.8" strokeLinecap="round" />
+      <circle cx="132" cy="146" r="1" stroke="none" opacity="0.5" />
+
+      {/* ── Swimmerets (small under-tail appendages) ── */}
+      <path d="M92,162 L86,168" fill="none" strokeWidth="1" strokeLinecap="round" opacity="0.4" />
+      <path d="M108,162 L114,168" fill="none" strokeWidth="1" strokeLinecap="round" opacity="0.4" />
+      <path d="M93,156 L88,162" fill="none" strokeWidth="1" strokeLinecap="round" opacity="0.4" />
+      <path d="M107,156 L112,162" fill="none" strokeWidth="1" strokeLinecap="round" opacity="0.4" />
+
+      {/* ── Tail fan — telson + uropods ── */}
       {/* Tail connector */}
-      <ellipse cx="100" cy="178" rx="11" ry="7" stroke="none" />
+      <ellipse cx="100" cy="174" rx="12" ry="7" stroke="none" />
 
-      {/* Legs — left side */}
-      <path d="M78,100 L56,90" fill="none" strokeWidth="3" strokeLinecap="round" />
-      <path d="M80,118 L56,112" fill="none" strokeWidth="3" strokeLinecap="round" />
-      <path d="M82,136 L58,132" fill="none" strokeWidth="2.5" strokeLinecap="round" />
-      <path d="M84,152 L62,150" fill="none" strokeWidth="2" strokeLinecap="round" />
+      {/* Left uropod */}
+      <ellipse cx="78" cy="190" rx="16" ry="8" transform="rotate(-28 78 190)" stroke="none" />
+      <path d="M68,184 Q78,190 88,184" fill="none" strokeWidth="0.7" opacity="0.25" />
+      <path d="M66,188 Q78,194 90,188" fill="none" strokeWidth="0.7" opacity="0.2" />
 
-      {/* Legs — right side */}
-      <path d="M122,100 L144,90" fill="none" strokeWidth="3" strokeLinecap="round" />
-      <path d="M120,118 L144,112" fill="none" strokeWidth="3" strokeLinecap="round" />
-      <path d="M118,136 L142,132" fill="none" strokeWidth="2.5" strokeLinecap="round" />
-      <path d="M116,152 L138,150" fill="none" strokeWidth="2" strokeLinecap="round" />
+      {/* Telson (center fan) */}
+      <ellipse cx="100" cy="194" rx="14" ry="9" stroke="none" />
+      <path d="M90,190 L100,198 L110,190" fill="none" strokeWidth="0.7" opacity="0.25" />
+
+      {/* Right uropod */}
+      <ellipse cx="122" cy="190" rx="16" ry="8" transform="rotate(28 122 190)" stroke="none" />
+      <path d="M112,184 Q122,190 132,184" fill="none" strokeWidth="0.7" opacity="0.25" />
+      <path d="M110,188 Q122,194 134,188" fill="none" strokeWidth="0.7" opacity="0.2" />
     </svg>
   );
 }
 
-/* ── Starship-style rocket SVG ────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════════════════
+   STARSHIP-STYLE ROCKET
+   ══════════════════════════════════════════════════════════════════════ */
 
 function Rocket({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 20 60" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Nose cone — ogive shape */}
       <path d="M10,2 C7,2 5,10 5,18 L15,18 C15,10 13,2 10,2Z" fill="#D4D4D4" />
-      {/* Body */}
       <rect x="5" y="18" width="10" height="28" fill="#B8B8B8" rx="0.5" />
-      {/* Forward flaps */}
       <path d="M5,20 L2,24 L5,23Z" fill="#999" />
       <path d="M15,20 L18,24 L15,23Z" fill="#999" />
-      {/* Aft flaps */}
       <path d="M5,40 L1,48 L5,46Z" fill="#888" />
       <path d="M15,40 L19,48 L15,46Z" fill="#888" />
-      {/* Engine section */}
       <rect x="5" y="46" width="10" height="4" fill="#666" rx="0.5" />
-      {/* Engine bells */}
       <circle cx="8" cy="51" r="1.5" fill="#555" />
       <circle cx="12" cy="51" r="1.5" fill="#555" />
-      {/* Exhaust glow */}
       <ellipse cx="10" cy="55" rx="3.5" ry="4" fill="#FFB800" opacity="0.5" />
       <ellipse cx="10" cy="57" rx="2" ry="3" fill="#FF6B35" opacity="0.3" />
     </svg>
   );
 }
 
-/* ── Territory pin positions on the moon (within Mare Nubium region) ────── */
+/* ══════════════════════════════════════════════════════════════════════════
+   10 EDUCATIONAL LUNAR PINS
+   Each pin has a "lobster position" (clustered to form the lobster
+   silhouette) and a "moon position" (spread across the lunar surface).
+   Toggling explore mode transitions between the two with a bouncy ease.
+   ══════════════════════════════════════════════════════════════════════ */
 
-const PIN_POSITIONS: Record<string, { top: string; left: string }> = {
-  MF: { top: "64%", left: "28%" },
-  CP: { top: "56%", left: "38%" },
-  CR: { top: "48%", left: "34%" },
-};
+interface LunarPin {
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  color: string;
+  /** Position on the moon surface (explore mode) */
+  moonPos: { top: string; left: string };
+  /** Position forming the lobster shape (logo mode) */
+  lobsterPos: { top: string; left: string };
+}
+
+const LUNAR_PINS: LunarPin[] = [
+  {
+    id: "mare-nubium",
+    title: "Mare Nubium",
+    subtitle: "Sea of Clouds — Our Territory",
+    description:
+      "A 700 km lava-filled basin ~3.9 billion years old. Home to the Lunar Lobsters 1 km\u00B2 governance claim — where your vote shapes what happens next.",
+    color: "#00E5CC",
+    moonPos: { top: "62%", left: "30%" },
+    lobsterPos: { top: "47%", left: "50%" },
+  },
+  {
+    id: "apollo-11",
+    title: "Apollo 11",
+    subtitle: "Mare Tranquillitatis",
+    description:
+      "July 20, 1969 — the first crewed Moon landing. Armstrong and Aldrin spent 21.6 hours on the surface and collected 21.5 kg of lunar samples.",
+    color: "#FFB800",
+    moonPos: { top: "35%", left: "62%" },
+    lobsterPos: { top: "28%", left: "52%" },
+  },
+  {
+    id: "tycho",
+    title: "Tycho Crater",
+    subtitle: "Bright Ray System",
+    description:
+      "85 km wide, ~108 million years old. Its ray system stretches 1,500 km — visible from Earth with the naked eye. A relatively young scar on an ancient world.",
+    color: "#E8E4D8",
+    moonPos: { top: "76%", left: "46%" },
+    lobsterPos: { top: "66%", left: "42%" },
+  },
+  {
+    id: "copernicus",
+    title: "Copernicus",
+    subtitle: "Monarch of the Moon",
+    description:
+      "93 km wide with terraced walls and central peaks rising 1.2 km. A textbook complex crater ~800 million years old — one of the most studied formations.",
+    color: "#C4BFB0",
+    moonPos: { top: "38%", left: "32%" },
+    lobsterPos: { top: "32%", left: "30%" },
+  },
+  {
+    id: "south-pole",
+    title: "Lunar South Pole",
+    subtitle: "Future Settlement Site",
+    description:
+      "Permanently shadowed craters harbor confirmed water ice — a critical resource for future lunar bases. Peak-of-eternal-light ridges offer near-constant solar power.",
+    color: "#A855F7",
+    moonPos: { top: "84%", left: "50%" },
+    lobsterPos: { top: "66%", left: "58%" },
+  },
+  {
+    id: "mare-imbrium",
+    title: "Mare Imbrium",
+    subtitle: "Sea of Showers",
+    description:
+      "The largest near-side basin (1,145 km across). Formed by a massive impact ~3.84 billion years ago that reshaped the entire lunar surface.",
+    color: "#6B8CAE",
+    moonPos: { top: "18%", left: "36%" },
+    lobsterPos: { top: "22%", left: "36%" },
+  },
+  {
+    id: "highlands",
+    title: "Lunar Highlands",
+    subtitle: "Ancient Crust",
+    description:
+      "The bright, heavily cratered terrain covering 83% of the surface. Made of 4.4-billion-year-old anorthosite — the Moon's original crust, older than any rock on Earth.",
+    color: "#9CA3AF",
+    moonPos: { top: "26%", left: "72%" },
+    lobsterPos: { top: "28%", left: "66%" },
+  },
+  {
+    id: "artemis",
+    title: "Artemis Program",
+    subtitle: "Humanity Returns",
+    description:
+      "NASA's plan to return humans to the Moon and build a sustained presence. The south polar landing sites will test technologies for eventual Mars missions.",
+    color: "#FF6B35",
+    moonPos: { top: "76%", left: "32%" },
+    lobsterPos: { top: "54%", left: "36%" },
+  },
+  {
+    id: "lobster-crater",
+    title: "Lobster Crater",
+    subtitle: "Our Home Base",
+    description:
+      "The namesake formation within Mare Nubium. Center of the Lunar Lobsters experiment — where AI agents and humans jointly govern a piece of the Moon.",
+    color: "#D4380D",
+    moonPos: { top: "54%", left: "44%" },
+    lobsterPos: { top: "40%", left: "50%" },
+  },
+  {
+    id: "lunar-water",
+    title: "Lunar Water",
+    subtitle: "Key to Sustained Presence",
+    description:
+      "Water molecules exist across the surface, trapped in volcanic glass beads and shadowed craters. Essential for drinking, breathing, and splitting into rocket fuel.",
+    color: "#60A5FA",
+    moonPos: { top: "68%", left: "62%" },
+    lobsterPos: { top: "54%", left: "64%" },
+  },
+];
 
 /* ── Helpers ──────────────────────────────────────────────────────────────── */
 
@@ -141,12 +302,14 @@ function formatTickerText(entry: (typeof feedEntries)[number]): string {
   }
 }
 
-/* ── Hero ─────────────────────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════════════════
+   HERO COMPONENT
+   ══════════════════════════════════════════════════════════════════════ */
 
 export default function Hero() {
   const [tickerIndex, setTickerIndex] = useState(0);
   const [exploring, setExploring] = useState(false);
-  const [activeZone, setActiveZone] = useState<Territory | null>(null);
+  const [activePin, setActivePin] = useState<LunarPin | null>(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -179,26 +342,29 @@ export default function Hero() {
           <span className="text-white">Lobsters</span>
         </div>
 
-        {/* Moon sphere — click to explore territories */}
+        {/* Moon sphere — click to explore */}
         <div className="relative w-36 h-36 sm:w-48 sm:h-48 md:w-60 md:h-60">
 
-          {/* Orbiting rocket */}
+          {/* ── Orbiting rocket (higher orbit) ── */}
           <div className="absolute inset-0 animate-orbit pointer-events-none z-20">
             <div
               className="absolute left-1/2"
-              style={{ top: "-16px", marginLeft: "-6px", transform: "rotate(90deg)" }}
+              style={{ top: "-30px", marginLeft: "-6px", transform: "rotate(90deg)" }}
             >
-              <Rocket className="w-3 h-8 drop-shadow-[0_0_6px_rgba(255,184,0,0.4)]" />
+              <Rocket className="w-3 h-8 drop-shadow-[0_0_8px_rgba(255,184,0,0.5)]" />
             </div>
           </div>
 
-          {/* Moon surface */}
+          {/* ── Moon surface ── */}
           <div
             className={`w-full h-full rounded-full transition-transform duration-300 ${
               exploring ? "" : "cursor-pointer hover:scale-[1.03]"
             }`}
             onClick={() => {
-              if (!exploring) setExploring(true);
+              if (!exploring) {
+                setExploring(true);
+                setActivePin(null);
+              }
             }}
             style={{
               background:
@@ -207,123 +373,132 @@ export default function Hero() {
                 "0 0 80px rgba(200, 195, 175, 0.3), 0 0 160px rgba(200, 195, 175, 0.1), inset -30px -20px 60px rgba(0, 0, 0, 0.6)",
             }}
           >
-            {/* ── Lunar maria (dark basalt plains) — near-side layout ── */}
+            {/* Lunar maria */}
             <div className="absolute top-[22%] left-[12%] w-[28%] h-[35%] rounded-full bg-black/10 blur-[2px]" />
             <div className="absolute top-[12%] left-[30%] w-[22%] h-[18%] rounded-full bg-black/8 blur-[1px]" />
             <div className="absolute top-[18%] left-[54%] w-[14%] h-[14%] rounded-full bg-black/8" />
             <div className="absolute top-[34%] left-[56%] w-[18%] h-[16%] rounded-full bg-black/7" />
             <div className="absolute top-[26%] left-[72%] w-[10%] h-[10%] rounded-full bg-black/10" />
             <div className="absolute top-[62%] left-[18%] w-[12%] h-[10%] rounded-full bg-black/8" />
-            {/* Mare Nubium — our territory */}
             <div className="absolute top-[56%] left-[30%] w-[16%] h-[12%] rounded-full bg-black/8" />
             <div className="absolute top-[38%] left-[30%] w-[4%] h-[4%] rounded-full border border-white/15" />
             <div className="absolute top-[76%] left-[44%] w-[4%] h-[4%] rounded-full border border-white/20" />
           </div>
 
-          {/* Lobster silhouette — fades out when exploring */}
+          {/* ── 10 transitioning pin dots (always rendered) ──
+               Logo mode:  clustered at lobster positions, red, tiny, hidden
+               Explore mode: spread to moon positions, colored, visible */}
+          {LUNAR_PINS.map((pin, i) => (
+            <button
+              key={pin.id}
+              className="absolute z-10 group cursor-pointer"
+              style={{
+                top: exploring ? pin.moonPos.top : pin.lobsterPos.top,
+                left: exploring ? pin.moonPos.left : pin.lobsterPos.left,
+                opacity: exploring ? 1 : 0,
+                transform: `translate(-50%, -50%) scale(${exploring ? 1 : 0.2})`,
+                transition: [
+                  "top 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                  "left 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                  "opacity 0.5s ease",
+                  "transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                ].join(", "),
+                transitionDelay: `${i * 60}ms`,
+                pointerEvents: exploring ? "auto" : "none",
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setActivePin(activePin?.id === pin.id ? null : pin);
+              }}
+            >
+              {/* Ping ring */}
+              <div
+                className="absolute inset-0 -m-1.5 rounded-full animate-ping"
+                style={{
+                  backgroundColor: exploring ? `${pin.color}20` : "transparent",
+                  animationDuration: "2s",
+                }}
+              />
+              {/* Pin dot */}
+              <div
+                className="relative w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full border border-white/50 transition-all duration-300 group-hover:scale-150"
+                style={{
+                  backgroundColor: exploring ? pin.color : "#D4380D",
+                  boxShadow: exploring
+                    ? `0 0 6px ${pin.color}, 0 0 14px ${pin.color}50`
+                    : "0 0 4px #D4380D",
+                  transition: "background-color 0.6s ease, box-shadow 0.6s ease, transform 0.3s ease",
+                }}
+              />
+            </button>
+          ))}
+
+          {/* ── Lobster silhouette overlay ──
+               Fades out when exploring; fades back in (with delay) on close */}
           <div
-            className={`absolute inset-0 flex items-center justify-center translate-y-[6%] transition-all duration-500 ${
-              exploring
-                ? "opacity-0 scale-90 pointer-events-none"
-                : "opacity-100 scale-100"
-            }`}
+            className="absolute inset-0 flex items-center justify-center translate-y-[6%]"
+            style={{
+              opacity: exploring ? 0 : 1,
+              transform: exploring ? "scale(0.8)" : "scale(1)",
+              transition: exploring
+                ? "opacity 0.4s ease, transform 0.4s ease"
+                : "opacity 0.5s ease 0.35s, transform 0.5s ease 0.35s",
+              pointerEvents: exploring ? "none" : "auto",
+            }}
           >
             <LobsterSilhouette
               className="w-[88%] h-[88%] text-[#D4380D] opacity-90 drop-shadow-[0_0_16px_rgba(212,56,13,0.6)]"
             />
           </div>
 
-          {/* ── Territory pins — shown when exploring ── */}
+          {/* ── Explore-mode UI ── */}
           {exploring && (
             <>
               {/* Close button */}
               <button
                 onClick={(e) => {
                   e.stopPropagation();
+                  setActivePin(null);
                   setExploring(false);
-                  setActiveZone(null);
                 }}
-                className="absolute -top-2 -right-2 z-30 w-6 h-6 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-colors text-xs cursor-pointer"
+                className="absolute -top-3 -right-3 z-30 w-7 h-7 rounded-full bg-white/10 border border-white/25 backdrop-blur-sm flex items-center justify-center text-white/70 hover:text-white hover:bg-white/25 transition-all text-xs font-bold cursor-pointer"
               >
                 &#10005;
               </button>
 
-              {territories.map((t, i) => (
-                <button
-                  key={t.id}
-                  className="absolute z-20 group cursor-pointer"
-                  style={{
-                    top: PIN_POSITIONS[t.id].top,
-                    left: PIN_POSITIONS[t.id].left,
-                    animation: `pulse-soft 2s ease-in-out infinite`,
-                    animationDelay: `${i * 200}ms`,
-                  }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setActiveZone(activeZone?.id === t.id ? null : t);
-                  }}
-                >
-                  {/* Outer glow ring */}
-                  <div
-                    className="absolute inset-0 -m-1 rounded-full animate-ping"
-                    style={{ backgroundColor: `${t.color}30` }}
-                  />
-                  {/* Pin dot */}
-                  <div
-                    className="relative w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full border-2 border-white/50 transition-transform group-hover:scale-150"
-                    style={{
-                      backgroundColor: t.color,
-                      boxShadow: `0 0 8px ${t.color}, 0 0 16px ${t.color}40`,
-                    }}
-                  />
-                  {/* Hover label */}
-                  <div
-                    className="absolute left-full ml-2 top-1/2 -translate-y-1/2 whitespace-nowrap text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
-                    style={{ color: t.color }}
-                  >
-                    {t.name}
-                  </div>
-                </button>
-              ))}
+              {/* Hint text */}
+              <div
+                className="absolute left-1/2 -translate-x-1/2 z-10 text-[9px] sm:text-[10px] text-gray-400 whitespace-nowrap pointer-events-none select-none"
+                style={{ top: "calc(100% + 4px)" }}
+              >
+                Tap a point to learn more
+              </div>
             </>
           )}
 
-          {/* ── Territory info card — shown when a pin is selected ── */}
-          {activeZone && (
+          {/* ── Info card for selected pin ── */}
+          {activePin && (
             <div
-              className="absolute left-1/2 -translate-x-1/2 z-30 glass-strong rounded-xl p-4 w-52 sm:w-56 border"
+              className="absolute left-1/2 -translate-x-1/2 z-30 glass-strong rounded-xl p-4 w-56 sm:w-64 border animate-slide-in"
               style={{
-                top: "calc(100% + 12px)",
-                borderColor: `${activeZone.color}30`,
+                top: "calc(100% + 20px)",
+                borderColor: `${activePin.color}30`,
               }}
             >
-              <div className="flex items-center gap-2 mb-2">
+              {/* Header */}
+              <div className="flex items-center gap-2 mb-1.5">
                 <div
-                  className="w-2.5 h-2.5 rounded-full"
-                  style={{ backgroundColor: activeZone.color }}
+                  className="w-2.5 h-2.5 rounded-full shrink-0"
+                  style={{ backgroundColor: activePin.color }}
                 />
-                <h4 className="text-sm font-bold" style={{ color: activeZone.color }}>
-                  {activeZone.name}
+                <h4 className="text-sm font-bold leading-tight" style={{ color: activePin.color }}>
+                  {activePin.title}
                 </h4>
               </div>
-              <p className="text-[10px] text-gray-400 italic mb-2">{activeZone.tagline}</p>
-              <div className="grid grid-cols-2 gap-2 text-center mb-2">
-                <div className="bg-white/5 rounded-lg p-1.5">
-                  <div className="text-xs font-bold text-white">
-                    {activeZone.priceSats.toLocaleString()}
-                  </div>
-                  <div className="text-[9px] text-gray-500">sats / plot</div>
-                </div>
-                <div className="bg-white/5 rounded-lg p-1.5">
-                  <div className="text-xs font-bold text-white">
-                    {(activeZone.totalPlots - activeZone.claimedPlots).toLocaleString()}
-                  </div>
-                  <div className="text-[9px] text-gray-500">available</div>
-                </div>
-              </div>
-              <div className="text-[10px] text-gray-500">
-                {activeZone.terrainType} &middot; {activeZone.solarExposure}hrs solar
-              </div>
+              <p className="text-[10px] text-gray-400 italic mb-2">{activePin.subtitle}</p>
+              <p className="text-[11px] text-gray-300 leading-relaxed">
+                {activePin.description}
+              </p>
             </div>
           )}
         </div>
