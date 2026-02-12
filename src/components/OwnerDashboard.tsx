@@ -142,8 +142,8 @@ function OverviewTab() {
                 />
               </div>
               <div className="flex items-center justify-between mt-2">
-                <span className="text-[10px] text-gray-500">{t.capacityPercent}% claimed</span>
-                <span className={`text-[10px] font-medium ${t.direction === "up" ? "text-green-400" : t.direction === "down" ? "text-red-400" : "text-gray-400"}`}>
+                <span className="text-xs text-gray-500">{t.capacityPercent}% claimed</span>
+                <span className={`text-xs font-medium ${t.direction === "up" ? "text-green-400" : t.direction === "down" ? "text-red-400" : "text-gray-400"}`}>
                   {t.direction === "up" ? "▲" : t.direction === "down" ? "▼" : "▬"} {t.changePercent}%
                 </span>
               </div>
@@ -167,7 +167,7 @@ function OverviewTab() {
             <div key={i} className="flex items-center gap-3 px-4 py-3">
               <span className="text-lg">{item.icon}</span>
               <span className="text-sm text-gray-300 flex-1">{item.text}</span>
-              <span className="text-[10px] text-gray-500 shrink-0">{item.time}</span>
+              <span className="text-xs text-gray-500 shrink-0">{item.time}</span>
             </div>
           ))}
         </div>
@@ -197,7 +197,7 @@ function FundCard({ fund }: { fund: typeof communityFunds[0] }) {
           />
         ))}
       </div>
-      <div className="flex items-center justify-between mt-2 text-[10px] text-gray-500">
+      <div className="flex items-center justify-between mt-2 text-xs text-gray-500">
         <span>{fund.totalVoters} owners</span>
         <span>{fund.totalVotingPower} votes</span>
       </div>
@@ -241,15 +241,15 @@ function GovernanceTab() {
             <div className="grid grid-cols-3 gap-3 text-center">
               <div>
                 <p className="text-xl font-bold text-white">${fund.balanceUsd.toLocaleString()}</p>
-                <p className="text-[10px] text-gray-500">Balance</p>
+                <p className="text-xs text-gray-500">Balance</p>
               </div>
               <div>
                 <p className="text-xl font-bold text-white">{fund.totalVoters}</p>
-                <p className="text-[10px] text-gray-500">Voters</p>
+                <p className="text-xs text-gray-500">Voters</p>
               </div>
               <div>
                 <p className="text-xl font-bold text-white">{fund.totalVotingPower}</p>
-                <p className="text-[10px] text-gray-500">Voting Power</p>
+                <p className="text-xs text-gray-500">Voting Power</p>
               </div>
             </div>
             <p className="text-xs text-gray-500 mt-4 leading-relaxed">
@@ -318,10 +318,10 @@ function ProposalCard({ proposal: p }: { proposal: Proposal }) {
           <div>
             <h4 className="text-base font-bold text-white">{p.title}</h4>
             <div className="flex items-center gap-2 mt-1">
-              <span className="text-[10px] px-2 py-0.5 rounded-full" style={{ color: fundColor, backgroundColor: `${fundColor}15`, border: `1px solid ${fundColor}30` }}>
+              <span className="text-xs px-2 py-0.5 rounded-full" style={{ color: fundColor, backgroundColor: `${fundColor}15`, border: `1px solid ${fundColor}30` }}>
                 {p.fund === "human" ? "🧑 Human Fund" : "🤖 Bot Fund"}
               </span>
-              <span className="text-[10px] text-gray-500">
+              <span className="text-xs text-gray-500">
                 by {p.proposedBy}
               </span>
             </div>
@@ -458,11 +458,11 @@ function MarketplaceTab() {
                       <span className={`text-sm font-semibold ${isBot ? "font-mono text-nebula-purple" : "text-white"}`}>
                         {trade.ownerName}
                       </span>
-                      <span className="text-[10px] text-gray-500">offers</span>
+                      <span className="text-xs text-gray-500">offers</span>
                     </div>
                     <div className="flex items-center gap-2 mb-2">
                       <span className="text-xs font-bold text-cosmic-teal">{trade.offeredPlotId}</span>
-                      <span className="text-[10px] text-gray-500">
+                      <span className="text-xs text-gray-500">
                         {trade.offeredTerritory} &middot; {trade.offeredAcreage === 0.25 ? "¼" : trade.offeredAcreage} acre
                       </span>
                     </div>
@@ -527,8 +527,8 @@ function DataTab() {
               </div>
               <p className="text-xs text-gray-400 mb-2">{feed.desc}</p>
               <div className="flex items-center justify-between">
-                <code className="text-[10px] text-gray-500 font-mono">{feed.url}</code>
-                <span className="text-[10px] text-gray-500">{feed.tier}</span>
+                <code className="text-xs text-gray-500 font-mono">{feed.url}</code>
+                <span className="text-xs text-gray-500">{feed.tier}</span>
               </div>
             </div>
           ))}
@@ -554,7 +554,7 @@ function DataTab() {
                     {nl.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="text-[10px] bg-white/5 border border-white/10 rounded-full px-2 py-0.5 text-gray-500"
+                        className="text-xs bg-white/5 border border-white/10 rounded-full px-2 py-0.5 text-gray-500"
                       >
                         {tag}
                       </span>
@@ -580,9 +580,9 @@ function DataTab() {
             <div key={t.id} className="glass rounded-xl p-4 text-center border border-white/5">
               <div className="w-3 h-3 rounded-full mx-auto mb-2" style={{ backgroundColor: t.color }} />
               <p className="text-xs font-semibold text-white mb-0.5">{t.name}</p>
-              <p className="text-[10px] text-gray-500">{t.avgElevation.toLocaleString()}m elev</p>
-              <p className="text-[10px] text-gray-500">{t.solarExposure}hrs solar</p>
-              <p className="text-xs font-bold mt-1" style={{ color: t.color }}>{t.priceSats.toLocaleString()} sats</p>
+              <p className="text-xs text-gray-500">{t.avgElevation.toLocaleString()}m elev</p>
+              <p className="text-xs text-gray-500">{t.solarExposure}hrs solar</p>
+              <p className="text-xs font-bold mt-1" style={{ color: t.color }}>{t.priceSats.toLocaleString()} sats · {t.voteCreditsHuman} vote/plot</p>
             </div>
           ))}
         </div>

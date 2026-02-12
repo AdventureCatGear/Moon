@@ -226,7 +226,7 @@ export default function BotApiSection() {
                   </span>
                 </div>
                 <div className="mt-1 flex items-center gap-2 text-xs font-mono text-gray-500">
-                  <span className="px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 text-[10px] font-bold">
+                  <span className="px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 text-xs font-bold">
                     200 OK
                   </span>
                   <span>14ms</span>

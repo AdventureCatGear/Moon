@@ -106,7 +106,7 @@ export default function TerritoryDetail({ territory, onBack }: TerritoryDetailPr
                   <p className="text-xs text-gray-500 mb-2">Nearby Features</p>
                   <div className="flex flex-wrap gap-1">
                     {territory.nearbyFeatures.map((f) => (
-                      <span key={f} className="text-[10px] bg-surface-light rounded-full px-2 py-1 text-gray-400">
+                      <span key={f} className="text-xs bg-surface-light rounded-full px-2 py-1 text-gray-400">
                         {f}
                       </span>
                     ))}
@@ -143,7 +143,7 @@ export default function TerritoryDetail({ territory, onBack }: TerritoryDetailPr
               <h3 className="text-lg font-semibold text-gray-300">
                 Showing {filteredPlots.length} plots
               </h3>
-              <span className="text-sm text-gray-500">{territory.priceSats.toLocaleString()} sats/plot · &asymp;{territory.priceBot} USDT</span>
+              <span className="text-sm text-gray-500">{territory.priceSats.toLocaleString()} sats/plot · &asymp;{territory.priceBot} USDT · {territory.voteCreditsHuman} vote/plot</span>
             </div>
 
             {/* Physical land grid — bot plots (¼ acre) are visually smaller
@@ -173,14 +173,14 @@ export default function TerritoryDetail({ territory, onBack }: TerritoryDetailPr
                       {plot.status === "available" ? (
                         <span className="text-cosmic-teal opacity-60 group-hover:opacity-100">+</span>
                       ) : isBot ? (
-                        <span className="text-[10px]">🤖</span>
+                        <span className="text-xs">🤖</span>
                       ) : (
-                        <span className="text-[10px]">🧑</span>
+                        <span className="text-xs">🧑</span>
                       )}
                     </div>
                     {/* Hover tooltip */}
                     <div className="absolute -top-12 left-1/2 -translate-x-1/2 hidden group-hover:block z-20">
-                      <div className="glass rounded px-2 py-1 text-[10px] text-white whitespace-nowrap">
+                      <div className="glass rounded px-2 py-1 text-xs text-white whitespace-nowrap">
                         {plot.id} · {plot.acreage === 0.25 ? "¼" : plot.acreage} acre
                       </div>
                     </div>

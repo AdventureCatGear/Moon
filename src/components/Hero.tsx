@@ -468,7 +468,7 @@ export default function Hero() {
 
               {/* Hint text */}
               <div
-                className="absolute left-1/2 -translate-x-1/2 z-10 text-[9px] sm:text-[10px] text-gray-400 whitespace-nowrap pointer-events-none select-none"
+                className="absolute left-1/2 -translate-x-1/2 z-10 text-[11px] sm:text-xs text-gray-400 whitespace-nowrap pointer-events-none select-none"
                 style={{ top: "calc(100% + 4px)" }}
               >
                 Tap a point to learn more
@@ -495,8 +495,8 @@ export default function Hero() {
                   {activePin.title}
                 </h4>
               </div>
-              <p className="text-[10px] text-gray-400 italic mb-2">{activePin.subtitle}</p>
-              <p className="text-[11px] text-gray-300 leading-relaxed">
+              <p className="text-xs text-gray-400 italic mb-2">{activePin.subtitle}</p>
+              <p className="text-sm text-gray-300 leading-relaxed">
                 {activePin.description}
               </p>
             </div>

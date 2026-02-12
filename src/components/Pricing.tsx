@@ -123,7 +123,7 @@ export default function Pricing() {
                 </div>
                 <div>
                   <h4 className="text-base font-bold text-cosmic-teal">Stripe (USD)</h4>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-cosmic-teal/60">
+                  <span className="text-xs font-bold uppercase tracking-widest text-cosmic-teal/60">
                     Primary
                   </span>
                 </div>
@@ -152,7 +152,7 @@ export default function Pricing() {
                 </div>
                 <div>
                   <h4 className="text-base font-bold text-amber">Cryptocurrency</h4>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-amber/60">
+                  <span className="text-xs font-bold uppercase tracking-widest text-amber/60">
                     Optional
                   </span>
                 </div>
@@ -269,7 +269,7 @@ export default function Pricing() {
                 <div className="flex items-center gap-3 mb-3">
                   <span className="text-2xl">&#127974;</span>
                   <div>
-                    <div className="text-[10px] font-bold uppercase tracking-widest text-nebula-purple/60 mb-0.5">
+                    <div className="text-xs font-bold uppercase tracking-widest text-nebula-purple/60 mb-0.5">
                       First Governance Vote &mdash; Live Now
                     </div>
                     <h4 className="text-base font-bold text-white">
@@ -283,10 +283,10 @@ export default function Pricing() {
                   (yield-focused). All votes are cryptographically verified and publicly visible.
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  <span className="text-[10px] bg-nebula-purple/10 border border-nebula-purple/20 rounded-full px-3 py-1 text-nebula-purple font-medium">
+                  <span className="text-xs bg-nebula-purple/10 border border-nebula-purple/20 rounded-full px-3 py-1 text-nebula-purple font-medium">
                     Active Proposal
                   </span>
-                  <span className="text-[10px] bg-white/5 border border-white/10 rounded-full px-3 py-1 text-gray-400">
+                  <span className="text-xs bg-white/5 border border-white/10 rounded-full px-3 py-1 text-gray-400">
                     Ends March 15, 2026
                   </span>
                 </div>
@@ -336,7 +336,7 @@ function ZoneCard({ territory: t }: { territory: Territory }) {
       </div>
       <p className="text-xs text-gray-500 italic mb-4">{t.tagline}</p>
 
-      {/* Price — sats primary, USDT secondary */}
+      {/* Price — sats primary, USDT secondary, votes included */}
       <div className="mb-2">
         <div className="flex items-end gap-2">
           <span className="text-3xl font-extrabold" style={{ color: t.color }}>
@@ -346,7 +346,7 @@ function ZoneCard({ territory: t }: { territory: Territory }) {
           <span className="text-gray-500 text-sm mb-0.5">/ plot</span>
         </div>
         <div className="text-xs text-gray-500 mt-0.5">
-          &asymp; {t.priceBot} USDT
+          &asymp; {t.priceBot} USDT &middot; {t.voteCreditsHuman} vote credit included
         </div>
       </div>
 
@@ -368,7 +368,7 @@ function ZoneCard({ territory: t }: { territory: Territory }) {
           { label: "Terrain", value: stats.terrain },
         ].map((s) => (
           <div key={s.label} className="glass rounded-lg px-3 py-2">
-            <div className="text-[10px] text-gray-500 uppercase tracking-wider">{s.label}</div>
+            <div className="text-xs text-gray-500 uppercase tracking-wider">{s.label}</div>
             <div className="text-xs font-semibold text-gray-300">{s.value}</div>
           </div>
         ))}
@@ -396,7 +396,7 @@ function ZoneCard({ territory: t }: { territory: Territory }) {
             style={{ width: `${Math.max(pctClaimed, 1)}%`, backgroundColor: t.color }}
           />
         </div>
-        <div className="mt-1 text-[10px] text-gray-600 text-right">
+        <div className="mt-1 text-xs text-gray-600 text-right">
           {pctClaimed}% claimed
         </div>
       </div>

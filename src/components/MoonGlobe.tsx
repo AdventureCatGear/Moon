@@ -969,19 +969,19 @@ function DetailOverlay({ item, onClose, onExplorePlots }: { item: DetailItem; on
         <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
           <div className="rounded-lg bg-white/5 px-3 py-2 text-center">
             <div className="text-white font-bold text-lg">{t.totalPlots}</div>
-            <div className="text-gray-500 text-[10px] uppercase tracking-wider">Total Plots</div>
+            <div className="text-gray-500 text-xs uppercase tracking-wider">Total Plots</div>
           </div>
           <div className="rounded-lg bg-white/5 px-3 py-2 text-center">
             <div className="font-bold text-lg" style={{ color: "#00E5CC" }}>{t.totalPlots - t.claimedPlots}</div>
-            <div className="text-gray-500 text-[10px] uppercase tracking-wider">Available</div>
+            <div className="text-gray-500 text-xs uppercase tracking-wider">Available</div>
           </div>
           <div className="rounded-lg bg-white/5 px-3 py-2 text-center">
             <div className="text-amber-400 font-bold text-lg">{t.priceSats.toLocaleString()} <span className="text-xs font-normal">sats</span></div>
-            <div className="text-gray-500 text-[10px] uppercase tracking-wider">&asymp; {t.priceBot} USDT / plot</div>
+            <div className="text-gray-500 text-xs uppercase tracking-wider">&asymp; {t.priceBot} USDT &middot; {t.voteCreditsHuman} vote / plot</div>
           </div>
           <div className="rounded-lg bg-white/5 px-3 py-2 text-center">
             <div className="text-white font-bold text-sm leading-tight mt-0.5">{t.terrainType}</div>
-            <div className="text-gray-500 text-[10px] uppercase tracking-wider mt-0.5">Terrain</div>
+            <div className="text-gray-500 text-xs uppercase tracking-wider mt-0.5">Terrain</div>
           </div>
         </div>
         <button

@@ -125,7 +125,7 @@ export default function PlotDetail({ plot, territory, onBack }: PlotDetailProps)
               {/* Your plot flag */}
               <div className="absolute bottom-[35%] left-1/2 -translate-x-1/2 flex flex-col items-center">
                 <div
-                  className="px-2 py-1 rounded text-[10px] font-bold"
+                  className="px-2 py-1 rounded text-xs font-bold"
                   style={{ backgroundColor: territory.color, color: "#0B1026" }}
                 >
                   {plot.id}
@@ -135,7 +135,7 @@ export default function PlotDetail({ plot, territory, onBack }: PlotDetailProps)
 
               {/* Overlay label */}
               <div className="absolute top-4 left-4 glass rounded-lg px-3 py-2">
-                <p className="text-[10px] text-gray-400 uppercase tracking-wider">Virtual Walk View</p>
+                <p className="text-xs text-gray-400 uppercase tracking-wider">Virtual Walk View</p>
                 <p className="text-xs text-white font-semibold">{plot.lat}°N, {plot.lon}°E</p>
               </div>
             </div>
@@ -285,7 +285,7 @@ export default function PlotDetail({ plot, territory, onBack }: PlotDetailProps)
               </button>
             </div>
 
-            <p className="text-[10px] text-gray-600 text-center mt-4">
+            <p className="text-xs text-gray-600 text-center mt-4">
               This is a prototype. No real transaction will occur.
             </p>
           </div>
