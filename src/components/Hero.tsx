@@ -27,58 +27,36 @@ function LobsterSilhouette({ className }: { className?: string }) {
         strokeLinecap="round"
       />
 
-      {/* Left claw — arm */}
+      {/* Left claw — arm (filled tapered shape) */}
       <path
-        d="M76,82 C62,70 48,60 34,50"
-        fill="none"
-        strokeWidth="6"
-        strokeLinecap="round"
+        d="M76,76 C62,66 50,58 38,48 C38,52 38,54 38,56 C50,64 62,74 78,84Z"
+        stroke="none"
       />
-      {/* Left claw — palm (filled bulge where prongs meet) */}
+      {/* Left claw — upper prong (filled) */}
       <path
-        d="M34,50 C30,46 26,43 22,42 C18,41 16,44 18,48 C20,52 26,54 34,50Z"
-        strokeWidth="0"
+        d="M38,48 C30,40 18,28 10,22 C6,20 6,26 12,32 C20,40 30,46 38,50Z"
+        stroke="none"
       />
-      {/* Left upper pincer — thick curved prong */}
+      {/* Left claw — lower prong (filled) */}
       <path
-        d="M22,42 C16,36 8,28 4,24 C2,22 0,24 2,28 C4,32 10,38 18,44"
-        fill="none"
-        strokeWidth="4"
-        strokeLinecap="round"
-      />
-      {/* Left lower pincer — shorter opposing prong */}
-      <path
-        d="M20,48 C14,52 8,56 4,56 C2,56 2,54 4,52 C6,50 12,46 18,44"
-        fill="none"
-        strokeWidth="3.5"
-        strokeLinecap="round"
+        d="M38,56 C30,60 18,66 10,64 C6,62 8,58 14,54 C22,52 30,54 38,54Z"
+        stroke="none"
       />
 
-      {/* Right claw — arm */}
+      {/* Right claw — arm (filled tapered shape) */}
       <path
-        d="M124,82 C138,70 152,60 166,50"
-        fill="none"
-        strokeWidth="6"
-        strokeLinecap="round"
+        d="M124,76 C138,66 150,58 162,48 C162,52 162,54 162,56 C150,64 138,74 122,84Z"
+        stroke="none"
       />
-      {/* Right claw — palm (filled bulge where prongs meet) */}
+      {/* Right claw — upper prong (filled) */}
       <path
-        d="M166,50 C170,46 174,43 178,42 C182,41 184,44 182,48 C180,52 174,54 166,50Z"
-        strokeWidth="0"
+        d="M162,48 C170,40 182,28 190,22 C194,20 194,26 188,32 C180,40 170,46 162,50Z"
+        stroke="none"
       />
-      {/* Right upper pincer — thick curved prong */}
+      {/* Right claw — lower prong (filled) */}
       <path
-        d="M178,42 C184,36 192,28 196,24 C198,22 200,24 198,28 C196,32 190,38 182,44"
-        fill="none"
-        strokeWidth="4"
-        strokeLinecap="round"
-      />
-      {/* Right lower pincer — shorter opposing prong */}
-      <path
-        d="M180,48 C186,52 192,56 196,56 C198,56 198,54 196,52 C194,50 188,46 182,44"
-        fill="none"
-        strokeWidth="3.5"
-        strokeLinecap="round"
+        d="M162,56 C170,60 182,66 190,64 C194,62 192,58 186,54 C178,52 170,54 162,54Z"
+        stroke="none"
       />
 
       {/* Astronaut helmet — glass dome over head */}
@@ -206,52 +184,53 @@ export default function Hero() {
             <div className="absolute top-[38%] left-[30%] w-[4%] h-[4%] rounded-full border border-white/15" />
             {/* Tycho crater — southern, bright */}
             <div className="absolute top-[76%] left-[44%] w-[4%] h-[4%] rounded-full border border-white/20" />
-            {/* Our territory marker — tiny lobster flag on Mare Nubium */}
-            <div
-              className="absolute top-[52%] left-[36%]"
-              style={{ width: "8%", height: "12%" }}
-            >
-              {/* Flag pole */}
-              <div
-                className="absolute bottom-0 left-1/2 -translate-x-1/2"
-                style={{
-                  width: "1px",
-                  height: "100%",
-                  backgroundColor: "rgba(0, 229, 204, 0.8)",
-                  boxShadow: "0 0 3px rgba(0, 229, 204, 0.5)",
-                }}
-              />
-              {/* Flag */}
-              <div
-                className="absolute top-0 left-1/2"
-                style={{
-                  width: "150%",
-                  height: "45%",
-                  backgroundColor: "rgba(0, 229, 204, 0.7)",
-                  boxShadow: "0 0 6px rgba(0, 229, 204, 0.6), 0 0 12px rgba(0, 229, 204, 0.3)",
-                  borderRadius: "0 2px 2px 0",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <span style={{ fontSize: "5px", lineHeight: 1 }}>{"\ud83e\udd9e"}</span>
-              </div>
-              {/* Ground glow dot */}
-              <div
-                className="absolute -bottom-[2px] left-1/2 -translate-x-1/2 w-[4px] h-[4px] rounded-full animate-pulse"
-                style={{
-                  backgroundColor: "rgba(0, 229, 204, 0.5)",
-                  boxShadow: "0 0 4px rgba(0, 229, 204, 0.6)",
-                }}
-              />
-            </div>
           </div>
 
           {/* Lobster silhouette overlay */}
           <div className="absolute inset-0 flex items-center justify-center">
             <LobsterSilhouette
               className="w-[88%] h-[88%] text-[#D4380D] opacity-90 drop-shadow-[0_0_16px_rgba(212,56,13,0.6)]"
+            />
+          </div>
+
+          {/* Territory flag — on top of everything */}
+          <div
+            className="absolute z-10"
+            style={{ top: "52%", left: "36%", width: "8%", height: "14%" }}
+          >
+            {/* Flag pole */}
+            <div
+              className="absolute bottom-0 left-1/2 -translate-x-1/2"
+              style={{
+                width: "2px",
+                height: "100%",
+                backgroundColor: "rgba(0, 229, 204, 0.9)",
+                boxShadow: "0 0 4px rgba(0, 229, 204, 0.6)",
+              }}
+            />
+            {/* Flag */}
+            <div
+              className="absolute top-0 left-1/2"
+              style={{
+                width: "180%",
+                height: "40%",
+                backgroundColor: "rgba(0, 229, 204, 0.85)",
+                boxShadow: "0 0 8px rgba(0, 229, 204, 0.7), 0 0 16px rgba(0, 229, 204, 0.3)",
+                borderRadius: "0 2px 2px 0",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <span style={{ fontSize: "6px", lineHeight: 1 }}>{"\ud83e\udd9e"}</span>
+            </div>
+            {/* Ground glow */}
+            <div
+              className="absolute -bottom-[2px] left-1/2 -translate-x-1/2 w-[5px] h-[5px] rounded-full animate-pulse"
+              style={{
+                backgroundColor: "rgba(0, 229, 204, 0.5)",
+                boxShadow: "0 0 6px rgba(0, 229, 204, 0.7)",
+              }}
             />
           </div>
         </div>
