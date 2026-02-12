@@ -27,49 +27,19 @@ function LobsterSilhouette({ className }: { className?: string }) {
         strokeLinecap="round"
       />
 
-      {/* Left claw — space glove: arm → dactylus → gap → pollex → arm */}
-      <path
-        d="M78,70
-           C60,58 44,48 32,42
-           C24,36 14,26 8,20
-           C4,16 2,20 4,26
-           C8,32 16,38 24,42
-           L24,52
-           C16,56 8,62 4,68
-           C2,74 4,76 8,72
-           C14,66 24,58 32,54
-           C44,60 60,70 78,84
-           Z"
-        stroke="none"
-      />
-      {/* Left upper glove fingertip — puffy pressurized bulb */}
-      <circle cx="5" cy="20" r="8" stroke="none" />
-      {/* Left lower glove fingertip — puffy pressurized bulb */}
-      <circle cx="5" cy="70" r="7" stroke="none" />
-      {/* Left wrist cuff ring */}
-      <ellipse cx="32" cy="48" rx="3" ry="8" fill="none" stroke="white" strokeWidth="1.5" opacity="0.3" />
+      {/* Left claw — arm */}
+      <path d="M78,74 C62,64 48,56 36,48 L36,56 C48,62 62,72 78,84Z" stroke="none" />
+      {/* Left claw — upper prong */}
+      <path d="M36,48 Q20,30 4,18" fill="none" strokeWidth="8" strokeLinecap="round" />
+      {/* Left claw — lower prong */}
+      <path d="M36,56 Q20,68 4,74" fill="none" strokeWidth="8" strokeLinecap="round" />
 
-      {/* Right claw — space glove mirrored */}
-      <path
-        d="M122,70
-           C140,58 156,48 168,42
-           C176,36 186,26 192,20
-           C196,16 198,20 196,26
-           C192,32 184,38 176,42
-           L176,52
-           C184,56 192,62 196,68
-           C198,74 196,76 192,72
-           C186,66 176,58 168,54
-           C156,60 140,70 122,84
-           Z"
-        stroke="none"
-      />
-      {/* Right upper glove fingertip — puffy pressurized bulb */}
-      <circle cx="195" cy="20" r="8" stroke="none" />
-      {/* Right lower glove fingertip — puffy pressurized bulb */}
-      <circle cx="195" cy="70" r="7" stroke="none" />
-      {/* Right wrist cuff ring */}
-      <ellipse cx="168" cy="48" rx="3" ry="8" fill="none" stroke="white" strokeWidth="1.5" opacity="0.3" />
+      {/* Right claw — arm */}
+      <path d="M122,74 C138,64 152,56 164,48 L164,56 C152,62 138,72 122,84Z" stroke="none" />
+      {/* Right claw — upper prong */}
+      <path d="M164,48 Q180,30 196,18" fill="none" strokeWidth="8" strokeLinecap="round" />
+      {/* Right claw — lower prong */}
+      <path d="M164,56 Q180,68 196,74" fill="none" strokeWidth="8" strokeLinecap="round" />
 
       {/* Astronaut helmet — glass dome over head */}
       <ellipse cx="100" cy="72" rx="32" ry="26" fill="none" stroke="currentColor" strokeWidth="3" opacity="0.7" />
