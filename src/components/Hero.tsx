@@ -154,7 +154,8 @@ export default function Hero() {
 
       <p className="mt-6 max-w-2xl text-center text-gray-300 text-base sm:text-lg leading-relaxed">
         Claim your own acre on the lunar surface. Real NASA coordinates.
-        Real terrain data. Spectacularly unreal ownership rights.
+        Real terrain data. Real votes on a real community fund.
+        The land is symbolic — the governance isn&apos;t.
         <span className="text-amber font-semibold"> Starting at $49.</span>
       </p>
 

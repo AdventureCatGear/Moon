@@ -72,9 +72,13 @@ export default function Footer() {
         {/* Legal */}
         <div className="border-t border-white/5 pt-8">
           <p className="text-xs text-gray-600 leading-relaxed text-center max-w-3xl mx-auto">
-            Lunar Lobsters provides symbolic/novelty registrations of lunar coordinates.
-            These do not constitute legal property claims under the Outer Space Treaty of 1967
-            or any national jurisdiction. But they do constitute being awesome.
+            Lunar Lobsters registers symbolic coordinates on the lunar surface. No sovereign
+            nation currently recognizes private ownership of celestial bodies, and these
+            registrations do not constitute enforceable property claims under the Outer Space
+            Treaty of 1967, the Moon Agreement of 1979, or any national jurisdiction. The
+            community fund, vote credits, and governance system are real and binding among
+            participants. Space law continues to evolve — but we make no guarantees about
+            future recognition of lunar land claims.
           </p>
           <p className="text-xs text-gray-700 text-center mt-4">
             &copy; {new Date().getFullYear()} Lunar Lobsters. All rights reserved.

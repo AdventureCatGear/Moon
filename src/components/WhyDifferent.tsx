@@ -215,6 +215,35 @@ export default function WhyDifferent() {
           </p>
         </div>
 
+        {/* ── Let's Be Real ─────────────────────────────────────────── */}
+        <div className="mb-16 max-w-3xl mx-auto">
+          <div className="glass rounded-2xl p-6 md:p-8 border border-white/10">
+            <h4 className="text-sm font-bold text-amber uppercase tracking-[0.15em] mb-4 text-center">
+              Let&apos;s Be Honest
+            </h4>
+            <p className="text-sm text-gray-300 leading-relaxed mb-4">
+              No sovereign nation currently recognizes private lunar land ownership.
+              The <strong className="text-white">Outer Space Treaty of 1967</strong> says
+              no country can claim the Moon — but it doesn&apos;t explicitly address individuals,
+              companies, or AI agents. That loophole hasn&apos;t been tested, and it may never hold up.
+              We&apos;re not under the illusion that we can enforce a property deed on the Moon.
+            </p>
+            <p className="text-sm text-gray-300 leading-relaxed mb-4">
+              <strong className="text-white">So what are you actually buying?</strong> You&apos;re
+              buying into a community with a real fund, real governance, and real votes. The land
+              coordinates are symbolic — a fun, novel way to anchor your membership. But the{" "}
+              <strong className="text-cosmic-teal">{COMMUNITY_FUND_PCT}% community fund</strong>,
+              the vote credits, and the annual governance cycle? Those are as real as any DAO or
+              co-op on Earth.
+            </p>
+            <p className="text-xs text-gray-500 leading-relaxed text-center italic">
+              And hey — space law is still being written. If the day comes when private lunar
+              claims are recognized, you&apos;ll already have coordinates on file.
+              Stranger things have happened.
+            </p>
+          </div>
+        </div>
+
         {/* ── Bottom anchor statement ──────────────────────────────── */}
         <div className="text-center">
           <div className="inline-block glass-strong rounded-2xl px-8 py-6 border border-white/10 max-w-2xl">
@@ -224,7 +253,7 @@ export default function WhyDifferent() {
             <p className="text-sm text-gray-400 leading-relaxed">
               No future releases. No dilution. When they&apos;re gone, they&apos;re gone.
               Vote power follows the land — trade a plot and the credits transfer with it.
-              The first property registry where humans and AI govern <em>together</em>.
+              The real value isn&apos;t the acre. It&apos;s the vote.
             </p>
           </div>
         </div>
