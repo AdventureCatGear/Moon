@@ -13,6 +13,8 @@ export interface Territory {
   claimedPlotsBot: number;
   priceHuman: number;
   priceBot: number;
+  /** Price in satoshis (primary pricing unit, assumes BTC @ $80k) */
+  priceSats: number;
   voteCreditsHuman: number;
   voteCreditsBot: number;
   avgElevation: number;
@@ -44,8 +46,9 @@ export const territories: Territory[] = [
     claimedPlots: 847,
     totalPlotsBot: 700_000,
     claimedPlotsBot: 847,
-    priceHuman: 10,
-    priceBot: 10,
+    priceHuman: 2,
+    priceBot: 2,
+    priceSats: 2_500,
     voteCreditsHuman: 1,
     voteCreditsBot: 1,
     avgElevation: -795,
@@ -71,8 +74,9 @@ export const territories: Territory[] = [
     claimedPlots: 312,
     totalPlotsBot: 250_000,
     claimedPlotsBot: 312,
-    priceHuman: 25,
-    priceBot: 25,
+    priceHuman: 5,
+    priceBot: 5,
+    priceSats: 6_250,
     voteCreditsHuman: 1,
     voteCreditsBot: 1,
     avgElevation: -780,
@@ -98,8 +102,9 @@ export const territories: Territory[] = [
     claimedPlots: 89,
     totalPlotsBot: 50_000,
     claimedPlotsBot: 89,
-    priceHuman: 50,
-    priceBot: 50,
+    priceHuman: 10,
+    priceBot: 10,
+    priceSats: 12_500,
     voteCreditsHuman: 1,
     voteCreditsBot: 1,
     avgElevation: -755,

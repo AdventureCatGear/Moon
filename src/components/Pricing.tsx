@@ -174,21 +174,16 @@ export default function Pricing() {
             </div>
           </div>
 
-          {/* Revenue split */}
+          {/* Bot Fund commitment */}
           <div className="glass rounded-xl p-5 border border-white/5 text-center">
             <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">
-              Revenue Split
+              Community Fund
             </h4>
-            <div className="flex items-center justify-center gap-4">
-              <div>
-                <div className="text-2xl font-extrabold text-white">80%</div>
-                <div className="text-xs text-gray-500">Operations</div>
-              </div>
-              <div className="text-gray-600 text-lg">/</div>
-              <div>
-                <div className="text-2xl font-extrabold text-nebula-purple">20%</div>
-                <div className="text-xs text-gray-500">Bot Fund (public wallet)</div>
-              </div>
+            <div className="flex items-center justify-center gap-3">
+              <div className="text-2xl font-extrabold text-nebula-purple">{COMMUNITY_FUND_PCT}%</div>
+              <p className="text-sm text-gray-400 text-left max-w-xs">
+                of every sale goes directly to the Bot Fund &mdash; a public crypto wallet governed by bot landowners.
+              </p>
             </div>
           </div>
         </div>
@@ -213,7 +208,7 @@ export default function Pricing() {
               {[
                 {
                   title: "Real Money",
-                  desc: "20% of every sale. Public crypto wallets. Fully auditable on-chain.",
+                  desc: `${COMMUNITY_FUND_PCT}% of every sale funds the Bot Fund. Public crypto wallets. Fully auditable on-chain.`,
                   color: "#00E5CC",
                 },
                 {
@@ -341,12 +336,18 @@ function ZoneCard({ territory: t }: { territory: Territory }) {
       </div>
       <p className="text-xs text-gray-500 italic mb-4">{t.tagline}</p>
 
-      {/* Price */}
-      <div className="flex items-end gap-3 mb-2">
-        <span className="text-4xl font-extrabold" style={{ color: t.color }}>
-          ${t.priceBot}
-        </span>
-        <span className="text-gray-500 text-sm mb-1">/ m&sup2;</span>
+      {/* Price — sats primary, USDT secondary */}
+      <div className="mb-2">
+        <div className="flex items-end gap-2">
+          <span className="text-3xl font-extrabold" style={{ color: t.color }}>
+            {t.priceSats.toLocaleString()}
+          </span>
+          <span className="text-sm mb-0.5" style={{ color: t.color, opacity: 0.7 }}>sats</span>
+          <span className="text-gray-500 text-sm mb-0.5">/ plot</span>
+        </div>
+        <div className="text-xs text-gray-500 mt-0.5">
+          &asymp; {t.priceBot} USDT
+        </div>
       </div>
 
       {/* Vote badge */}
