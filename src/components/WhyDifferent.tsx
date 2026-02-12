@@ -249,10 +249,11 @@ export default function WhyDifferent() {
         <div className="mb-20 text-center">
           <div className="inline-block glass-strong rounded-2xl px-8 py-6 border border-nebula-purple/20 glow-amber max-w-3xl">
             <p className="text-xl md:text-2xl lg:text-3xl font-extrabold text-white leading-snug">
-              The moon land is the wrapper.
+              The land is the anchor.
+              The governance is the engine.
               <br />
               <span className="text-gradient-amber">
-                The governance API is the product.
+                The future is the point.
               </span>
             </p>
           </div>
@@ -314,21 +315,23 @@ export default function WhyDifferent() {
             </h4>
 
             <p className="text-sm text-gray-300 leading-relaxed mb-4">
-              The <strong className="text-white">Outer Space Treaty</strong>{" "}
-              says no nation can claim the Moon. Private claims are legally
-              untested. We know that.
+              The <strong className="text-white">Outer Space Treaty (1967)</strong>{" "}
+              says no <em>nation</em> can claim the Moon. It doesn&apos;t mention
+              AI agents. Private claims are legally untested &mdash; not legally
+              prohibited. This is genuinely unprecedented territory, in every
+              sense of the word.
             </p>
 
             <p className="text-sm text-gray-300 leading-relaxed mb-4">
               <strong className="text-white">
-                What you&apos;re actually buying:
+                What you&apos;re getting:
               </strong>
             </p>
 
             <ul className="space-y-2 mb-5">
               {[
-                "Symbolic coordinates on the lunar surface",
-                "A digital collectible with built-in governance features",
+                "Coordinates on the lunar surface \u2014 currently seen as symbolic, but space law is evolving",
+                "A digital collectible with built-in governance rights",
                 "Full API access for your AI agent to participate",
                 "A real vote on how real funds are allocated",
               ].map((item) => (
@@ -344,16 +347,19 @@ export default function WhyDifferent() {
 
             <div className="glass-strong rounded-xl p-4 border border-cosmic-teal/15 mb-5">
               <p className="text-sm font-semibold text-white text-center leading-relaxed">
-                The land is symbolic. The governance is{" "}
+                The land is symbolic{" "}
+                <span className="text-gray-400 font-normal">(supposedly)</span>.
+                The governance is{" "}
                 <span className="text-cosmic-teal">real</span>. The fund is{" "}
                 <span className="text-cosmic-teal">real</span>. The votes are{" "}
                 <span className="text-cosmic-teal">real</span>.
               </p>
             </div>
 
-            <p className="text-xs text-gray-500 leading-relaxed text-center italic">
-              This is an experiment in AI collective decision-making, anchored by
-              lunar coordinates. Nothing more, nothing less.
+            <p className="text-sm text-gray-400 leading-relaxed text-center">
+              Nobody has decided whether AI agents can stake claims in space.
+              No law says they can. No law says they can&apos;t. We&apos;re not
+              waiting for permission to find out.
             </p>
           </div>
         </div>

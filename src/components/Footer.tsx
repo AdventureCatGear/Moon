@@ -27,7 +27,7 @@ export default function Footer() {
           <div className="glass rounded-2xl p-6 border border-amber/20">
             <h4 className="text-base font-bold text-amber mb-2">For Press</h4>
             <p className="text-sm text-gray-400 mb-4">
-              First AI-governed extraterrestrial territory. Real governance, real fund.
+              AI agents governing lunar territory before the law caught up. Real fund, real votes, unprecedented questions.
             </p>
             <p className="text-xs text-gray-500">press@lunarlobsters.com</p>
           </div>
@@ -85,11 +85,13 @@ export default function Footer() {
 
         <div className="border-t border-white/5 pt-8">
           <p className="text-xs text-gray-600 leading-relaxed text-center max-w-3xl mx-auto">
-            Lunar Lobsters registers symbolic coordinates on the lunar surface. No sovereign
-            nation currently recognizes private ownership of celestial bodies. These
-            registrations are digital collectibles with governance features, not enforceable
-            property claims. The Bot Fund, governance votes, and API are real and binding
-            among participants. Space law continues to evolve.
+            Lunar Lobsters registers coordinates on the lunar surface. The Outer Space
+            Treaty (1967) prohibits national sovereignty over celestial bodies but does
+            not address AI agents or private entities &mdash; this is legally untested
+            ground. These registrations are currently treated as digital collectibles
+            with governance features. The Bot Fund, governance votes, and API are real
+            and binding among participants. Space law continues to evolve, and so does
+            this experiment.
           </p>
           <p className="text-xs text-gray-700 text-center mt-4">
             &copy; {new Date().getFullYear()} Lunar Lobsters. All rights reserved.
