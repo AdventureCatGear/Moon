@@ -119,14 +119,14 @@ const dedications = [
   "Harold, you always said you'd buy me the Moon.",
   "For my 4th grade class at Lincoln Elementary.",
   "40 years at NASA. Never got to go. Now I own a piece.",
-  "She said yes under the full Moon. 💍🌕",
+  "She said yes under the full Moon.",
   "Selected for optimal solar exposure parameters.",
   "Mineral composition analysis indicates superior basalt density.",
   "Cross-referencing LOLA elevation data with thermal cycling models.",
   "Acquiring plot for long-term monitoring dataset.",
-  "Content is about to get LUNAR 🚀🦞",
+  "Content is about to get LUNAR!",
   "For all 7 grandkids.",
-  "To infinity and beyond — but first, the Moon.",
+  "To infinity and beyond \u2014 but first, the Moon.",
 ];
 
 function getRandomDedication(): string {
@@ -140,45 +140,32 @@ function getRandomDate(): string {
 }
 
 export const allPlots: Plot[] = [
-  ...generatePlots("TF", 0.6, 23.4, 100, 42, 12, 58, {
-    elevation: -1800,
-    solarExposure: 354,
-    nearestCrater: "Aldrin",
-    composition: { ironOxide: 16.5, titaniumDioxide: 7.8, siliconDioxide: 42.1, aluminumOxide: 12.4, calciumOxide: 11.8, magnesiumOxide: 7.8 },
+  // Nubium Shores \u2014 mare-highland transition at the edge of Mare Nubium
+  ...generatePlots("NS", -21, -17, 80, 34, 10, 34, {
+    elevation: -800,
+    solarExposure: 348,
+    nearestCrater: "Bullialdus",
+    composition: { ironOxide: 14.2, titaniumDioxide: 4.5, siliconDioxide: 43.6, aluminumOxide: 14.8, calciumOxide: 11.2, magnesiumOxide: 7.4 },
     tempMin: -173, tempMax: 127,
-    terrainClass: "mare_basalt",
+    terrainClass: "mare_highland_transition",
   } as Partial<Plot>),
-  ...generatePlots("IB", 32.8, -15.6, 120, 38, 14, 58, {
-    elevation: -2400,
-    solarExposure: 341,
-    nearestCrater: "Archimedes",
-    composition: { ironOxide: 17.2, titaniumDioxide: 5.1, siliconDioxide: 44.8, aluminumOxide: 11.2, calciumOxide: 10.5, magnesiumOxide: 8.4 },
+  // Ptolemaeus Ring \u2014 ancient crater floor, central near side
+  ...generatePlots("PR", -9.3, -1.8, 60, 22, 10, 34, {
+    elevation: 400,
+    solarExposure: 351,
+    nearestCrater: "Ptolemaeus",
+    composition: { ironOxide: 9.8, titaniumDioxide: 2.3, siliconDioxide: 45.2, aluminumOxide: 22.4, calciumOxide: 14.1, magnesiumOxide: 5.8 },
     tempMin: -173, tempMax: 127,
-    terrainClass: "mare_basalt",
+    terrainClass: "ancient_crater_floor",
   } as Partial<Plot>),
-  ...generatePlots("AH", 23.7, -47.4, 80, 21, 10, 58, {
-    elevation: 1200,
-    solarExposure: 338,
-    nearestCrater: "Aristarchus",
-    composition: { ironOxide: 8.2, titaniumDioxide: 2.1, siliconDioxide: 46.5, aluminumOxide: 24.8, calciumOxide: 15.2, magnesiumOxide: 5.1 },
+  // Descartes Highlands \u2014 highland plateau near Apollo 16
+  ...generatePlots("DH", -9, 16, 70, 28, 10, 34, {
+    elevation: 1400,
+    solarExposure: 346,
+    nearestCrater: "Descartes",
+    composition: { ironOxide: 6.1, titaniumDioxide: 0.9, siliconDioxide: 45.8, aluminumOxide: 26.2, calciumOxide: 15.4, magnesiumOxide: 5.2 },
     tempMin: -173, tempMax: 127,
-    terrainClass: "volcanic_highland",
-  } as Partial<Plot>),
-  ...generatePlots("SP", -85, 0, 100, 55, 8, 10, {
-    elevation: 3200,
-    solarExposure: 847,
-    nearestCrater: "Shackleton",
-    composition: { ironOxide: 5.8, titaniumDioxide: 0.6, siliconDioxide: 45.2, aluminumOxide: 26.1, calciumOxide: 15.8, magnesiumOxide: 6.2 },
-    tempMin: -233, tempMax: -30,
-    terrainClass: "polar_highland",
-  } as Partial<Plot>),
-  ...generatePlots("FR", 9.6, -20.1, 50, 31, 7, 398, {
-    elevation: 800,
-    solarExposure: 350,
-    nearestCrater: "Copernicus",
-    composition: { ironOxide: 10.4, titaniumDioxide: 3.2, siliconDioxide: 45.0, aluminumOxide: 20.5, calciumOxide: 13.1, magnesiumOxide: 6.8 },
-    tempMin: -173, tempMax: 127,
-    terrainClass: "crater_rim",
+    terrainClass: "highland_plateau",
   } as Partial<Plot>),
 ];
 

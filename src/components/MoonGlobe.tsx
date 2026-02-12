@@ -40,6 +40,7 @@ const LANDMARK_COLORS: Record<string, string> = {
   scientific: "#60A5FA",
   geographic: "#94A3B8",
   rover: "#4ADE80",
+  conspiracy: "#EF4444",
 };
 
 // ── Territory Marker (no Html tooltip) ──────────────────────────────────────
@@ -829,7 +830,8 @@ function Scene({
      ──────────────────────────────────────────────────────────────────────── */
   const MOON_AXIAL_TILT_RAD = THREE.MathUtils.degToRad(1.5424);
   // Prograde: positive rotation around local Y (CCW from above north pole)
-  const DISPLAY_ROTATION_SPEED = (2 * Math.PI) / 120; // rad/s — one rotation per 2 min
+  // Slow, contemplative speed — one full rotation every 10 minutes
+  const DISPLAY_ROTATION_SPEED = (2 * Math.PI) / 600; // rad/s — one rotation per 10 min
 
   useFrame((_, delta) => {
     if (moonGroupRef.current) {
@@ -873,15 +875,20 @@ function Scene({
 
   return (
     <>
-      <ambientLight intensity={0.25} />
-      <directionalLight position={[5, 3, 5]} intensity={1.6} />
-      <directionalLight position={[-3, -1, 2]} intensity={0.3} color="#aabbcc" />
-      <pointLight position={[-5, -3, -5]} intensity={0.15} color="#667" />
+      {/* Low ambient for deep space feel */}
+      <ambientLight intensity={0.15} />
 
       {/* Outer group: fixed axial tilt (1.5424° from ecliptic normal) */}
       <group rotation={[MOON_AXIAL_TILT_RAD, 0, 0]}>
       {/* Inner group: prograde spin (west-to-east, same as real Moon) */}
       <group ref={moonGroupRef}>
+        {/* Lights INSIDE the rotating group so illumination is fixed
+            relative to the moon surface — the dark/lit hemispheres
+            rotate with the geometry, matching baked texture shadows */}
+        <directionalLight position={[5, 3, 5]} intensity={1.6} />
+        <directionalLight position={[-3, -1, 2]} intensity={0.3} color="#aabbcc" />
+        <pointLight position={[-5, -3, -5]} intensity={0.15} color="#667" />
+
         <MoonMesh />
 
         {territories.map((t) => (
@@ -1070,12 +1077,13 @@ interface MoonGlobeProps {
   onTerritoryClick: (territory: Territory) => void;
 }
 
-type FilterCategory = "historic" | "scientific" | "rover" | "future";
+type FilterCategory = "historic" | "scientific" | "rover" | "future" | "conspiracy";
 
 const FILTER_BUTTONS: { key: FilterCategory; label: string; color: string; dot: "circle" | "diamond" }[] = [
   { key: "historic", label: "Apollo / Historic", color: LANDMARK_COLORS.historic, dot: "circle" },
   { key: "rover", label: "Rovers", color: LANDMARK_COLORS.rover, dot: "circle" },
   { key: "scientific", label: "Scientific", color: LANDMARK_COLORS.scientific, dot: "circle" },
+  { key: "conspiracy", label: "Alien Bases (Far Side)", color: LANDMARK_COLORS.conspiracy, dot: "circle" },
   { key: "future", label: "Future Claims", color: "#A78BFA", dot: "diamond" },
 ];
 

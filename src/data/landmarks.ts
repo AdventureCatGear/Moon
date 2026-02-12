@@ -4,7 +4,7 @@ export interface Landmark {
   description: string;
   lat: number;
   lon: number;
-  type: "historic" | "scientific" | "geographic" | "rover";
+  type: "historic" | "scientific" | "geographic" | "rover" | "conspiracy";
   icon: string;
   year?: number;
 }
@@ -463,6 +463,87 @@ const geographicFeatures: Landmark[] = [
   },
 ];
 
+// ── Far-side conspiracy / alleged alien sites ───────────────────────────────
+// Locations where conspiracy theorists believe alien structures or bases exist.
+// These are real craters on the far side of the Moon; the "alien" claims are
+// popular internet folklore, not scientific findings.
+
+const conspiracySites: Landmark[] = [
+  {
+    id: "daedalus-base",
+    name: "Daedalus Crater \u2014 \"The Mothership\"",
+    description:
+      "Conspiracy theorists claim Clementine mission imagery shows geometric structures on the " +
+      "floor of this 93\u2009km far-side crater. Popular YouTube theory: a docked alien mothership " +
+      "visible as anomalous shadows.",
+    lat: -5.9,
+    lon: 179.4,
+    type: "conspiracy",
+    icon: "\ud83d\udef8",
+  },
+  {
+    id: "tsiolkovsky-mine",
+    name: "Tsiolkovsky Crater \u2014 \"Alien Mining Op\"",
+    description:
+      "One of the few far-side craters with a dark basalt floor. Conspiracy claim: the unusually " +
+      "dark floor is evidence of active mining by an extraterrestrial civilization. In reality " +
+      "it\u2019s volcanic basalt from an ancient eruption.",
+    lat: -21.2,
+    lon: 128.9,
+    type: "conspiracy",
+    icon: "\ud83d\udef8",
+    year: 2009,
+  },
+  {
+    id: "king-towers",
+    name: "King Crater \u2014 \"The Spires\"",
+    description:
+      "Alleged anomalous spires and tower-like formations visible in Lunar Orbiter imagery. " +
+      "Conspiracy theorists claim these are constructed antenna arrays. NASA attributes them " +
+      "to low sun-angle shadow effects on central peak terrain.",
+    lat: 5.0,
+    lon: 120.5,
+    type: "conspiracy",
+    icon: "\ud83d\udef8",
+  },
+  {
+    id: "paracelsus-hangar",
+    name: "Paracelsus C \u2014 \"The Hangar\"",
+    description:
+      "A small crater at 23\u00b0S, 163\u00b0E that went viral for alleged rectangular shadow " +
+      "formations resembling a hangar entrance. Featured in multiple documentaries. Geologists " +
+      "note it\u2019s a collapsed lava tube skylight.",
+    lat: -23,
+    lon: 163,
+    type: "conspiracy",
+    icon: "\ud83d\udef8",
+  },
+  {
+    id: "zeeman-base",
+    name: "Zeeman Crater \u2014 \"Deep Base\"",
+    description:
+      "A 190\u2009km far-side crater near the south pole. At 6\u2009km deep, it\u2019s one of the deepest " +
+      "formations on the Moon. Conspiracy claim: its depth and permanent shadow make it an " +
+      "ideal hidden base. Also popular in science fiction.",
+    lat: -75.2,
+    lon: -134.8,
+    type: "conspiracy",
+    icon: "\ud83d\udef8",
+  },
+  {
+    id: "lobachevsky-grid",
+    name: "Lobachevsky Crater \u2014 \"The Grid\"",
+    description:
+      "Conspiracy theorists claim to see a grid-like pattern on the crater floor in orbital " +
+      "photos, interpreted as an underground facility\u2019s roof. Geologists identify it as " +
+      "intersecting fracture patterns from impact stress.",
+    lat: 9.9,
+    lon: 112.6,
+    type: "conspiracy",
+    icon: "\ud83d\udef8",
+  },
+];
+
 // ── Combine all landmarks ───────────────────────────────────────────────────
 
 export const landmarks: Landmark[] = [
@@ -472,6 +553,7 @@ export const landmarks: Landmark[] = [
   ...surveyorSites,
   ...recentMissions,
   ...geographicFeatures,
+  ...conspiracySites,
 ];
 
 // ── Proposed/announced future lunar claims ──────────────────────────────────

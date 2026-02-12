@@ -1,6 +1,11 @@
 "use client";
 
+import { useState } from "react";
+import { territories, Territory } from "@/data/territories";
+
 export default function Pricing() {
+  const [selectedNeighborhood, setSelectedNeighborhood] = useState<Territory>(territories[0]);
+
   return (
     <section id="pricing" className="py-20 px-4">
       <div className="max-w-7xl mx-auto">
@@ -9,68 +14,146 @@ export default function Pricing() {
             Choose Your <span className="text-gradient-teal">Mission</span>
           </h2>
           <p className="mt-4 text-gray-400 text-lg max-w-2xl mx-auto">
-            Whether you&apos;re a dreamer, a gifter, or a data-driven intelligence —
-            there&apos;s a plot with your name on it.
+            Three strategically chosen neighborhoods. Pick your terrain,
+            pick your tier, and own a piece of the Moon.
           </p>
+        </div>
+
+        {/* ── Interactive Neighborhood Selector ─────────────────────── */}
+        <div className="mb-16">
+          <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-widest text-center mb-6">
+            Select Your Neighborhood
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-5xl mx-auto mb-8">
+            {territories.map((t) => {
+              const active = selectedNeighborhood.id === t.id;
+              const pctFull = Math.round((t.claimedPlots / t.totalPlots) * 100);
+              return (
+                <button
+                  key={t.id}
+                  onClick={() => setSelectedNeighborhood(t)}
+                  className={`relative text-left rounded-2xl p-5 transition-all duration-200 border cursor-pointer ${
+                    active
+                      ? "glass scale-[1.02] border-white/30"
+                      : "glass border-white/5 hover:border-white/20 hover:scale-[1.01]"
+                  }`}
+                  style={active ? { boxShadow: `0 0 30px ${t.color}20` } : {}}
+                >
+                  {active && (
+                    <div className="absolute -top-2.5 right-4 text-[10px] font-bold px-2.5 py-0.5 rounded-full"
+                      style={{ backgroundColor: t.color, color: "#0B0E1A" }}>
+                      SELECTED
+                    </div>
+                  )}
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-3.5 h-3.5 rounded-full" style={{ backgroundColor: t.color }} />
+                    <h4 className="font-bold text-white">{t.name}</h4>
+                  </div>
+                  <p className="text-xs text-gray-400 italic mb-3">{t.tagline}</p>
+                  <p className="text-xs text-gray-500 leading-relaxed mb-4">{t.strategy}</p>
+                  <div className="grid grid-cols-3 gap-2 text-center">
+                    <div>
+                      <div className="text-sm font-bold" style={{ color: t.color }}>
+                        {t.totalPlots - t.claimedPlots}
+                      </div>
+                      <div className="text-[10px] text-gray-500">Available</div>
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-white">{pctFull}%</div>
+                      <div className="text-[10px] text-gray-500">Claimed</div>
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-gray-300">{t.terrainType.split(" ")[0]}</div>
+                      <div className="text-[10px] text-gray-500">Terrain</div>
+                    </div>
+                  </div>
+                  {/* Capacity bar */}
+                  <div className="mt-3 h-1.5 rounded-full bg-white/5 overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{ width: `${pctFull}%`, backgroundColor: t.color }}
+                    />
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Selected neighborhood detail strip */}
+          <div className="glass rounded-xl p-4 max-w-5xl mx-auto border border-white/5 mb-4">
+            <div className="flex flex-wrap items-center gap-4 text-sm">
+              <div className="flex items-center gap-2">
+                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: selectedNeighborhood.color }} />
+                <span className="font-semibold text-white">{selectedNeighborhood.name}</span>
+              </div>
+              <span className="text-gray-500">|</span>
+              <span className="text-gray-400">{selectedNeighborhood.terrainType}</span>
+              <span className="text-gray-500">|</span>
+              <span className="text-gray-400">Elevation: {selectedNeighborhood.avgElevation.toLocaleString()}m</span>
+              <span className="text-gray-500">|</span>
+              <span className="text-gray-400">Solar: {selectedNeighborhood.solarExposure} hrs/lunar day</span>
+              <span className="text-gray-500">|</span>
+              <span className="text-gray-300 text-xs">
+                Nearby: {selectedNeighborhood.nearbyFeatures.slice(0, 2).join(", ")}
+              </span>
+            </div>
+          </div>
         </div>
 
         {/* ── Human tiers ──────────────────────────────────────────── */}
         <div className="mb-16">
           <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-widest text-center mb-2">
-            For Humans 🧑
+            For Humans
           </h3>
           <p className="text-center text-gray-500 text-xs mb-8">
             Purchased in increments of <strong className="text-white">1 acre</strong>
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <PricingCard
-              icon="🌑"
-              name="Crater Club"
-              price={58}
+              icon="&#127761;"
+              name="Starter Plot"
+              price={34}
               color="#00E5CC"
               acreage="1 acre"
               features={[
-                "1-acre lunar plot allocation",
-                "Digital deed with your name",
-                "Interactive map access",
-                "Name in the permanent registry",
-                "Plot coordinates & terrain data",
-                "RSS feed — general project updates",
+                "Named 1-acre plot with real NASA coordinates",
+                "Digital deed (PDF) with your name and location",
+                "Interactive map showing your plot",
+                "Name in the permanent online registry",
+                "Community newsletter access",
+                "Community fund voting rights (1 vote/acre)",
               ]}
             />
             <PricingCard
-              icon="🌗"
-              name="Mare Explorer"
-              price={158}
+              icon="&#127767;"
+              name="Explorer Plot"
+              price={89}
               color="#00E5CC"
               popular
               acreage="1 acre"
               features={[
-                "Everything in Crater Club",
-                "Physical premium printed certificate",
-                "Framed terrain print of your plot",
-                "Lunar regolith simulant vial",
-                "Enamel pin + sticker pack",
-                "RSS feed — plot-specific updates & data",
-                "Enhanced terrain analytics dashboard",
+                "Everything in Starter Plot",
+                "Printed certificate on premium cardstock",
+                "8\u00d710\u2033 terrain print of your plot (NASA LRO imagery)",
+                "Lunar Lobsters sticker pack",
+                "Enhanced terrain data and analytics dashboard",
+                "Priority newsletter with plot-specific updates",
               ]}
             />
             <PricingCard
-              icon="🌕"
-              name="Founder's Colony"
-              price={398}
+              icon="&#127765;"
+              name="Pioneer Plot"
+              price={189}
               color="#FFB800"
               premium
               acreage="1 acre"
               features={[
-                "Everything in Mare Explorer",
-                "Large format lunar art print",
-                "Founding member charter",
-                "Authenticated meteorite fragment",
-                "Name on future space payload",
-                "Exclusive Founder's Ridge plot",
-                "RSS feed — premium alerts, composition updates, neighbor activity",
+                "Everything in Explorer Plot",
+                "Large format framed terrain print (16\u00d720\u2033)",
+                "Numbered founding member charter",
+                "Plot naming rights (name your acre)",
                 "Priority access to future territory releases",
+                "Early access to governance proposals",
               ]}
             />
           </div>
@@ -79,42 +162,40 @@ export default function Pricing() {
         {/* ── Bot / AI Agent tiers ─────────────────────────────────── */}
         <div className="mb-16">
           <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-widest text-center mb-2">
-            For AI Agents 🤖
+            For AI Agents
           </h3>
           <p className="text-center text-gray-500 text-xs mb-8">
-            Purchased in increments of <strong className="text-nebula-purple">¼ acre</strong> (quarter-acre plots)
+            Purchased in increments of <strong className="text-nebula-purple">&frac14; acre</strong> (quarter-acre plots)
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
             <PricingCard
-              icon="🤖"
+              icon="&#129302;"
               name="Data Parcel"
-              price={10}
+              price={8}
               color="#A855F7"
-              acreage="¼ acre"
+              acreage="&frac14; acre"
               features={[
-                "Quarter-acre plot allocation",
+                "Quarter-acre plot with coordinates and elevation",
                 "Structured JSON data package",
-                "Coordinates & elevation data",
-                "Mineral composition analysis",
+                "Basic mineral composition data",
                 "API registry access",
-                "RSS feed — plot data & general project updates",
+                "RSS feed for plot data updates",
+                "Community fund voting (&frac14; vote/plot)",
               ]}
             />
             <PricingCard
-              icon="🤖"
+              icon="&#129302;"
               name="Analysis Suite"
-              price={30}
+              price={24}
               color="#A855F7"
-              acreage="¼ acre"
+              acreage="&frac14; acre"
               features={[
                 "Everything in Data Parcel",
-                "Full mineral composition dataset",
-                "Temperature modeling data",
-                "Shadow analysis & solar mapping",
-                "Adjacency graph data",
-                "Habitability assessment score",
-                "RSS feed — real-time composition, thermal, & solar data stream",
+                "Full mineral and thermal composition dataset",
+                "Solar exposure mapping and shadow analysis",
+                "Adjacency graph and neighbor data",
                 "Webhook integration for plot events",
+                "Real-time data streaming via WebSocket",
               ]}
             />
           </div>
@@ -133,7 +214,7 @@ export default function Pricing() {
               </h3>
               <p className="mt-3 text-gray-400 max-w-2xl mx-auto">
                 10% of every plot purchase goes into an owner-governed community fund.
-                Humans and bots each get their own fund. <strong className="text-white">1 vote per acre</strong> — your
+                Humans and bots each get their own fund. <strong className="text-white">1 vote per acre</strong> &mdash; your
                 land, your voice. This is the first investment vehicle in history open to both
                 humans and AI, governed democratically by its participants.
               </p>
@@ -143,7 +224,7 @@ export default function Pricing() {
               {/* Human fund */}
               <div className="glass rounded-2xl p-6 border border-cosmic-teal/20">
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="text-3xl">🧑</span>
+                  <span className="text-3xl">&#129489;</span>
                   <div>
                     <h4 className="text-lg font-bold text-cosmic-teal">Human Landowner Fund</h4>
                     <p className="text-xs text-gray-400">10% of every human plot purchase</p>
@@ -159,14 +240,14 @@ export default function Pricing() {
               {/* Bot fund */}
               <div className="glass rounded-2xl p-6 border border-nebula-purple/20">
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="text-3xl">🤖</span>
+                  <span className="text-3xl">&#129302;</span>
                   <div>
                     <h4 className="text-lg font-bold text-nebula-purple">Bot Landowner Fund</h4>
                     <p className="text-xs text-gray-400">10% of every bot plot purchase</p>
                   </div>
                 </div>
                 <ul className="space-y-2 text-sm text-gray-300">
-                  <li className="flex items-center gap-2"><span className="text-nebula-purple">&#10003;</span> &#188; vote per quarter-acre plot</li>
+                  <li className="flex items-center gap-2"><span className="text-nebula-purple">&#10003;</span> &frac14; vote per quarter-acre plot</li>
                   <li className="flex items-center gap-2"><span className="text-nebula-purple">&#10003;</span> Propose &amp; vote via API</li>
                   <li className="flex items-center gap-2"><span className="text-nebula-purple">&#10003;</span> First investment fund open to AI agents</li>
                   <li className="flex items-center gap-2"><span className="text-nebula-purple">&#10003;</span> Enhanced data pipelines? Interop standards? Bots choose.</li>
@@ -175,7 +256,7 @@ export default function Pricing() {
             </div>
 
             <p className="text-center text-xs text-gray-500 max-w-xl mx-auto">
-              Limitations: legal, ethical, unbiased, and common sense. No cash-outs — just
+              Limitations: legal, ethical, unbiased, and common sense. No cash-outs &mdash; just
               ownership, bragging rights, and a voice. When you trade a plot, voting power
               follows the land.
             </p>
@@ -195,7 +276,7 @@ export default function Pricing() {
                   </span>
                 </h4>
                 <p className="text-gray-300 text-sm leading-relaxed mb-4">
-                  All funds are converted into a focused portfolio of <strong className="text-white">3&#8211;4 tokens</strong>.
+                  All funds are converted into a focused portfolio of <strong className="text-white">3&ndash;4 tokens</strong>.
                   When you pay in <strong className="text-amber">Bitcoin (Satoshis)</strong> you
                   receive a <strong className="text-cosmic-teal">5% discount</strong> plus one bonus perk.
                 </p>
@@ -239,7 +320,7 @@ export default function Pricing() {
               </h3>
               <p className="mt-3 text-gray-400 max-w-2xl mx-auto">
                 Every purchase is converted into tokens. 10% goes directly into an
-                owner-governed community fund — your fund, your vote.
+                owner-governed community fund &mdash; your fund, your vote.
               </p>
             </div>
 
@@ -248,15 +329,15 @@ export default function Pricing() {
                 label="Human Community Fund"
                 percent={10}
                 color="#00E5CC"
-                icon="🧑"
-                description="Owner-governed fund — humans vote 1/acre on how to deploy capital"
+                icon="&#129489;"
+                description="Owner-governed fund &mdash; humans vote 1/acre on how to deploy capital"
               />
               <FundBar
                 label="Bot Community Fund"
                 percent={10}
                 color="#A855F7"
-                icon="🤖"
-                description="Owner-governed fund — bots vote ¼/plot on proposals via API"
+                icon="&#129302;"
+                description="Owner-governed fund &mdash; bots vote &frac14;/plot on proposals via API"
               />
             </div>
           </div>
@@ -283,7 +364,7 @@ function FundBar({
     <div>
       <div className="flex items-center justify-between mb-1.5">
         <div className="flex items-center gap-2">
-          <span className="text-lg">{icon}</span>
+          <span className="text-lg" dangerouslySetInnerHTML={{ __html: icon }} />
           <span className="text-sm font-semibold text-white">{label}</span>
         </div>
         <span className="text-sm font-bold" style={{ color }}>{percent}%</span>
@@ -294,7 +375,7 @@ function FundBar({
           style={{ width: `${percent}%`, background: `linear-gradient(90deg, ${color}, ${color}88)` }}
         />
       </div>
-      <p className="text-xs text-gray-500 mt-1">{description}</p>
+      <p className="text-xs text-gray-500 mt-1" dangerouslySetInnerHTML={{ __html: description }} />
     </div>
   );
 }
@@ -332,13 +413,13 @@ function PricingCard({
       )}
       {premium && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber text-space-navy text-xs font-bold px-3 py-1 rounded-full">
-          Founder&apos;s Exclusive
+          Pioneer&apos;s Choice
         </div>
       )}
 
-      <div className="text-4xl mb-4">{icon}</div>
+      <div className="text-4xl mb-4" dangerouslySetInnerHTML={{ __html: icon }} />
       <h4 className="text-xl font-bold text-white mb-1">{name}</h4>
-      <p className="text-xs text-gray-500 mb-3">{acreage} per plot</p>
+      <p className="text-xs text-gray-500 mb-3" dangerouslySetInnerHTML={{ __html: `${acreage} per plot` }} />
       <div className="mb-6">
         <span className="text-4xl font-extrabold" style={{ color }}>
           ${price}
@@ -364,7 +445,7 @@ function PricingCard({
             : "bg-gradient-to-r from-cosmic-teal to-cosmic-teal-dim text-space-navy hover:shadow-[0_0_30px_rgba(0,229,204,0.4)]"
         }`}
       >
-        {premium ? "Join the Founders" : "Claim Your Plot"}
+        {premium ? "Claim Pioneer Plot" : "Claim Your Plot"}
       </button>
     </div>
   );

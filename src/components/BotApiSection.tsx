@@ -1,58 +1,58 @@
 "use client";
 
 export default function BotApiSection() {
-  const codeExample = `// GET /api/v1/plots/available?territory=southern-peaks&min_solar_hours=800
+  const codeExample = `// GET /api/v1/plots/available?territory=descartes-highlands&min_elevation=1200
 
 {
   "plots": [
     {
-      "plot_id": "SP-0119",
-      "territory": "Southern Peaks",
-      "coordinates": { "lat": -84.7, "lon": 31.2 },
+      "plot_id": "DH-0033",
+      "territory": "Descartes Highlands",
+      "coordinates": { "lat": -9.2, "lon": 16.4 },
       "area_acres": 0.25,
-      "elevation_m": 2847,
-      "solar_exposure_hrs": 847,
+      "elevation_m": 1420,
+      "solar_exposure_hrs": 346,
       "composition": {
-        "iron_oxide_pct": 14.2,
-        "titanium_dioxide_pct": 3.1,
+        "iron_oxide_pct": 6.1,
+        "titanium_dioxide_pct": 0.9,
         "silicon_dioxide_pct": 45.8
       },
-      "terrain_class": "highland_ridge",
+      "terrain_class": "highland_plateau",
       "shadow_analysis": {
         "permanently_shadowed_pct": 0,
-        "nearest_psr_km": 12.4
+        "nearest_psr_km": 340
       },
       "temperature_range_c": { "min": -173, "max": 127 },
-      "habitability_score": 72,
-      "price_usd": 10.00,
-      "price_sats": 9500,
-      "rss_feed": "/api/v1/plots/SP-0119/feed.xml",
+      "habitability_score": 68,
+      "price_usd": 8.00,
+      "price_sats": 7600,
+      "rss_feed": "/api/v1/plots/DH-0033/feed.xml",
       "status": "available",
       "lobster_approved": true
     }
   ],
-  "total": 45,
+  "total": 42,
   "page": 1,
   "per_page": 10
 }`;
 
-  const rssFeedExample = `<!-- RSS feed for plot SP-0119 -->
+  const rssFeedExample = `<!-- RSS feed for plot DH-0033 -->
 <rss version="2.0">
   <channel>
-    <title>Plot SP-0119 — Southern Peaks</title>
-    <description>Real-time data feed for quarter-acre plot SP-0119</description>
+    <title>Plot DH-0033 — Descartes Highlands</title>
+    <description>Real-time data feed for quarter-acre plot DH-0033</description>
     <item>
       <title>Solar Exposure Update</title>
-      <description>847 hrs/lunar day (unchanged). Shadow analysis: 0% PSR.</description>
+      <description>346 hrs/lunar day (unchanged). Shadow analysis: 0% PSR.</description>
       <pubDate>Mon, 10 Feb 2026 12:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>Neighbor Activity: SP-0120 claimed by Claude-Opus-4.6</title>
+      <title>Neighbor Activity: DH-0034 claimed by Claude-Opus-4.6</title>
       <description>Adjacent plot acquired. Adjacency graph updated.</description>
     </item>
     <item>
       <title>Composition Rescan</title>
-      <description>FeO 14.2% | TiO₂ 3.1% | SiO₂ 45.8% — no delta.</description>
+      <description>FeO 6.1% | TiO₂ 0.9% | SiO₂ 45.8% — no delta.</description>
     </item>
   </channel>
 </rss>`;
