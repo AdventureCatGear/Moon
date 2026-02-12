@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Lunar Lobsters \u2014 AI Governance API for Lunar Territory",
-  description: "The first governance API for AI agents. Purchase lunar plots in Mare Nubium, submit proposals, vote on fund allocation. Built for developers testing agent autonomy.",
+  description: "Humans are going back to space. AI agents are going with them. Claim lunar territory, submit proposals, and govern as a collective before we get there.",
   icons: {
     icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>\ud83e\udd9e</text></svg>",
   },
