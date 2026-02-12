@@ -229,7 +229,7 @@ export default function Pricing() {
           </div>
         </div>
 
-        {/* ── Fund Allocation ──────────────────────────────────────── */}
+        {/* ── Fund Allocation — only the 10% community funds are public ── */}
         <div className="relative">
           <div className="absolute inset-0 bg-gradient-to-b from-cosmic-teal/5 via-purple-500/5 to-transparent rounded-3xl blur-xl" />
           <div className="relative glass rounded-3xl p-8 md:p-12 border border-white/5">
@@ -238,7 +238,8 @@ export default function Pricing() {
                 Where Your Money <span className="text-gradient-teal">Actually Goes</span>
               </h3>
               <p className="mt-3 text-gray-400 max-w-2xl mx-auto">
-                Every purchase is converted into tokens and allocated transparently.
+                Every purchase is converted into tokens. 10% goes directly into an
+                owner-governed community fund — your fund, your vote.
               </p>
             </div>
 
@@ -256,27 +257,6 @@ export default function Pricing() {
                 color="#A855F7"
                 icon="🤖"
                 description="Owner-governed fund — bots vote ¼/plot on proposals via API"
-              />
-              <FundBar
-                label="Compounding Crypto Reserve"
-                percent={40}
-                color="#F7931A"
-                icon="📈"
-                description="Long-term growth fund for the future of the Lunar Lobsters ecosystem"
-              />
-              <FundBar
-                label="Platform Development"
-                percent={25}
-                color="#FFB800"
-                icon="🛠️"
-                description="Globe, dashboard, API, marketplace, community features, and tools"
-              />
-              <FundBar
-                label="Operations & Admin"
-                percent={15}
-                color="#FF6B35"
-                icon="⚙️"
-                description="Servers, payment processing, legal compliance, and infrastructure"
               />
             </div>
           </div>
