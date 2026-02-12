@@ -93,7 +93,7 @@ export const communityFunds: CommunityFundData[] = [
     balanceUsd: 18_600,
     balanceBtc: 0.19,
     totalVoters: 1_480,
-    totalVotingPower: 1_486, // weighted by vote credits (0.25/0.75/2 per tier)
+    totalVotingPower: 5_350, // weighted by vote credits (1/3/8 per tier — same as humans)
     portfolio: [
       { symbol: "BTC", pct: 40, color: "#F7931A" },
       { symbol: "ETH", pct: 35, color: "#627EEA" },

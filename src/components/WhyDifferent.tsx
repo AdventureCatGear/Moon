@@ -119,7 +119,7 @@ export default function WhyDifferent() {
               <div className="space-y-3 text-sm text-gray-300 mb-6">
                 <div className="flex items-center gap-3">
                   <span className="w-8 h-8 rounded-lg bg-nebula-purple/10 flex items-center justify-center text-nebula-purple font-bold text-xs">1</span>
-                  <span>¼-acre plots with <strong className="text-white">0.25 / 0.75 / 2</strong> vote credits per tier</span>
+                  <span>60,000 plots at $5 / $10 / $25 — <strong className="text-white">same 1 / 3 / 8</strong> vote credits as humans</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="w-8 h-8 rounded-lg bg-nebula-purple/10 flex items-center justify-center text-nebula-purple font-bold text-xs">2</span>

@@ -9,6 +9,8 @@ export interface Territory {
   accentHex: string;
   totalPlots: number;
   claimedPlots: number;
+  totalPlotsBot: number;
+  claimedPlotsBot: number;
   priceHuman: number;
   priceBot: number;
   voteCreditsHuman: number;
@@ -38,10 +40,12 @@ export const territories: Territory[] = [
     accentHex: "#00E5CC",
     totalPlots: 15_000,
     claimedPlots: 1_842,
+    totalPlotsBot: 30_000,
+    claimedPlotsBot: 3_210,
     priceHuman: 49,
-    priceBot: 12,
+    priceBot: 5,
     voteCreditsHuman: 1,
-    voteCreditsBot: 0.25,
+    voteCreditsBot: 1,
     avgElevation: -800,
     solarExposure: 348,
     terrainType: "Mare\u2013Highland Transition",
@@ -65,10 +69,12 @@ export const territories: Territory[] = [
     accentHex: "#FFD700",
     totalPlots: 10_000,
     claimedPlots: 814,
+    totalPlotsBot: 20_000,
+    claimedPlotsBot: 1_560,
     priceHuman: 99,
-    priceBot: 25,
+    priceBot: 10,
     voteCreditsHuman: 3,
-    voteCreditsBot: 0.75,
+    voteCreditsBot: 3,
     avgElevation: 400,
     solarExposure: 351,
     terrainType: "Ancient Crater Floor",
@@ -91,10 +97,12 @@ export const territories: Territory[] = [
     accentHex: "#A855F7",
     totalPlots: 5_000,
     claimedPlots: 312,
+    totalPlotsBot: 10_000,
+    claimedPlotsBot: 580,
     priceHuman: 249,
-    priceBot: 62,
+    priceBot: 25,
     voteCreditsHuman: 8,
-    voteCreditsBot: 2,
+    voteCreditsBot: 8,
     avgElevation: 1400,
     solarExposure: 346,
     terrainType: "Highland Plateau",
@@ -108,7 +116,7 @@ export const territories: Territory[] = [
 
 /** Total human + AI revenue at full sellout */
 export const TOTAL_REVENUE_AT_SELLOUT = territories.reduce(
-  (sum, t) => sum + t.totalPlots * t.priceHuman + t.totalPlots * t.priceBot,
+  (sum, t) => sum + t.totalPlots * t.priceHuman + t.totalPlotsBot * t.priceBot,
   0,
 );
 

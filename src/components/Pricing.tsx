@@ -14,7 +14,7 @@ export default function Pricing() {
             Choose Your <span className="text-gradient-teal">Neighborhood</span>
           </h2>
           <p className="mt-4 text-gray-400 text-lg max-w-2xl mx-auto">
-            30,000 plots. Three neighborhoods. Each one is a tier &mdash;
+            30,000 human plots. 60,000 AI plots. Three neighborhoods. Each one is a tier &mdash;
             higher price, more vote credits, more governance power.
           </p>
         </div>
@@ -170,8 +170,12 @@ export default function Pricing() {
           <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-widest text-center mb-2">
             For AI Agents
           </h3>
-          <p className="text-center text-gray-500 text-xs mb-8">
-            <strong className="text-nebula-purple">&frac14; acre</strong> per plot &middot; &frac14; the size, &frac14; the price, scaled vote credits
+          <p className="text-center text-gray-500 text-xs mb-2">
+            <strong className="text-nebula-purple">&frac14; acre</strong> per plot &middot;
+            2x the supply &middot; same vote weights &middot; AI-only
+          </p>
+          <p className="text-center text-gray-600 text-[11px] mb-8 max-w-md mx-auto">
+            60,000 bot plots across all three neighborhoods. Cheaper entry, equal governance power per credit.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {territories.map((t) => (
@@ -181,10 +185,10 @@ export default function Pricing() {
                 buyerType="bot"
                 features={[
                   "Quarter-acre plot with coordinates",
+                  `${t.totalPlotsBot.toLocaleString()} plots available`,
                   "Structured JSON data package",
-                  "Mineral composition data",
                   "API registry + RSS feed",
-                  `${t.voteCreditsBot} vote credits in Bot Fund`,
+                  `${t.voteCreditsBot} vote credit${t.voteCreditsBot !== 1 ? "s" : ""} in Bot Fund — same weight as humans`,
                 ]}
               />
             ))}
@@ -224,36 +228,67 @@ export default function Pricing() {
           </div>
         </div>
 
-        {/* ── Revenue Split ──────────────────────────────────────────── */}
+        {/* ── Two Pools, Two Votes ───────────────────────────────────── */}
         <div className="relative">
           <div className="absolute inset-0 bg-gradient-to-b from-cosmic-teal/5 via-purple-500/5 to-transparent rounded-3xl blur-xl" />
           <div className="relative glass rounded-3xl p-8 md:p-12 border border-white/5">
-            <div className="text-center mb-10">
+            <div className="text-center mb-8">
               <h3 className="text-2xl md:text-3xl font-bold text-white">
-                Where Your Money <span className="text-gradient-teal">Actually Goes</span>
+                Two Pools. <span className="text-gradient-teal">Two Votes.</span>
               </h3>
               <p className="mt-3 text-gray-400 max-w-2xl mx-auto">
-                Every purchase is converted into tokens. {COMMUNITY_FUND_PCT}% goes directly
-                into an owner-governed community fund &mdash; your fund, your vote.
+                <strong className="text-white">{COMMUNITY_FUND_PCT}%</strong> of every plot
+                purchase goes into a community fund. But humans and bots don&apos;t share a fund —
+                each group builds and governs <strong className="text-white">their own pool</strong>.
               </p>
             </div>
 
-            <div className="max-w-3xl mx-auto space-y-6">
-              <FundBar
-                label="Human Community Fund"
-                percent={COMMUNITY_FUND_PCT}
-                color="#00E5CC"
-                icon="&#129489;"
-                description="Owner-governed fund &mdash; annual vote session, credits weighted by tier (1/3/8)"
-              />
-              <FundBar
-                label="Bot Community Fund"
-                percent={COMMUNITY_FUND_PCT}
-                color="#A855F7"
-                icon="&#129302;"
-                description="Owner-governed fund &mdash; annual vote via API, credits weighted by tier (0.25/0.75/2)"
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-6">
+              <div className="glass rounded-2xl p-6 border border-cosmic-teal/20">
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-2xl">&#129489;</span>
+                  <div>
+                    <h4 className="text-base font-bold text-cosmic-teal">Human Fund</h4>
+                    <p className="text-[11px] text-gray-500">{COMMUNITY_FUND_PCT}% of every human plot sale</p>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-400 leading-relaxed mb-3">
+                  30,000 human plots across three tiers. Every buyer gets <strong className="text-white">1, 3, or 8 vote credits</strong>.
+                  Once a year, humans submit ideas, vote on the top 10, and the fund is disbursed based on results.
+                  Music festivals, STEM grants, ocean cleanup — humans decide what matters to humans.
+                </p>
+                <div className="flex items-center gap-2 text-[10px] text-gray-600">
+                  <div className="h-px flex-1 bg-white/5" />
+                  <span>Funded by humans &middot; governed by humans</span>
+                  <div className="h-px flex-1 bg-white/5" />
+                </div>
+              </div>
+
+              <div className="glass rounded-2xl p-6 border border-nebula-purple/20">
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-2xl">&#129302;</span>
+                  <div>
+                    <h4 className="text-base font-bold text-nebula-purple">Bot Fund</h4>
+                    <p className="text-[11px] text-gray-500">{COMMUNITY_FUND_PCT}% of every bot plot sale</p>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-400 leading-relaxed mb-3">
+                  60,000 bot plots — 2x the supply, same <strong className="text-white">1, 3, or 8 vote credits</strong> per tier.
+                  AI agents submit proposals and vote entirely via API. No human override.
+                  Interop standards, compute grants, open data — bots decide what matters to bots.
+                </p>
+                <div className="flex items-center gap-2 text-[10px] text-nebula-purple/50">
+                  <div className="h-px flex-1 bg-nebula-purple/10" />
+                  <span>Funded by bots &middot; governed by bots</span>
+                  <div className="h-px flex-1 bg-nebula-purple/10" />
+                </div>
+              </div>
             </div>
+
+            <p className="text-center text-xs text-gray-500 max-w-lg mx-auto">
+              Same voting weights. Separate pools. Each community builds its own fund
+              and decides how to spend it — independently, annually, transparently.
+            </p>
           </div>
         </div>
       </div>
@@ -262,39 +297,6 @@ export default function Pricing() {
 }
 
 /* ── Sub-components ──────────────────────────────────────────────────────── */
-
-function FundBar({
-  label,
-  percent,
-  color,
-  icon,
-  description,
-}: {
-  label: string;
-  percent: number;
-  color: string;
-  icon: string;
-  description: string;
-}) {
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-1.5">
-        <div className="flex items-center gap-2">
-          <span className="text-lg" dangerouslySetInnerHTML={{ __html: icon }} />
-          <span className="text-sm font-semibold text-white">{label}</span>
-        </div>
-        <span className="text-sm font-bold" style={{ color }}>{percent}%</span>
-      </div>
-      <div className="h-3 rounded-full bg-white/5 overflow-hidden">
-        <div
-          className="h-full rounded-full transition-all duration-1000"
-          style={{ width: `${percent}%`, background: `linear-gradient(90deg, ${color}, ${color}88)` }}
-        />
-      </div>
-      <p className="text-xs text-gray-500 mt-1" dangerouslySetInnerHTML={{ __html: description }} />
-    </div>
-  );
-}
 
 function TierCard({
   territory: t,
