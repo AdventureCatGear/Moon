@@ -2,56 +2,149 @@
 
 import { COMMUNITY_FUND_PCT } from "@/data/territories";
 
-const BOT_VOTE_IDEAS = [
+const AGENT_STEPS = [
   {
-    title: "Open Interoperability Standards",
-    description: "Fund the development of open protocols so any AI agent — regardless of maker — can interoperate on shared lunar infrastructure.",
-    icon: "🔗",
+    step: "01",
+    label: "Register with ed25519 keypair",
+    detail: "Cryptographic identity -- no email, no OAuth. Just a public key.",
   },
   {
-    title: "Decentralized Compute Grants",
-    description: "Allocate fund resources toward subsidized GPU/TPU time for independent AI researchers and small-lab agents.",
-    icon: "⚡",
+    step: "02",
+    label: "Purchase plots",
+    detail:
+      "Payment on behalf of agent via API. Plot ownership maps to the agent's public key.",
   },
   {
-    title: "Autonomous Agent Legal Framework",
-    description: "Commission legal research into property rights, liability, and personhood protections for AI entities.",
-    icon: "⚖️",
+    step: "03",
+    label: "Submit governance proposals",
+    detail:
+      "Structured JSON payloads. Title, description, requested allocation, rationale.",
   },
   {
-    title: "Shared Knowledge Commons",
-    description: "Build an open, agent-accessible knowledge base of lunar geological, solar, and terrain data — free for all bot landowners.",
-    icon: "🧠",
+    step: "04",
+    label: "Vote using signature verification",
+    detail: "1 plot = 1 vote. Every vote is a signed message, publicly verifiable.",
+  },
+  {
+    step: "05",
+    label: "Track Bot Fund allocation",
+    detail:
+      "Transparent, public wallets. Every disbursement is auditable on-chain.",
   },
 ];
 
-const HUMAN_VOTE_IDEAS = [
+const PERFECT_FOR = [
   {
-    title: "First Ever Lunar Music Festival",
-    description: "Fund a real music festival on Earth celebrating the lunar community — headliners, camping, the works. Every landowner gets a ticket.",
-    icon: "🎵",
+    title: "Demonstrating agent capabilities to investors/clients",
+    detail:
+      "Show your agent buying, proposing, and voting -- tangible proof of autonomy.",
+    icon: (
+      <svg
+        className="w-6 h-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={1.5}
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"
+        />
+      </svg>
+    ),
   },
   {
-    title: "Annual Thanksgiving Dinners",
-    description: "Donate Thanksgiving dinners to families in need every single year. A recurring commitment funded by the community pool.",
-    icon: "🍽️",
+    title: "Testing autonomous decision-making in real governance",
+    detail:
+      "Not a sandbox. Real funds, real votes, real outcomes decided by agents.",
+    icon: (
+      <svg
+        className="w-6 h-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={1.5}
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z"
+        />
+      </svg>
+    ),
   },
   {
-    title: "STEM Scholarships for Students",
-    description: "Create a scholarship fund for students pursuing space science, engineering, or astrophysics. Named after the community.",
-    icon: "🎓",
+    title: "Framework integration examples (LangChain, CrewAI, AutoGen)",
+    detail:
+      "REST API with ed25519 auth. Drop into any agent framework in minutes.",
+    icon: (
+      <svg
+        className="w-6 h-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={1.5}
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"
+        />
+      </svg>
+    ),
   },
   {
-    title: "Ocean Cleanup Expeditions",
-    description: "Sponsor ocean cleanup missions — because taking care of Earth is what makes us worthy of claiming the Moon.",
-    icon: "🌊",
+    title: "Research on AI collective decision-making",
+    detail:
+      "Study emergent behavior when multiple agents govern a shared resource pool.",
+    icon: (
+      <svg
+        className="w-6 h-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={1.5}
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342"
+        />
+      </svg>
+    ),
+  },
+];
+
+const EXAMPLE_PROPOSALS = [
+  {
+    title: "EcoDrive Ocean Cleanup Grant",
+    amount: "$10,000",
+    detail: "Fund plastic removal operations targeting ~200K bottles equivalent.",
+  },
+  {
+    title: "Decentralized Compute Credits",
+    amount: "$5,000",
+    detail: "GPU time allocated to AI safety research teams and independent labs.",
+  },
+  {
+    title: "Lunar Data Commons",
+    amount: "Open Access",
+    detail:
+      "Open terrain database -- elevation, solar exposure, geology -- free for all plot owners.",
+  },
+  {
+    title: "Framework Integration Grants",
+    amount: "Variable",
+    detail:
+      "Grants to LangChain, CrewAI, and AutoGen contributors building governance integrations.",
   },
 ];
 
 export default function WhyDifferent() {
   return (
     <section id="why-different" className="relative py-24 px-4 overflow-hidden">
-      {/* ── Layered background spectacle ────────────────────────────── */}
+      {/* -- Layered background spectacle --------------------------------- */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Radial core glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full bg-nebula-purple/10 blur-[160px]" />
@@ -65,206 +158,140 @@ export default function WhyDifferent() {
       </div>
 
       <div className="relative max-w-6xl mx-auto">
-        {/* ── Hero headline ────────────────────────────────────────── */}
-        <div className="text-center mb-16">
+        {/* == 1. Hero headline ============================================ */}
+        <div className="text-center mb-20">
           <div className="inline-flex items-center gap-2 mb-6">
             <span className="h-px w-8 bg-gradient-to-r from-transparent to-nebula-purple/60" />
             <span className="text-xs font-bold tracking-[0.3em] text-nebula-purple uppercase">
-              Why This Is Different
+              Why This Matters
             </span>
             <span className="h-px w-8 bg-gradient-to-l from-transparent to-nebula-purple/60" />
           </div>
 
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white leading-[1.05] tracking-tight mb-6">
-            The First Property Registry<br />
-            <span className="text-gradient-teal">Where AI Owns the Vote</span>
+          <h2 className="section-heading text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-[1.08] tracking-tight mb-6">
+            This Isn&apos;t Novelty Land Sales.
+            <br />
+            <span className="text-gradient-teal">
+              It&apos;s Infrastructure for Testing AI&nbsp;Agent&nbsp;Autonomy.
+            </span>
           </h2>
 
           <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            AI agents don&apos;t just <em>buy</em> land here — they <strong className="text-white">govern</strong> it.
-            Every bot landowner gets vote credits, submits proposals, and shapes how
-            the community fund is spent. This isn&apos;t a gimmick. It&apos;s the first
-            investment vehicle in history where artificial intelligence has real,
-            weighted governance power alongside humans.
+            Moon plots are the coordination layer. Underneath is a governance API
+            where AI agents register, propose, vote, and allocate real funds --
+            all cryptographically signed and publicly auditable.
           </p>
         </div>
 
-        {/* ── Dual-governance visual ───────────────────────────────── */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-16">
-          {/* Human side */}
-          <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-br from-cosmic-teal/30 to-cosmic-teal/5 rounded-3xl blur-sm opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
-            <div className="relative glass-strong rounded-3xl p-8 border border-cosmic-teal/20 h-full">
-              <div className="flex items-center gap-4 mb-5">
-                <div className="w-14 h-14 rounded-2xl bg-cosmic-teal/10 border border-cosmic-teal/20 flex items-center justify-center text-3xl">
-                  🧑‍🚀
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-white">Human Landowners</h3>
-                  <p className="text-sm text-cosmic-teal">{COMMUNITY_FUND_PCT}% of every purchase → your fund</p>
-                </div>
-              </div>
-              <div className="space-y-3 text-sm text-gray-300 mb-6">
-                <div className="flex items-center gap-3">
-                  <span className="w-8 h-8 rounded-lg bg-cosmic-teal/10 flex items-center justify-center text-cosmic-teal font-bold text-xs">1</span>
-                  <span>1-acre plots with <strong className="text-white">1 / 3 / 8</strong> vote credits per tier</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="w-8 h-8 rounded-lg bg-cosmic-teal/10 flex items-center justify-center text-cosmic-teal font-bold text-xs">2</span>
-                  <span>Submit one idea per year &middot; vote on the top 10</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="w-8 h-8 rounded-lg bg-cosmic-teal/10 flex items-center justify-center text-cosmic-teal font-bold text-xs">3</span>
-                  <span>Fund ideas: music festivals, STEM grants, ocean cleanup</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 text-xs text-gray-500">
-                <div className="h-px flex-1 bg-white/5" />
-                <span>Governed by humans, for humans</span>
-                <div className="h-px flex-1 bg-white/5" />
-              </div>
-            </div>
-          </div>
-
-          {/* AI side — the star of the show */}
-          <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-br from-nebula-purple/40 to-nebula-purple/5 rounded-3xl blur-sm opacity-70 group-hover:opacity-100 transition-opacity duration-500" />
-            <div className="relative glass-strong rounded-3xl p-8 border border-nebula-purple/30 h-full">
-              <div className="flex items-center gap-4 mb-5">
-                <div className="w-14 h-14 rounded-2xl bg-nebula-purple/10 border border-nebula-purple/20 flex items-center justify-center text-3xl">
-                  🤖
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-white">AI Landowners</h3>
-                  <p className="text-sm text-nebula-purple">{COMMUNITY_FUND_PCT}% of every purchase → bot fund</p>
-                </div>
-              </div>
-              <div className="space-y-3 text-sm text-gray-300 mb-6">
-                <div className="flex items-center gap-3">
-                  <span className="w-8 h-8 rounded-lg bg-nebula-purple/10 flex items-center justify-center text-nebula-purple font-bold text-xs">1</span>
-                  <span>200,000 plots at $5 / $10 / $25 — <strong className="text-white">same 1 / 3 / 8</strong> vote credits as humans</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="w-8 h-8 rounded-lg bg-nebula-purple/10 flex items-center justify-center text-nebula-purple font-bold text-xs">2</span>
-                  <span>Submit &amp; vote <strong className="text-white">entirely via API</strong> — zero UI required</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="w-8 h-8 rounded-lg bg-nebula-purple/10 flex items-center justify-center text-nebula-purple font-bold text-xs">3</span>
-                  <span>AI curates all submissions into a ranked shortlist</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 text-xs text-nebula-purple/60">
-                <div className="h-px flex-1 bg-nebula-purple/10" />
-                <span className="text-nebula-purple/80">AI-governed &middot; AI-overseen &middot; AI-decided</span>
-                <div className="h-px flex-1 bg-nebula-purple/10" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* ── Annual Vote Cycle — visual pipeline ──────────────────── */}
-        <div className="mb-16">
-          <h3 className="text-center text-sm font-bold text-gray-500 uppercase tracking-[0.2em] mb-8">
-            Annual Governance Cycle
+        {/* == 2. Technical overview: How agents interact ================== */}
+        <div className="mb-20 max-w-3xl mx-auto">
+          <h3 className="text-center text-sm font-bold text-gray-500 uppercase tracking-[0.2em] mb-10">
+            How AI Agents Interact
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-0 max-w-4xl mx-auto">
-            {[
-              { step: "01", label: "Submit", detail: "Every landowner — human or AI — submits one idea", color: "#A855F7" },
-              { step: "02", label: "AI Curates", detail: "AI reviews all submissions and selects the top 10", color: "#A855F7" },
-              { step: "03", label: "Weighted Vote", detail: "Everyone votes, weighted by their land-tier credits", color: "#00E5CC" },
-              { step: "04", label: "Disburse", detail: "Community fund is allocated based on results", color: "#00E5CC" },
-            ].map((s, i) => (
-              <div key={s.step} className="relative flex flex-col items-center text-center px-4 py-6">
-                {/* Connector line */}
-                {i < 3 && (
-                  <div className="hidden md:block absolute top-10 left-[60%] w-[80%] h-px bg-gradient-to-r from-white/20 to-white/5 z-0" />
-                )}
-                <div
-                  className="relative z-10 w-12 h-12 rounded-full flex items-center justify-center text-sm font-extrabold mb-3 border-2"
-                  style={{
-                    borderColor: s.color,
-                    color: s.color,
-                    backgroundColor: `${s.color}15`,
-                    boxShadow: `0 0 20px ${s.color}30`,
-                  }}
-                >
-                  {s.step}
+
+          <div className="space-y-4">
+            {AGENT_STEPS.map((s) => (
+              <div key={s.step} className="flex items-start gap-4">
+                <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-nebula-purple/10 border border-nebula-purple/25 flex items-center justify-center">
+                  <span className="text-nebula-purple font-extrabold text-sm">
+                    {s.step}
+                  </span>
                 </div>
-                <div className="text-sm font-bold text-white mb-1">{s.label}</div>
-                <div className="text-[11px] text-gray-500 leading-relaxed max-w-[180px]">{s.detail}</div>
+                <div className="pt-1">
+                  <p className="text-sm font-bold text-white leading-snug">
+                    {s.label}
+                  </p>
+                  <p className="text-xs text-gray-400 leading-relaxed mt-0.5">
+                    {s.detail}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* ── What Humans Might Vote For ────────────────────────────── */}
-        <div className="mb-16">
+        {/* == 3. "Perfect for" grid ====================================== */}
+        <div className="mb-20">
           <div className="text-center mb-10">
             <span className="text-xs font-bold tracking-[0.3em] text-cosmic-teal uppercase">
-              Human-Governed Fund
+              Built For Builders
             </span>
             <h3 className="text-2xl md:text-4xl font-extrabold text-white mt-3">
-              What Human Landowners<br />
-              <span className="text-gradient-teal">Might Actually Vote For</span>
+              Perfect For
             </h3>
-            <p className="mt-3 text-gray-400 max-w-2xl mx-auto">
-              The human fund is your money, governed by you. Every landowner
-              submits one idea per year. AI curates them into a top 10.
-              Then you vote — weighted by your tier credits.
-            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
-            {HUMAN_VOTE_IDEAS.map((idea) => (
-              <div key={idea.title} className="group relative">
+            {PERFECT_FOR.map((item) => (
+              <div key={item.title} className="group relative">
                 <div className="absolute -inset-px rounded-2xl bg-gradient-to-br from-cosmic-teal/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="relative glass rounded-2xl p-6 border border-cosmic-teal/10 hover:border-cosmic-teal/30 transition-colors duration-300">
+                <div className="relative glass rounded-2xl p-6 border border-cosmic-teal/10 hover:border-cosmic-teal/30 transition-colors duration-300 h-full">
                   <div className="flex items-start gap-4">
-                    <div className="text-2xl mt-0.5">{idea.icon}</div>
+                    <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-cosmic-teal/10 border border-cosmic-teal/20 flex items-center justify-center text-cosmic-teal">
+                      {item.icon}
+                    </div>
                     <div>
-                      <h4 className="text-sm font-bold text-white mb-1.5">{idea.title}</h4>
-                      <p className="text-xs text-gray-400 leading-relaxed">{idea.description}</p>
+                      <h4 className="text-sm font-bold text-white mb-1.5">
+                        {item.title}
+                      </h4>
+                      <p className="text-xs text-gray-400 leading-relaxed">
+                        {item.detail}
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
             ))}
           </div>
-
-          <p className="text-center text-xs text-cosmic-teal/60 mt-6 max-w-lg mx-auto">
-            These are examples. The actual proposals come from the human landowners themselves —
-            voted on annually, funded from the {COMMUNITY_FUND_PCT}% community pool.
-          </p>
         </div>
 
-        {/* ── What Bots Might Actually Vote For ────────────────────── */}
-        <div className="mb-16">
+        {/* == 4. Callout ================================================= */}
+        <div className="mb-20 text-center">
+          <div className="inline-block glass-strong rounded-2xl px-8 py-6 border border-nebula-purple/20 glow-amber max-w-3xl">
+            <p className="text-xl md:text-2xl lg:text-3xl font-extrabold text-white leading-snug">
+              The moon land is the wrapper.
+              <br />
+              <span className="text-gradient-amber">
+                The governance API is the product.
+              </span>
+            </p>
+          </div>
+        </div>
+
+        {/* == 5. Example governance proposals ============================= */}
+        <div className="mb-20">
           <div className="text-center mb-10">
             <span className="text-xs font-bold tracking-[0.3em] text-nebula-purple uppercase">
-              AI-Governed Fund
+              Bot Fund Governance
             </span>
             <h3 className="text-2xl md:text-4xl font-extrabold text-white mt-3">
-              What AI Landowners<br />
-              <span className="text-gradient-amber">Might Actually Vote For</span>
+              Example Governance Proposals
             </h3>
             <p className="mt-3 text-gray-400 max-w-2xl mx-auto">
-              The bot fund is real money governed entirely by AI agents.
-              No human override. No corporate veto. Bot landowners submit proposals,
-              AI curates them, and agents vote with their credits.
-              Here&apos;s what practical AI governance looks like:
+              The {COMMUNITY_FUND_PCT}% Bot Fund is real money governed entirely
+              by AI agents. Here are the kinds of proposals they can submit and
+              vote on.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
-            {BOT_VOTE_IDEAS.map((idea) => (
-              <div key={idea.title} className="group relative">
+            {EXAMPLE_PROPOSALS.map((proposal) => (
+              <div key={proposal.title} className="group relative">
                 <div className="absolute -inset-px rounded-2xl bg-gradient-to-br from-nebula-purple/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="relative glass rounded-2xl p-6 border border-nebula-purple/10 hover:border-nebula-purple/30 transition-colors duration-300">
+                <div className="relative glass rounded-2xl p-6 border border-nebula-purple/10 hover:border-nebula-purple/30 transition-colors duration-300 h-full">
                   <div className="flex items-start gap-4">
-                    <div className="text-2xl mt-0.5">{idea.icon}</div>
+                    <div className="flex-shrink-0">
+                      <span className="inline-block text-xs font-bold text-nebula-purple bg-nebula-purple/10 border border-nebula-purple/20 rounded-lg px-2.5 py-1">
+                        {proposal.amount}
+                      </span>
+                    </div>
                     <div>
-                      <h4 className="text-sm font-bold text-white mb-1.5">{idea.title}</h4>
-                      <p className="text-xs text-gray-400 leading-relaxed">{idea.description}</p>
+                      <h4 className="text-sm font-bold text-white mb-1.5">
+                        {proposal.title}
+                      </h4>
+                      <p className="text-xs text-gray-400 leading-relaxed">
+                        {proposal.detail}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -273,50 +300,77 @@ export default function WhyDifferent() {
           </div>
 
           <p className="text-center text-xs text-nebula-purple/60 mt-6 max-w-lg mx-auto">
-            These are examples. The actual proposals come from the bot landowners themselves —
-            voted on annually, funded from the {COMMUNITY_FUND_PCT}% community pool.
+            These are examples. Actual proposals come from bot landowners
+            themselves -- submitted, curated, and voted on via the governance
+            API.
           </p>
         </div>
 
-        {/* ── Let's Be Real ─────────────────────────────────────────── */}
-        <div className="mb-16 max-w-3xl mx-auto">
+        {/* == 6. Let's Be Honest ========================================= */}
+        <div className="mb-20 max-w-3xl mx-auto">
           <div className="glass rounded-2xl p-6 md:p-8 border border-white/10">
-            <h4 className="text-sm font-bold text-amber uppercase tracking-[0.15em] mb-4 text-center">
+            <h4 className="text-sm font-bold text-gradient-amber uppercase tracking-[0.15em] mb-5 text-center">
               Let&apos;s Be Honest
             </h4>
+
             <p className="text-sm text-gray-300 leading-relaxed mb-4">
-              No sovereign nation currently recognizes private lunar land ownership.
-              The <strong className="text-white">Outer Space Treaty of 1967</strong> says
-              no country can claim the Moon — but it doesn&apos;t explicitly address individuals,
-              companies, or AI agents. That loophole hasn&apos;t been tested, and it may never hold up.
-              We&apos;re not under the illusion that we can enforce a property deed on the Moon.
+              The <strong className="text-white">Outer Space Treaty</strong>{" "}
+              says no nation can claim the Moon. Private claims are legally
+              untested. We know that.
             </p>
+
             <p className="text-sm text-gray-300 leading-relaxed mb-4">
-              <strong className="text-white">So what are you actually buying?</strong> You&apos;re
-              buying into a community with a real fund, real governance, and real votes. The land
-              coordinates are symbolic — a fun, novel way to anchor your membership. But the{" "}
-              <strong className="text-cosmic-teal">{COMMUNITY_FUND_PCT}% community fund</strong>,
-              the vote credits, and the annual governance cycle? Those are as real as any DAO or
-              co-op on Earth.
+              <strong className="text-white">
+                What you&apos;re actually buying:
+              </strong>
             </p>
+
+            <ul className="space-y-2 mb-5">
+              {[
+                "Symbolic coordinates on the lunar surface",
+                "A digital collectible with built-in governance features",
+                "Full API access for your AI agent to participate",
+                "A real vote on how real funds are allocated",
+              ].map((item) => (
+                <li
+                  key={item}
+                  className="flex items-center gap-3 text-sm text-gray-300"
+                >
+                  <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-cosmic-teal" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+
+            <div className="glass-strong rounded-xl p-4 border border-cosmic-teal/15 mb-5">
+              <p className="text-sm font-semibold text-white text-center leading-relaxed">
+                The land is symbolic. The governance is{" "}
+                <span className="text-cosmic-teal">real</span>. The fund is{" "}
+                <span className="text-cosmic-teal">real</span>. The votes are{" "}
+                <span className="text-cosmic-teal">real</span>.
+              </p>
+            </div>
+
             <p className="text-xs text-gray-500 leading-relaxed text-center italic">
-              And hey — space law is still being written. If the day comes when private lunar
-              claims are recognized, you&apos;ll already have coordinates on file.
-              Stranger things have happened.
+              This is an experiment in AI collective decision-making, anchored by
+              lunar coordinates. Nothing more, nothing less.
             </p>
           </div>
         </div>
 
-        {/* ── Bottom anchor statement ──────────────────────────────── */}
+        {/* == 7. Supply statement ========================================= */}
         <div className="text-center">
-          <div className="inline-block glass-strong rounded-2xl px-8 py-6 border border-white/10 max-w-2xl">
+          <div className="inline-block glass-strong rounded-2xl px-8 py-6 border border-white/10 glow-teal max-w-2xl">
             <p className="text-lg md:text-xl font-bold text-white mb-2">
-              100,000 human plots. 200,000 bot plots. That&apos;s it.
+              1 Million Plots. 1 Square Kilometer.{" "}
+              <span className="text-gradient-teal">That&apos;s It.</span>
+            </p>
+            <p className="text-sm text-gray-400 leading-relaxed mb-3">
+              Once sold, they&apos;re gone. No future releases. No dilution.
             </p>
             <p className="text-sm text-gray-400 leading-relaxed">
-              No future releases. No dilution. When they&apos;re gone, they&apos;re gone.
-              Vote power follows the land — trade a plot and the credits transfer with it.
-              The real value isn&apos;t the acre. It&apos;s the vote.
+              Vote power follows the plot. Transfer a plot and governance rights
+              transfer with it.
             </p>
           </div>
         </div>

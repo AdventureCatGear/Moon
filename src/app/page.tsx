@@ -6,17 +6,17 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import MoonGlobe from "@/components/MoonGlobe";
 import TerritoryDetail from "@/components/TerritoryDetail";
-import OwnerDashboard from "@/components/OwnerDashboard";
+import WhyDifferent from "@/components/WhyDifferent";
+import PublicTransparency from "@/components/PublicTransparency";
+import HowItWorks from "@/components/HowItWorks";
 import Pricing from "@/components/Pricing";
 import CommunityFeed from "@/components/CommunityFeed";
-import HowItWorks from "@/components/HowItWorks";
 import BotApiSection from "@/components/BotApiSection";
-import WhyDifferent from "@/components/WhyDifferent";
 import Footer from "@/components/Footer";
 import KonamiEasterEgg from "@/components/KonamiEasterEgg";
 import { Territory } from "@/data/territories";
 
-type View = "home" | "territory" | "dashboard";
+type View = "home" | "territory";
 
 export default function Home() {
   const [view, setView] = useState<View>("home");
@@ -32,14 +32,10 @@ export default function Home() {
     setView("home");
   };
 
-  const goToDashboard = () => {
-    setView("dashboard");
-  };
-
   return (
     <>
       <StarField />
-      <Navbar onDashboardClick={goToDashboard} />
+      <Navbar />
       <KonamiEasterEgg />
 
       <main className="relative z-10">
@@ -48,13 +44,12 @@ export default function Home() {
             territory={selectedTerritory}
             onBack={goHome}
           />
-        ) : view === "dashboard" ? (
-          <OwnerDashboard onBack={goHome} />
         ) : (
           <>
             <Hero />
             <MoonGlobe onTerritoryClick={handleTerritoryClick} />
             <WhyDifferent />
+            <PublicTransparency />
             <HowItWorks />
             <Pricing />
             <CommunityFeed />

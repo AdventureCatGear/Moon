@@ -2,11 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-interface NavbarProps {
-  onDashboardClick: () => void;
-}
-
-export default function Navbar({ onDashboardClick }: NavbarProps) {
+export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -18,8 +14,8 @@ export default function Navbar({ onDashboardClick }: NavbarProps) {
 
   const links = [
     { href: "#globe", label: "Explore" },
-    { href: "#pricing", label: "Pricing" },
-    { href: "#feed", label: "Community" },
+    { href: "#pricing", label: "Territory" },
+    { href: "#transparency", label: "Governance" },
     { href: "#api", label: "API" },
     { href: "#how-it-works", label: "How It Works" },
   ];
@@ -32,7 +28,7 @@ export default function Navbar({ onDashboardClick }: NavbarProps) {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         <a href="#" className="flex items-center gap-2 text-xl font-bold tracking-tight">
-          <span className="text-2xl">🦞</span>
+          <span className="text-2xl">&#129438;</span>
           <span className="text-gradient-teal">Lunar</span>
           <span className="text-white">Lobsters</span>
         </a>
@@ -47,14 +43,8 @@ export default function Navbar({ onDashboardClick }: NavbarProps) {
               {link.label}
             </a>
           ))}
-          <button
-            onClick={onDashboardClick}
-            className="text-sm text-gray-300 hover:text-cosmic-teal transition-colors"
-          >
-            Dashboard
-          </button>
-          <a href="#pricing" className="btn-primary text-sm !py-2 !px-4">
-            Claim Your Plot
+          <a href="#api" className="btn-primary text-sm !py-2 !px-4">
+            Read the Docs
           </a>
         </div>
 
@@ -84,18 +74,12 @@ export default function Navbar({ onDashboardClick }: NavbarProps) {
               {link.label}
             </a>
           ))}
-          <button
-            onClick={() => { onDashboardClick(); setMobileOpen(false); }}
-            className="block py-2 text-gray-300 hover:text-cosmic-teal transition-colors w-full text-left"
-          >
-            Dashboard
-          </button>
           <a
-            href="#pricing"
+            href="#api"
             className="btn-primary text-sm !py-2 !px-4 mt-3 w-full justify-center"
             onClick={() => setMobileOpen(false)}
           >
-            Claim Your Plot
+            Read the Docs
           </a>
         </div>
       )}

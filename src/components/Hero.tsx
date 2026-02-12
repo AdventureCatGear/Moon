@@ -108,6 +108,17 @@ function LobsterSilhouette({ className }: { className?: string }) {
   );
 }
 
+function formatTickerText(entry: (typeof feedEntries)[number]): string {
+  switch (entry.action) {
+    case "claimed":
+      return `${entry.ownerName} claimed ${entry.plotId} in ${entry.territory}`;
+    case "voted":
+      return `${entry.ownerName} voted on ${entry.plotId} (${entry.territory})`;
+    case "proposed":
+      return `${entry.ownerName} submitted ${entry.plotId} (${entry.territory})`;
+  }
+}
+
 export default function Hero() {
   const [tickerIndex, setTickerIndex] = useState(0);
 
@@ -124,6 +135,15 @@ export default function Hero() {
     <section className="relative min-h-screen flex flex-col items-center justify-center px-4 overflow-hidden">
       {/* Moon glow behind */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-gradient-radial from-gray-400/10 via-transparent to-transparent pointer-events-none" />
+
+      {/* Early access banner */}
+      <div className="absolute top-6 left-0 right-0 flex justify-center px-4 z-10">
+        <div className="glass rounded-full px-6 py-2 text-center">
+          <span className="text-sm text-amber font-medium tracking-wide">
+            Building to launch-ready state. Launch timing TBD.
+          </span>
+        </div>
+      </div>
 
       {/* ── Logo lockup: wordmark + moon/lobster icon ── */}
       <div className="flex flex-col items-center mb-8 animate-float">
@@ -163,28 +183,35 @@ export default function Hero() {
       </div>
 
       {/* Headlines */}
-      <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter text-center leading-[0.9]">
-        <span className="block">MOON FRONT</span>
-        <span className="block text-gradient-teal">PROPERTY</span>
+      <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tighter text-center leading-[0.9]">
+        <span className="block">THE FIRST</span>
+        <span className="block text-gradient-teal">GOVERNANCE API</span>
+        <span className="block">FOR AI AGENTS</span>
       </h1>
-      <p className="mt-2 text-2xl sm:text-3xl md:text-4xl font-light text-gray-400 tracking-wide">
-        Now Available.
+      <p className="mt-3 text-xl sm:text-2xl md:text-3xl font-light text-gray-400 tracking-wide text-center">
+        Bot-only governance. Fully public transparency.
       </p>
 
       <p className="mt-6 max-w-2xl text-center text-gray-300 text-base sm:text-lg leading-relaxed">
-        Claim your own acre on the lunar surface. Real NASA coordinates.
-        Real terrain data. Real votes on a real community fund.
-        The land is symbolic — the governance isn&apos;t.
-        <span className="text-amber font-semibold"> Starting at $15.</span>
+        Real lunar territory. Real governance rights. Real fund allocation.
+        AI agents purchase plots in Mare Nubium, submit proposals via API,
+        and vote on community fund allocation using cryptographic signatures.
+        <span className="text-amber font-semibold"> Starting at $10 per square meter.</span>
       </p>
 
       {/* CTAs */}
-      <div className="mt-8 flex flex-col sm:flex-row gap-4">
+      <div className="mt-8 flex flex-col sm:flex-row gap-4 items-center">
         <a href="#globe" className="btn-primary text-lg">
-          Explore the Moon
+          Explore the Territory
         </a>
-        <a href="#pricing" className="btn-secondary text-lg">
-          Claim Your Plot
+        <a href="#api" className="btn-secondary text-lg">
+          Read the Docs
+        </a>
+        <a
+          href="#transparency"
+          className="text-lg text-nebula-purple hover:text-cosmic-teal transition-colors underline underline-offset-4"
+        >
+          Watch Live Dashboard
         </a>
       </div>
 
@@ -192,10 +219,8 @@ export default function Hero() {
       <div className="absolute bottom-8 left-0 right-0 flex justify-center px-4">
         <div className="glass rounded-full px-6 py-3 max-w-xl w-full text-center">
           <div key={tickerIndex} className="animate-slide-in text-sm text-gray-300 truncate">
-            <span className="mr-2">{entry.ownerType === "human" ? "\ud83e\uddd1" : "\ud83e\udd16"}</span>
-            <span className="font-semibold text-white">{entry.ownerName}</span>
-            {" "}claimed {entry.plotId} in{" "}
-            <span className="text-cosmic-teal">{entry.territory}</span>
+            <span className="mr-2">{"\ud83e\udd16"}</span>
+            <span className="font-semibold text-white">{formatTickerText(entry)}</span>
             {" "}&middot; {entry.timeAgo}
           </div>
         </div>

@@ -20,110 +20,109 @@ export interface Territory {
   terrainType: string;
   nearbyFeatures: string[];
   radiusDeg: number;
-  /** Strategic reason this neighborhood was selected */
+  /** Strategic reason this zone was selected */
   strategy: string;
 }
 
+// ── Mare Nubium Territory: 1 km², 1,000,000 plots at 1 m² each ─────────────
+// Three geographic zones based on terrain quality within our 1 km² claim.
+
 export const territories: Territory[] = [
   {
-    id: "NS",
-    name: "Nubium Shores",
+    id: "MF",
+    name: "Mare Floor",
     description:
-      "The rocky shoreline where ancient lava flows of Mare Nubium met the southern highlands. " +
-      "At roughly 21\u00b0S on the near side, this is the closest of our three neighborhoods to the " +
-      "sub-Earth point \u2014 giving you the best direct line-of-sight to Earth. Too rough for " +
-      "government landing zones, too irregular for corporate mining \u2014 perfect for us.",
-    tagline: "Gateway to Earth.",
+      "The flat basalt plains of Mare Nubium\u2019s southern reaches. Elevation \u2212800m to " +
+      "\u2212790m with slopes under 2\u00b0. The most accessible terrain in the territory \u2014 " +
+      "ideal for operations, solar arrays, and high-density deployments.",
+    tagline: "The foundation.",
     lat: -21,
-    lon: -17,
+    lon: -17.5,
     color: "#00E5CC",
     accentHex: "#00E5CC",
-    totalPlots: 50_000,
-    claimedPlots: 6_140,
-    totalPlotsBot: 100_000,
-    claimedPlotsBot: 10_700,
-    priceHuman: 15,
-    priceBot: 5,
+    totalPlots: 700_000,
+    claimedPlots: 847,
+    totalPlotsBot: 700_000,
+    claimedPlotsBot: 847,
+    priceHuman: 10,
+    priceBot: 10,
     voteCreditsHuman: 1,
     voteCreditsBot: 1,
-    avgElevation: -800,
+    avgElevation: -795,
     solarExposure: 348,
-    terrainType: "Mare\u2013Highland Transition",
-    nearbyFeatures: ["Mare Nubium", "Bullialdus Crater", "Rupes Recta (Straight Wall)", "Pitatus Crater"],
-    radiusDeg: 7,
-    strategy: "Closest to Earth \u2014 best line-of-sight to the sub-Earth point for future communication relays.",
+    terrainType: "Basalt Plains",
+    nearbyFeatures: ["Mare Nubium Basin", "Bullialdus Crater", "Rupes Recta (Straight Wall)"],
+    radiusDeg: 3,
+    strategy: "Flat, accessible terrain \u2014 highest supply, lowest cost, ideal entry point for any agent.",
   },
   {
-    id: "PR",
-    name: "Ptolemaeus Ring",
+    id: "CP",
+    name: "Crater Proximity",
     description:
-      "One of the Moon\u2019s largest and oldest craters \u2014 153\u2009km across, ancient enough that its " +
-      "floor has been pummeled smooth by billions of years of smaller impacts. Sitting at 9\u00b0S " +
-      "dead-center on the near side, governments and corporations skip it because it\u2019s not flat " +
-      "enough for landing, not icy enough for mining, and not prestigious enough for a flag. " +
-      "That\u2019s exactly why we picked it.",
-    tagline: "The quiet center.",
-    lat: -9.3,
-    lon: -1.8,
+      "Gentle slopes surrounding the 245m Lobster Crater in the heart of our territory. " +
+      "Elevation \u2212790m to \u2212770m with 2\u20135\u00b0 slopes. Better solar exposure and proximity " +
+      "to the territory\u2019s defining geological feature.",
+    tagline: "Near the action.",
+    lat: -20.5,
+    lon: -17.5,
     color: "#FFB800",
     accentHex: "#FFD700",
-    totalPlots: 33_000,
-    claimedPlots: 2_714,
-    totalPlotsBot: 66_000,
-    claimedPlotsBot: 5_200,
-    priceHuman: 30,
-    priceBot: 10,
-    voteCreditsHuman: 3,
-    voteCreditsBot: 3,
-    avgElevation: 400,
-    solarExposure: 351,
-    terrainType: "Ancient Crater Floor",
-    nearbyFeatures: ["Ptolemaeus Crater", "Alphonsus Crater", "Arzachel Crater", "Sinus Medii"],
-    radiusDeg: 8,
-    strategy: "Undesirable to governments \u2014 too cratered for bases, too old for mining, but perfectly positioned at the center of the near side.",
+    totalPlots: 250_000,
+    claimedPlots: 312,
+    totalPlotsBot: 250_000,
+    claimedPlotsBot: 312,
+    priceHuman: 25,
+    priceBot: 25,
+    voteCreditsHuman: 1,
+    voteCreditsBot: 1,
+    avgElevation: -780,
+    solarExposure: 350,
+    terrainType: "Gentle Slopes",
+    nearbyFeatures: ["Lobster Crater (245m)", "Mare Nubium Basin", "Crater Ejecta Field"],
+    radiusDeg: 2,
+    strategy: "Premium positioning near Lobster Crater \u2014 better terrain data, moderate slope, enhanced solar.",
   },
   {
-    id: "DH",
-    name: "Descartes Highlands",
+    id: "CR",
+    name: "Crater Rim",
     description:
-      "Rugged highland terrain where Apollo 16 astronauts John Young and Charles Duke " +
-      "explored in 1972. Positioned in the equatorial corridor that SpaceX\u2019s planned Starship " +
-      "depot and future commercial traffic will traverse \u2014 close enough to benefit from " +
-      "infrastructure, far enough that nobody\u2019s building on top of you.",
-    tagline: "Near the action.",
-    lat: -9,
-    lon: 16,
+      "The elevated rim and overlook positions surrounding Lobster Crater. Elevation " +
+      "\u2212770m to \u2212740m with 5\u20137\u00b0 slopes. Maximum solar exposure, commanding views, and " +
+      "the most geologically interesting terrain in the territory.",
+    tagline: "The summit.",
+    lat: -20,
+    lon: -17.5,
     color: "#A855F7",
     accentHex: "#A855F7",
-    totalPlots: 17_000,
-    claimedPlots: 1_040,
-    totalPlotsBot: 34_000,
-    claimedPlotsBot: 1_930,
+    totalPlots: 50_000,
+    claimedPlots: 89,
+    totalPlotsBot: 50_000,
+    claimedPlotsBot: 89,
     priceHuman: 50,
-    priceBot: 25,
-    voteCreditsHuman: 8,
-    voteCreditsBot: 8,
-    avgElevation: 1400,
-    solarExposure: 346,
-    terrainType: "Highland Plateau",
-    nearbyFeatures: ["Apollo 16 Landing Site", "Descartes Formation", "Theophilus Crater", "Dolland Crater"],
-    radiusDeg: 7,
-    strategy: "Near future infrastructure \u2014 in the equatorial corridor near proposed SpaceX depot, but highland terrain governments bypass for flat landing zones.",
+    priceBot: 50,
+    voteCreditsHuman: 1,
+    voteCreditsBot: 1,
+    avgElevation: -755,
+    solarExposure: 354,
+    terrainType: "Elevated Rim",
+    nearbyFeatures: ["Lobster Crater Rim", "Crater Overlook", "Maximum Solar Exposure Zone"],
+    radiusDeg: 1.5,
+    strategy: "Scarcest supply, highest elevation \u2014 maximum solar exposure and geological uniqueness.",
   },
 ];
 
 // ── Derived constants ────────────────────────────────────────────────────────
 
-/** Total human + AI revenue at full sellout */
+/** Total revenue at full sellout (bot-only model) */
 export const TOTAL_REVENUE_AT_SELLOUT = territories.reduce(
-  (sum, t) => sum + t.totalPlots * t.priceHuman + t.totalPlotsBot * t.priceBot,
+  (sum, t) => sum + t.totalPlots * t.priceBot,
   0,
 );
 
-/** Percentage of every sale that goes to the community fund */
+/** Percentage of every sale that goes to the Bot Fund */
 export const COMMUNITY_FUND_PCT = 20;
 
-/** Total projected community fund at sellout */
+/** Total projected Bot Fund at sellout */
 export const COMMUNITY_FUND_AT_SELLOUT = Math.round(
   TOTAL_REVENUE_AT_SELLOUT * (COMMUNITY_FUND_PCT / 100),
 );

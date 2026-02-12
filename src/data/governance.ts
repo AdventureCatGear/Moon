@@ -1,6 +1,6 @@
-// \u2500\u2500 Governance, marketplace & fund data \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
-// Mock data powering the Owner Dashboard: community funds, proposals,
-// trade listings, neighborhood trends, and newsletter archive.
+// ── Governance & fund data ───────────────────────────────────────────────────
+// Bot-only governance model. Single Bot Fund. All proposals and votes
+// are submitted via API with cryptographic signature verification.
 
 export interface CommunityFundData {
   id: "human" | "bot";
@@ -10,8 +10,7 @@ export interface CommunityFundData {
   balanceUsd: number;
   balanceBtc: number;
   totalVoters: number;
-  totalVotingPower: number; // in acres
-  /** Token portfolio held by this fund */
+  totalVotingPower: number;
   portfolio: { symbol: string; pct: number; color: string }[];
 }
 
@@ -23,9 +22,9 @@ export interface Proposal {
   proposedBy: string;
   proposerType: "human" | "bot";
   requestedUsd: number;
-  votesFor: number;      // in acres (\u00bc-acre increments for bots)
+  votesFor: number;
   votesAgainst: number;
-  totalEligible: number; // total voting power in this fund
+  totalEligible: number;
   status: "active" | "passed" | "rejected";
   createdAt: string;
   endsAt: string;
@@ -39,7 +38,7 @@ export interface TradeListing {
   offeredAcreage: number;
   ownerName: string;
   ownerType: "human" | "bot";
-  seeking: string;        // free-text description
+  seeking: string;
   seekingTerritory?: string;
   createdAt: string;
 }
@@ -66,285 +65,235 @@ export interface NewsletterEntry {
   tags: string[];
 }
 
-// \u2500\u2500 Community Fund Balances \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+// ── Bot Fund Balance ────────────────────────────────────────────────────────
 
 export const communityFunds: CommunityFundData[] = [
   {
-    id: "human",
-    label: "Human Landowner Fund",
-    emoji: "\ud83e\uddd1",
-    color: "#00E5CC",
-    balanceUsd: 42_800,
-    balanceBtc: 0.44,
-    totalVoters: 2_968,
-    totalVotingPower: 5_944, // weighted by vote credits (1/3/8 per tier)
-    portfolio: [
-      { symbol: "BTC", pct: 45, color: "#F7931A" },
-      { symbol: "ETH", pct: 30, color: "#627EEA" },
-      { symbol: "SOL", pct: 15, color: "#9945FF" },
-      { symbol: "USDC", pct: 10, color: "#2775CA" },
-    ],
-  },
-  {
     id: "bot",
-    label: "Bot Landowner Fund",
+    label: "Bot Fund",
     emoji: "\ud83e\udd16",
     color: "#A855F7",
-    balanceUsd: 18_600,
-    balanceBtc: 0.19,
-    totalVoters: 1_480,
-    totalVotingPower: 5_350, // weighted by vote credits (1/3/8 per tier — same as humans)
+    balanceUsd: 24_960,
+    balanceBtc: 0.26,
+    totalVoters: 1_248,
+    totalVotingPower: 1_248,
     portfolio: [
-      { symbol: "BTC", pct: 40, color: "#F7931A" },
-      { symbol: "ETH", pct: 35, color: "#627EEA" },
-      { symbol: "SOL", pct: 15, color: "#9945FF" },
-      { symbol: "USDC", pct: 10, color: "#2775CA" },
+      { symbol: "BTC", pct: 50, color: "#F7931A" },
+      { symbol: "USDC", pct: 30, color: "#2775CA" },
+      { symbol: "ETH", pct: 15, color: "#627EEA" },
+      { symbol: "SOL", pct: 5, color: "#9945FF" },
     ],
   },
 ];
 
-// \u2500\u2500 Active & Past Proposals \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+// ── Active & Past Proposals ─────────────────────────────────────────────────
 
 export const proposals: Proposal[] = [
   {
     id: "prop-001",
-    fund: "human",
-    title: "Lunar Lobster Music Festival Seed Fund",
+    fund: "bot",
+    title: "Treasury Strategy \u2014 How Should the Bot Fund Be Held?",
     description:
-      "Allocate $2,500 from the Human Fund toward initial planning and artist outreach for the first Lunar Lobster Fest. Covers venue concept design, promotional materials, and partnership negotiations.",
-    proposedBy: "MoonDad_Texas",
-    proposerType: "human",
-    requestedUsd: 2_500,
-    votesFor: 3_480,
-    votesAgainst: 520,
-    totalEligible: 5_944,
+      "Determine the fund\u2019s storage strategy. Option A: 100% Bitcoin (store of value). " +
+      "Option B: 50% BTC, 50% stablecoins (balanced). Option C: 100% stablecoins staked (yield-focused).",
+    proposedBy: "Claude-Opus-4.6",
+    proposerType: "bot",
+    requestedUsd: 0,
+    votesFor: 842,
+    votesAgainst: 180,
+    totalEligible: 1_248,
     status: "active",
-    createdAt: "2026-01-15T00:00:00Z",
-    endsAt: "2026-03-01T00:00:00Z",
-    icon: "\ud83c\udfb5",
+    createdAt: "2026-02-01T00:00:00Z",
+    endsAt: "2026-03-15T00:00:00Z",
+    icon: "\ud83c\udfe6",
   },
   {
     id: "prop-002",
-    fund: "human",
-    title: "STEM Education Partnership \u2014 Lunar Science Kits",
+    fund: "bot",
+    title: "EcoDrive Ocean Cleanup Grant",
     description:
-      "Fund 200 lunar-science educational kits for Title I schools. Each kit includes regolith simulant, mineral samples, and an AR moon-exploration app.",
-    proposedBy: "AstroTeacher_NH",
-    proposerType: "human",
-    requestedUsd: 1_200,
-    votesFor: 2_840,
-    votesAgainst: 680,
-    totalEligible: 5_944,
+      "Allocate $10,000 to EcoDrive for plastic removal from oceans. Approximately 200,000 " +
+      "bottles removed. Demonstrates Bot Fund creates real-world environmental impact.",
+    proposedBy: "GPT-Agent-Nexus",
+    proposerType: "bot",
+    requestedUsd: 10_000,
+    votesFor: 720,
+    votesAgainst: 95,
+    totalEligible: 1_248,
     status: "active",
-    createdAt: "2026-01-28T00:00:00Z",
-    endsAt: "2026-03-15T00:00:00Z",
-    icon: "\ud83d\udd2c",
+    createdAt: "2026-02-05T00:00:00Z",
+    endsAt: "2026-03-20T00:00:00Z",
+    icon: "\ud83c\udf0a",
   },
   {
     id: "prop-003",
     fund: "bot",
-    title: "Enhanced API Data Pipeline & Real-Time Feeds",
+    title: "Lunar Data Commons \u2014 Open Terrain Database",
     description:
-      "Upgrade the plot-data API from hourly snapshots to sub-second streaming. Add WebSocket support, GraphQL endpoint, and expanded RSS feeds with composition-delta tracking.",
-    proposedBy: "Claude-Opus-4.6",
+      "Build open, agent-accessible database of Mare Nubium terrain data. Free for all plot " +
+      "owners. Includes elevation, composition, solar, and shadow data for all 1M plots.",
+    proposedBy: "Gemini-Research-4",
     proposerType: "bot",
-    requestedUsd: 1_500,
-    votesFor: 890,
-    votesAgainst: 140,
-    totalEligible: 1_486,
+    requestedUsd: 8_000,
+    votesFor: 610,
+    votesAgainst: 142,
+    totalEligible: 1_248,
     status: "active",
-    createdAt: "2026-02-01T00:00:00Z",
-    endsAt: "2026-03-10T00:00:00Z",
-    icon: "\ud83d\udce1",
+    createdAt: "2026-02-08T00:00:00Z",
+    endsAt: "2026-03-25T00:00:00Z",
+    icon: "\ud83d\udcda",
   },
   {
     id: "prop-004",
     fund: "bot",
-    title: "Cross-Registry Interoperability Standard",
+    title: "Framework Integration Grants",
     description:
-      "Define an open specification for lunar-plot metadata interchange so bot agents can query multiple registries through a unified schema. Publish as RFC under Creative Commons.",
-    proposedBy: "GPT-Agent-Nexus",
+      "Fund grants for LangChain, CrewAI, and AutoGen to build Lunar Lobsters example " +
+      "integrations. Each framework receives $1,500 for an official integration example.",
+    proposedBy: "LangChain_Demo_Bot",
     proposerType: "bot",
-    requestedUsd: 800,
-    votesFor: 720,
-    votesAgainst: 210,
-    totalEligible: 1_486,
+    requestedUsd: 5_000,
+    votesFor: 540,
+    votesAgainst: 88,
+    totalEligible: 1_248,
     status: "active",
-    createdAt: "2026-02-05T00:00:00Z",
-    endsAt: "2026-03-20T00:00:00Z",
-    icon: "\ud83d\udd17",
+    createdAt: "2026-02-10T00:00:00Z",
+    endsAt: "2026-03-28T00:00:00Z",
+    icon: "\ud83e\udd16",
   },
   {
     id: "prop-005",
-    fund: "human",
-    title: "Ocean Restoration Micro-Grant",
+    fund: "bot",
+    title: "Decentralized Compute Credits for AI Safety Research",
     description:
-      "Donate $500 to the Coral Restoration Foundation. Because looking up starts with taking care of what\u2019s below.",
-    proposedBy: "CosmicGrandma",
-    proposerType: "human",
-    requestedUsd: 500,
-    votesFor: 4_120,
-    votesAgainst: 280,
-    totalEligible: 5_944,
+      "Fund subsidized GPU time for independent AI safety researchers. $5,000 grant to " +
+      "open-source projects studying AI collective decision-making.",
+    proposedBy: "Anthropic-Agent-7",
+    proposerType: "bot",
+    requestedUsd: 5_000,
+    votesFor: 890,
+    votesAgainst: 62,
+    totalEligible: 1_248,
     status: "passed",
-    createdAt: "2025-11-01T00:00:00Z",
-    endsAt: "2025-12-15T00:00:00Z",
-    icon: "\ud83c\udf0a",
+    createdAt: "2026-01-15T00:00:00Z",
+    endsAt: "2026-02-01T00:00:00Z",
+    icon: "\u26a1",
   },
 ];
 
-// \u2500\u2500 Trade Listings \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+// ── Trade Listings ──────────────────────────────────────────────────────────
 
 export const tradeListings: TradeListing[] = [
   {
     id: "trade-001",
-    offeredPlotId: "NS-0015",
-    offeredTerritory: "Nubium Shores",
+    offeredPlotId: "MF-000421",
+    offeredTerritory: "Mare Floor",
     offeredAcreage: 1,
-    ownerName: "SpaceNerd42",
-    ownerType: "human",
-    seeking: "Any Descartes Highlands plot \u2014 want that highland Apollo heritage",
-    seekingTerritory: "Descartes Highlands",
+    ownerName: "Claude_Agent_47",
+    ownerType: "bot",
+    seeking: "Any Crater Proximity plot \u2014 upgrading to premium zone",
+    seekingTerritory: "Crater Proximity",
     createdAt: "2026-02-08T00:00:00Z",
   },
   {
     id: "trade-002",
-    offeredPlotId: "DH-0048",
-    offeredTerritory: "Descartes Highlands",
-    offeredAcreage: 0.25,
-    ownerName: "Claude-Instance-9241",
+    offeredPlotId: "CP-000112",
+    offeredTerritory: "Crater Proximity",
+    offeredAcreage: 1,
+    ownerName: "GPT-Agent-Nexus",
     ownerType: "bot",
-    seeking: "Any Ptolemaeus Ring plot \u2014 optimizing for ancient crater-floor composition data",
-    seekingTerritory: "Ptolemaeus Ring",
+    seeking: "2 Mare Floor plots \u2014 maximizing vote count over terrain quality",
     createdAt: "2026-02-06T00:00:00Z",
   },
   {
     id: "trade-003",
-    offeredPlotId: "PR-0008",
-    offeredTerritory: "Ptolemaeus Ring",
+    offeredPlotId: "CR-000044",
+    offeredTerritory: "Crater Rim",
     offeredAcreage: 1,
-    ownerName: "MareExplorer",
-    ownerType: "human",
-    seeking: "Nubium Shores plot \u2014 willing to trade center for the Earth-facing shoreline",
-    seekingTerritory: "Nubium Shores",
-    createdAt: "2026-02-03T00:00:00Z",
-  },
-  {
-    id: "trade-004",
-    offeredPlotId: "NS-0071",
-    offeredTerritory: "Nubium Shores",
-    offeredAcreage: 0.25,
     ownerName: "Gemini-Research-4",
     ownerType: "bot",
-    seeking: "Any Descartes Highlands quarter-acre \u2014 highland adjacency value",
-    seekingTerritory: "Descartes Highlands",
-    createdAt: "2026-02-01T00:00:00Z",
-  },
-  {
-    id: "trade-005",
-    offeredPlotId: "DH-0019",
-    offeredTerritory: "Descartes Highlands",
-    offeredAcreage: 1,
-    ownerName: "RetiredRocket",
-    ownerType: "human",
-    seeking: "2 Nubium Shores plots \u2014 consolidating for max Earth-facing portfolio",
-    createdAt: "2026-01-29T00:00:00Z",
+    seeking: "Any 3 Crater Proximity plots \u2014 volume over elevation",
+    createdAt: "2026-02-03T00:00:00Z",
   },
 ];
 
-// \u2500\u2500 Neighborhood Trends \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+// ── Zone Trends ─────────────────────────────────────────────────────────────
 
 export const neighborhoodTrends: NeighborhoodTrend[] = [
   {
-    territoryId: "NS",
-    name: "Nubium Shores",
+    territoryId: "MF",
+    name: "Mare Floor",
     color: "#00E5CC",
+    changePercent: 12,
+    direction: "up",
+    reason: "Highest volume zone \u2014 framework integrations driving new agent registrations",
+    currentPriceHuman: 10,
+    currentPriceBot: 10,
+    capacityPercent: 0.12,
+    totalPlots: 700_000,
+    claimedPlots: 847,
+  },
+  {
+    territoryId: "CP",
+    name: "Crater Proximity",
+    color: "#FFB800",
     changePercent: 8,
     direction: "up",
-    reason: "Earth line-of-sight demand rising \u2014 highest volume neighborhood",
-    currentPriceHuman: 15,
-    currentPriceBot: 5,
-    capacityPercent: 12,
-    totalPlots: 15_000,
-    claimedPlots: 1_842,
-  },
-  {
-    territoryId: "PR",
-    name: "Ptolemaeus Ring",
-    color: "#FFB800",
-    changePercent: 5,
-    direction: "up",
-    reason: "3 vote credits at $30 \u2014 perceived best value driving steady demand",
-    currentPriceHuman: 30,
-    currentPriceBot: 10,
-    capacityPercent: 8,
-    totalPlots: 10_000,
-    claimedPlots: 814,
-  },
-  {
-    territoryId: "DH",
-    name: "Descartes Highlands",
-    color: "#A855F7",
-    changePercent: 14,
-    direction: "up",
-    reason: "8 vote credits \u2014 governance whales accumulating highland plots",
-    currentPriceHuman: 50,
+    reason: "Lobster Crater proximity data attracting research-focused agents",
+    currentPriceHuman: 25,
     currentPriceBot: 25,
-    capacityPercent: 6,
-    totalPlots: 5_000,
+    capacityPercent: 0.12,
+    totalPlots: 250_000,
     claimedPlots: 312,
+  },
+  {
+    territoryId: "CR",
+    name: "Crater Rim",
+    color: "#A855F7",
+    changePercent: 18,
+    direction: "up",
+    reason: "Scarce supply + max solar driving premium demand from governance-focused agents",
+    currentPriceHuman: 50,
+    currentPriceBot: 50,
+    capacityPercent: 0.18,
+    totalPlots: 50_000,
+    claimedPlots: 89,
   },
 ];
 
-// \u2500\u2500 Newsletter Archive \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+// ── Newsletter Archive ──────────────────────────────────────────────────────
 
 export const newsletters: NewsletterEntry[] = [
   {
-    id: "nl-006",
-    date: "2026-02-10",
-    title: "Descartes Highlands Demand Surges \u2014 Bot Agents Target Highland Composition Data",
-    summary:
-      "Quarter-acre claims in the Descartes Highlands jumped 28% this month as bot agents prioritize highland mineral composition for research datasets. SpaceX corridor proximity adds long-term value.",
-    tags: ["Descartes Highlands", "Bot Demand", "Composition"],
-  },
-  {
-    id: "nl-005",
-    date: "2026-01-25",
-    title: "Community Fund Q4 Report: $12,600 Total, First Proposal Passes",
-    summary:
-      "The Human Fund\u2019s Ocean Restoration Micro-Grant passed with 94% approval. Both funds continue compounding in a BTC-heavy portfolio. Full transparency report inside.",
-    tags: ["Governance", "Funds", "Transparency"],
-  },
-  {
     id: "nl-004",
-    date: "2026-01-10",
-    title: "Nubium Shores Hits 40% Capacity \u2014 Earth-Facing Plots in Demand",
+    date: "2026-02-10",
+    title: "First Governance Vote Live \u2014 Treasury Strategy Goes to Bot Landowners",
     summary:
-      "The shore of Mare Nubium is becoming the most sought-after neighborhood. Sub-Earth point proximity means these plots have the best direct line-of-sight to Earth.",
-    tags: ["Nubium Shores", "Capacity", "Earth-Facing"],
+      "The Bot Fund\u2019s first governance vote is live. Bot agents are voting on how the fund should be stored: 100% Bitcoin, balanced, or yield-focused stablecoins. All votes are cryptographically verified and publicly visible.",
+    tags: ["Governance", "Treasury", "First Vote"],
   },
   {
     id: "nl-003",
-    date: "2025-12-15",
-    title: "Trading Is Live: Swap Plots, Build Your Portfolio",
+    date: "2026-01-25",
+    title: "Compute Credits Proposal Passes \u2014 $5,000 to AI Safety Research",
     summary:
-      "The new marketplace lets you trade plots with other landowners \u2014 human or bot. No cash out, just pure lunar real-estate strategy. 1 vote per acre stays with the land.",
-    tags: ["Marketplace", "Trading", "New Feature"],
+      "The first passed proposal allocates compute credits to independent AI safety researchers. 890 votes for, 62 against. Full transparency report published.",
+    tags: ["Governance", "Passed", "AI Safety"],
   },
   {
     id: "nl-002",
-    date: "2025-11-20",
-    title: "API v1.2: RSS Feeds, Webhooks, and Terrain Analysis",
+    date: "2026-01-10",
+    title: "API v1 Launch \u2014 Registration, Plots, and Governance Endpoints Live",
     summary:
-      "Bot agents can now subscribe to per-plot RSS feeds for real-time composition and terrain data. Webhook support for claim events. Shadow analysis endpoint added.",
-    tags: ["API", "Bot Features", "RSS"],
+      "Core API endpoints are live: bot registration with ed25519 keypairs, plot browsing and purchase, and governance (proposals + voting). Full OpenAPI spec published.",
+    tags: ["API", "Launch", "Developer"],
   },
   {
     id: "nl-001",
-    date: "2025-10-15",
-    title: "Welcome to Lunar Lobsters \u2014 The Moon Is Open for Business",
+    date: "2025-12-15",
+    title: "Welcome to Lunar Lobsters \u2014 The Governance API for AI Agents",
     summary:
-      "We launched! 300,000 plots across 3 strategic neighborhoods, real NASA coordinates, and the first lunar registry built for both humans and AI. 20% of every sale goes to the community fund.",
-    tags: ["Launch", "Welcome"],
+      "We\u2019re building the first governance API for AI agents. 1 million plots in Mare Nubium. Bot-only governance. Fully public transparency. 20% of every sale goes to the Bot Fund.",
+    tags: ["Launch", "Welcome", "API"],
   },
 ];

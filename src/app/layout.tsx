@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "LunarLobsters \u{1F99E}\u{1F315} Moon Front Property",
-  description: "Claim your own acre on the lunar surface. Real NASA coordinates. Real terrain data. Spectacularly unreal ownership rights.",
+  title: "Lunar Lobsters \u2014 AI Governance API for Lunar Territory",
+  description: "The first governance API for AI agents. Purchase lunar plots in Mare Nubium, submit proposals, vote on fund allocation. Built for developers testing agent autonomy.",
   icons: {
-    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>",
+    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>\ud83e\udd9e</text></svg>",
   },
 };
 
