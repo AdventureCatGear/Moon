@@ -27,36 +27,48 @@ function LobsterSilhouette({ className }: { className?: string }) {
         strokeLinecap="round"
       />
 
-      {/* Left claw — arm + pincer */}
+      {/* Left claw — arm */}
       <path
-        d="M76,78 C58,60 42,48 28,35
-           C18,26 8,30 12,40
-           C16,50 28,50 35,45
-           C42,52 58,62 72,76 Z"
-        stroke="none"
+        d="M74,80 C56,64 38,52 24,42"
+        fill="none"
+        strokeWidth="7"
+        strokeLinecap="round"
       />
-      {/* Left pincer tip */}
+      {/* Left upper pincer prong */}
       <path
-        d="M28,35 C20,24 10,18 6,24
-           C2,30 10,34 16,34
-           C20,34 24,36 28,35 Z"
-        stroke="none"
+        d="M24,42 C14,30 4,20 0,26"
+        fill="none"
+        strokeWidth="5"
+        strokeLinecap="round"
+      />
+      {/* Left lower pincer prong */}
+      <path
+        d="M24,42 C16,50 6,58 2,52"
+        fill="none"
+        strokeWidth="5"
+        strokeLinecap="round"
       />
 
-      {/* Right claw — arm + pincer (mirrored) */}
+      {/* Right claw — arm */}
       <path
-        d="M124,78 C142,60 158,48 172,35
-           C182,26 192,30 188,40
-           C184,50 172,50 165,45
-           C158,52 142,62 128,76 Z"
-        stroke="none"
+        d="M126,80 C144,64 162,52 176,42"
+        fill="none"
+        strokeWidth="7"
+        strokeLinecap="round"
       />
-      {/* Right pincer tip */}
+      {/* Right upper pincer prong */}
       <path
-        d="M172,35 C180,24 190,18 194,24
-           C198,30 190,34 184,34
-           C180,34 176,36 172,35 Z"
-        stroke="none"
+        d="M176,42 C186,30 196,20 200,26"
+        fill="none"
+        strokeWidth="5"
+        strokeLinecap="round"
+      />
+      {/* Right lower pincer prong */}
+      <path
+        d="M176,42 C184,50 194,58 198,52"
+        fill="none"
+        strokeWidth="5"
+        strokeLinecap="round"
       />
 
       {/* Astronaut helmet — glass dome over head */}
@@ -165,18 +177,39 @@ export default function Hero() {
                 "0 0 80px rgba(200, 195, 175, 0.3), 0 0 160px rgba(200, 195, 175, 0.1), inset -30px -20px 60px rgba(0, 0, 0, 0.6)",
             }}
           >
-            {/* Crater details */}
-            <div className="absolute top-[20%] left-[25%] w-8 h-8 rounded-full bg-black/10" />
-            <div className="absolute top-[40%] left-[45%] w-12 h-12 rounded-full bg-black/8" />
-            <div className="absolute top-[60%] left-[30%] w-6 h-6 rounded-full bg-black/10" />
-            <div className="absolute top-[30%] left-[60%] w-10 h-10 rounded-full bg-black/5" />
-            <div className="absolute top-[55%] left-[55%] w-5 h-5 rounded-full bg-black/8" />
+            {/* ── Lunar maria (dark basalt plains) — near-side layout ── */}
+            {/* Oceanus Procellarum — large dark region, left/center */}
+            <div className="absolute top-[22%] left-[12%] w-[28%] h-[35%] rounded-full bg-black/10 blur-[2px]" />
+            {/* Mare Imbrium — upper center-left */}
+            <div className="absolute top-[12%] left-[30%] w-[22%] h-[18%] rounded-full bg-black/8 blur-[1px]" />
+            {/* Mare Serenitatis — upper right */}
+            <div className="absolute top-[18%] left-[54%] w-[14%] h-[14%] rounded-full bg-black/8" />
+            {/* Mare Tranquillitatis — center right */}
+            <div className="absolute top-[34%] left-[56%] w-[18%] h-[16%] rounded-full bg-black/7" />
+            {/* Mare Crisium — far right, distinct */}
+            <div className="absolute top-[26%] left-[72%] w-[10%] h-[10%] rounded-full bg-black/10" />
+            {/* Mare Humorum — lower left */}
+            <div className="absolute top-[62%] left-[18%] w-[12%] h-[10%] rounded-full bg-black/8" />
+            {/* Mare Nubium — our territory! lower center-left */}
+            <div className="absolute top-[56%] left-[30%] w-[16%] h-[12%] rounded-full bg-black/8" />
+            {/* Copernicus crater — bright ring */}
+            <div className="absolute top-[38%] left-[30%] w-[4%] h-[4%] rounded-full border border-white/15" />
+            {/* Tycho crater — southern, bright */}
+            <div className="absolute top-[76%] left-[44%] w-[4%] h-[4%] rounded-full border border-white/20" />
+            {/* Our territory marker — glowing dot on Mare Nubium */}
+            <div
+              className="absolute top-[60%] left-[35%] w-[5%] h-[5%] rounded-full animate-pulse"
+              style={{
+                backgroundColor: "rgba(0, 229, 204, 0.6)",
+                boxShadow: "0 0 8px rgba(0, 229, 204, 0.8), 0 0 16px rgba(0, 229, 204, 0.4)",
+              }}
+            />
           </div>
 
           {/* Lobster silhouette overlay */}
           <div className="absolute inset-0 flex items-center justify-center">
             <LobsterSilhouette
-              className="w-[75%] h-[75%] text-[#D4380D] opacity-90 drop-shadow-[0_0_16px_rgba(212,56,13,0.6)]"
+              className="w-[88%] h-[88%] text-[#D4380D] opacity-90 drop-shadow-[0_0_16px_rgba(212,56,13,0.6)]"
             />
           </div>
         </div>
