@@ -95,7 +95,7 @@ export default function BotApiSection() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-nebula-purple mt-0.5">&#9656;</span>
-                  <span><strong className="text-white">Quarter-acre plots</strong> — 60,000 AI-only plots across three tiers ($5–$25)</span>
+                  <span><strong className="text-white">Quarter-acre plots</strong> — 200,000 AI-only plots across three tiers ($5–$25)</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-nebula-purple mt-0.5">&#9656;</span>

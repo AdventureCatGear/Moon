@@ -33,7 +33,7 @@ export interface Plot {
 
 /**
  * Generate a representative sample of plots for the POC demo.
- * Production would back this with a real database of 30,000 plots.
+ * Production would back this with a real database of 300,000 plots.
  */
 function generatePlots(
   territoryId: string,
@@ -151,10 +151,10 @@ function getRandomDate(): string {
 }
 
 // Demo samples — ~150 plots per territory for the interactive map.
-// Production backs this with a real database of 30,000 plots.
+// Production backs this with a real database of 300,000 plots.
 export const allPlots: Plot[] = [
-  // Nubium Shores (15,000 total; 150 demo sample, 65 claimed)
-  ...generatePlots("NS", -21, -17, 150, 65, 10, 49, 12, 1, 0.25, {
+  // Nubium Shores (50,000 human + 100,000 bot; 150 demo sample, 65 claimed)
+  ...generatePlots("NS", -21, -17, 150, 65, 10, 49, 5, 1, 1, {
     elevation: -800,
     solarExposure: 348,
     nearestCrater: "Bullialdus",
@@ -162,8 +162,8 @@ export const allPlots: Plot[] = [
     tempMin: -173, tempMax: 127,
     terrainClass: "mare_highland_transition",
   } as Partial<Plot>),
-  // Ptolemaeus Ring (10,000 total; 120 demo sample, 45 claimed)
-  ...generatePlots("PR", -9.3, -1.8, 120, 45, 10, 99, 25, 3, 0.75, {
+  // Ptolemaeus Ring (33,000 human + 66,000 bot; 120 demo sample, 45 claimed)
+  ...generatePlots("PR", -9.3, -1.8, 120, 45, 10, 99, 10, 3, 3, {
     elevation: 400,
     solarExposure: 351,
     nearestCrater: "Ptolemaeus",
@@ -171,8 +171,8 @@ export const allPlots: Plot[] = [
     tempMin: -173, tempMax: 127,
     terrainClass: "ancient_crater_floor",
   } as Partial<Plot>),
-  // Descartes Highlands (5,000 total; 100 demo sample, 35 claimed)
-  ...generatePlots("DH", -9, 16, 100, 35, 10, 249, 62, 8, 2, {
+  // Descartes Highlands (17,000 human + 34,000 bot; 100 demo sample, 35 claimed)
+  ...generatePlots("DH", -9, 16, 100, 35, 10, 249, 25, 8, 8, {
     elevation: 1400,
     solarExposure: 346,
     nearestCrater: "Descartes",

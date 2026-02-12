@@ -59,6 +59,25 @@ function LobsterSilhouette({ className }: { className?: string }) {
         stroke="none"
       />
 
+      {/* Astronaut helmet — glass dome over head */}
+      <ellipse cx="100" cy="72" rx="32" ry="26" fill="none" stroke="currentColor" strokeWidth="3" opacity="0.7" />
+      {/* Helmet visor reflection */}
+      <path
+        d="M78,64 Q86,56 100,54 Q114,56 122,64"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        opacity="0.35"
+      />
+      {/* Helmet rim */}
+      <path
+        d="M70,80 Q70,76 74,74 L126,74 Q130,76 130,80"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        opacity="0.6"
+      />
+
       {/* Body segments — head to tail */}
       <ellipse cx="100" cy="80" rx="24" ry="18" stroke="none" />
       <ellipse cx="100" cy="102" rx="21" ry="13" stroke="none" />
@@ -115,7 +134,7 @@ export default function Hero() {
         </div>
 
         {/* Moon sphere with lobster overlay */}
-        <div className="relative w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80">
+        <div className="relative w-36 h-36 sm:w-48 sm:h-48 md:w-60 md:h-60">
           {/* Moon */}
           <div
             className="w-full h-full rounded-full"

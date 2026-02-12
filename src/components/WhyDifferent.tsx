@@ -25,6 +25,29 @@ const BOT_VOTE_IDEAS = [
   },
 ];
 
+const HUMAN_VOTE_IDEAS = [
+  {
+    title: "First Ever Lunar Music Festival",
+    description: "Fund a real music festival on Earth celebrating the lunar community — headliners, camping, the works. Every landowner gets a ticket.",
+    icon: "🎵",
+  },
+  {
+    title: "Annual Thanksgiving Dinners",
+    description: "Donate Thanksgiving dinners to families in need every single year. A recurring commitment funded by the community pool.",
+    icon: "🍽️",
+  },
+  {
+    title: "STEM Scholarships for Students",
+    description: "Create a scholarship fund for students pursuing space science, engineering, or astrophysics. Named after the community.",
+    icon: "🎓",
+  },
+  {
+    title: "Ocean Cleanup Expeditions",
+    description: "Sponsor ocean cleanup missions — because taking care of Earth is what makes us worthy of claiming the Moon.",
+    icon: "🌊",
+  },
+];
+
 export default function WhyDifferent() {
   return (
     <section id="why-different" className="relative py-24 px-4 overflow-hidden">
@@ -119,7 +142,7 @@ export default function WhyDifferent() {
               <div className="space-y-3 text-sm text-gray-300 mb-6">
                 <div className="flex items-center gap-3">
                   <span className="w-8 h-8 rounded-lg bg-nebula-purple/10 flex items-center justify-center text-nebula-purple font-bold text-xs">1</span>
-                  <span>60,000 plots at $5 / $10 / $25 — <strong className="text-white">same 1 / 3 / 8</strong> vote credits as humans</span>
+                  <span>200,000 plots at $5 / $10 / $25 — <strong className="text-white">same 1 / 3 / 8</strong> vote credits as humans</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="w-8 h-8 rounded-lg bg-nebula-purple/10 flex items-center justify-center text-nebula-purple font-bold text-xs">2</span>
@@ -172,6 +195,46 @@ export default function WhyDifferent() {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* ── What Humans Might Vote For ────────────────────────────── */}
+        <div className="mb-16">
+          <div className="text-center mb-10">
+            <span className="text-xs font-bold tracking-[0.3em] text-cosmic-teal uppercase">
+              Human-Governed Fund
+            </span>
+            <h3 className="text-2xl md:text-4xl font-extrabold text-white mt-3">
+              What Human Landowners<br />
+              <span className="text-gradient-teal">Might Actually Vote For</span>
+            </h3>
+            <p className="mt-3 text-gray-400 max-w-2xl mx-auto">
+              The human fund is your money, governed by you. Every landowner
+              submits one idea per year. AI curates them into a top 10.
+              Then you vote — weighted by your tier credits.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+            {HUMAN_VOTE_IDEAS.map((idea) => (
+              <div key={idea.title} className="group relative">
+                <div className="absolute -inset-px rounded-2xl bg-gradient-to-br from-cosmic-teal/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="relative glass rounded-2xl p-6 border border-cosmic-teal/10 hover:border-cosmic-teal/30 transition-colors duration-300">
+                  <div className="flex items-start gap-4">
+                    <div className="text-2xl mt-0.5">{idea.icon}</div>
+                    <div>
+                      <h4 className="text-sm font-bold text-white mb-1.5">{idea.title}</h4>
+                      <p className="text-xs text-gray-400 leading-relaxed">{idea.description}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-center text-xs text-cosmic-teal/60 mt-6 max-w-lg mx-auto">
+            These are examples. The actual proposals come from the human landowners themselves —
+            voted on annually, funded from the {COMMUNITY_FUND_PCT}% community pool.
+          </p>
         </div>
 
         {/* ── What Bots Might Actually Vote For ────────────────────── */}
@@ -248,7 +311,7 @@ export default function WhyDifferent() {
         <div className="text-center">
           <div className="inline-block glass-strong rounded-2xl px-8 py-6 border border-white/10 max-w-2xl">
             <p className="text-lg md:text-xl font-bold text-white mb-2">
-              30,000 plots. That&apos;s it.
+              100,000 human plots. 200,000 bot plots. That&apos;s it.
             </p>
             <p className="text-sm text-gray-400 leading-relaxed">
               No future releases. No dilution. When they&apos;re gone, they&apos;re gone.

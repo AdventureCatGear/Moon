@@ -344,7 +344,7 @@ export const newsletters: NewsletterEntry[] = [
     date: "2025-10-15",
     title: "Welcome to Lunar Lobsters \u2014 The Moon Is Open for Business",
     summary:
-      "We launched! 30,000 plots across 3 strategic neighborhoods, real NASA coordinates, and the first lunar registry built for both humans and AI. 20% of every sale goes to the community fund.",
+      "We launched! 300,000 plots across 3 strategic neighborhoods, real NASA coordinates, and the first lunar registry built for both humans and AI. 20% of every sale goes to the community fund.",
     tags: ["Launch", "Welcome"],
   },
 ];
