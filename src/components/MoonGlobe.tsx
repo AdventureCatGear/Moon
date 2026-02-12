@@ -126,17 +126,24 @@ function LandmarkPin({
       onPointerLeave={() => onHover(null)}
       onClick={(e) => { e.stopPropagation(); onClick(landmark.id); }}
     >
+      {/* Invisible hit-area sphere — large enough to actually click/tap */}
+      <mesh position={[0, 0.08, 0]}>
+        <sphereGeometry args={[0.12, 8, 8]} />
+        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+      </mesh>
+      {/* Visible stalk */}
       <mesh position={[0, 0.05, 0]}>
-        <cylinderGeometry args={[0.006, 0.006, 0.10, 6]} />
+        <cylinderGeometry args={[0.008, 0.008, 0.12, 6]} />
         <meshBasicMaterial color={pinColor} transparent opacity={opacity} />
       </mesh>
-      <mesh position={[0, 0.12, 0]}>
-        <sphereGeometry args={[0.028, 12, 12]} />
+      {/* Visible pin head */}
+      <mesh position={[0, 0.14, 0]}>
+        <sphereGeometry args={[0.04, 12, 12]} />
         <meshBasicMaterial color={pinColor} transparent opacity={opacity} />
       </mesh>
       {isHovered && (
-        <mesh position={[0, 0.12, 0]}>
-          <sphereGeometry args={[0.055, 12, 12]} />
+        <mesh position={[0, 0.14, 0]}>
+          <sphereGeometry args={[0.07, 12, 12]} />
           <meshBasicMaterial color={pinColor} transparent opacity={0.3} />
         </mesh>
       )}
@@ -178,12 +185,17 @@ function FutureClaimPin({
       onPointerLeave={() => onHover(null)}
       onClick={(e) => { e.stopPropagation(); onClick(claim.id); }}
     >
-      <mesh position={[0, 0.05, 0]} rotation={[0, 0, Math.PI / 4]}>
-        <boxGeometry args={[0.04, 0.04, 0.008]} />
+      {/* Invisible hit-area sphere — large enough to actually click/tap */}
+      <mesh position={[0, 0.06, 0]}>
+        <sphereGeometry args={[0.12, 8, 8]} />
+        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+      </mesh>
+      <mesh position={[0, 0.06, 0]} rotation={[0, 0, Math.PI / 4]}>
+        <boxGeometry args={[0.06, 0.06, 0.01]} />
         <meshBasicMaterial color={claim.color} transparent opacity={opacity} />
       </mesh>
-      <mesh ref={ringRef} position={[0, 0.05, 0]}>
-        <ringGeometry args={[0.05, 0.065, 6]} />
+      <mesh ref={ringRef} position={[0, 0.06, 0]}>
+        <ringGeometry args={[0.065, 0.085, 6]} />
         <meshBasicMaterial color={claim.color} transparent opacity={isHovered ? 0.5 : 0.2} side={THREE.DoubleSide} />
       </mesh>
     </group>
