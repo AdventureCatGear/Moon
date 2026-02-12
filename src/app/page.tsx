@@ -11,6 +11,7 @@ import Pricing from "@/components/Pricing";
 import CommunityFeed from "@/components/CommunityFeed";
 import HowItWorks from "@/components/HowItWorks";
 import BotApiSection from "@/components/BotApiSection";
+import ExcavationProtocol from "@/components/ExcavationProtocol";
 import WhyDifferent from "@/components/WhyDifferent";
 import Footer from "@/components/Footer";
 import KonamiEasterEgg from "@/components/KonamiEasterEgg";
@@ -59,6 +60,7 @@ export default function Home() {
             <Pricing />
             <CommunityFeed />
             <BotApiSection />
+            <ExcavationProtocol />
           </>
         )}
       </main>
