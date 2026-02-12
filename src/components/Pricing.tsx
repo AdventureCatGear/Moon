@@ -135,7 +135,7 @@ export default function Pricing() {
                         "Plot naming rights (name your acre)",
                         "Founding member charter",
                         `${t.voteCreditsHuman} vote credits in Community Fund`,
-                        "Best vote-per-dollar ratio ($31.13/vote)",
+                        "Best vote-per-dollar ratio ($6.25/vote)",
                         "Maximum governance influence",
                       ]
                 }
@@ -160,7 +160,7 @@ export default function Pricing() {
               ))}
             </div>
             <p className="text-[10px] text-gray-600 text-center mt-3">
-              $249 on Highlands = 8 votes &middot; $249 on 2 Ring + 1 Shores = 7 votes &middot; $245 on 5 Shores = 5 votes
+              $50 on Highlands = 8 votes &middot; $45 on 1 Ring + 1 Shores = 4 votes &middot; $45 on 3 Shores = 3 votes
             </p>
           </div>
         </div>

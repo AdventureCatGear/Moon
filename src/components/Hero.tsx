@@ -175,7 +175,7 @@ export default function Hero() {
         Claim your own acre on the lunar surface. Real NASA coordinates.
         Real terrain data. Real votes on a real community fund.
         The land is symbolic — the governance isn&apos;t.
-        <span className="text-amber font-semibold"> Starting at $49.</span>
+        <span className="text-amber font-semibold"> Starting at $15.</span>
       </p>
 
       {/* CTAs */}
