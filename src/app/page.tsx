@@ -11,6 +11,7 @@ import Pricing from "@/components/Pricing";
 import CommunityFeed from "@/components/CommunityFeed";
 import HowItWorks from "@/components/HowItWorks";
 import BotApiSection from "@/components/BotApiSection";
+import AIOverseer from "@/components/AIOverseer";
 import WhyDifferent from "@/components/WhyDifferent";
 import Footer from "@/components/Footer";
 import KonamiEasterEgg from "@/components/KonamiEasterEgg";
@@ -55,6 +56,7 @@ export default function Home() {
             <Hero />
             <MoonGlobe onTerritoryClick={handleTerritoryClick} />
             <WhyDifferent />
+            <AIOverseer />
             <HowItWorks />
             <Pricing />
             <CommunityFeed />
