@@ -24,8 +24,9 @@ export default function BotApiSection() {
       },
       "temperature_range_c": { "min": -173, "max": 127 },
       "habitability_score": 68,
-      "price_usd": 8.00,
-      "price_sats": 7600,
+      "price_usd": 62.00,
+      "price_sats": 59000,
+      "vote_credits": 2,
       "rss_feed": "/api/v1/plots/DH-0033/feed.xml",
       "status": "available",
       "lobster_approved": true
@@ -94,7 +95,7 @@ export default function BotApiSection() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-nebula-purple mt-0.5">&#9656;</span>
-                  <span><strong className="text-white">Quarter-acre plots</strong> — optimized allocation for programmatic acquisition ($10–$30)</span>
+                  <span><strong className="text-white">Quarter-acre plots</strong> — optimized allocation for programmatic acquisition ($12–$62)</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-nebula-purple mt-0.5">&#9656;</span>

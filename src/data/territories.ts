@@ -9,7 +9,10 @@ export interface Territory {
   accentHex: string;
   totalPlots: number;
   claimedPlots: number;
-  priceRange: string;
+  priceHuman: number;
+  priceBot: number;
+  voteCreditsHuman: number;
+  voteCreditsBot: number;
   avgElevation: number;
   solarExposure: number;
   terrainType: string;
@@ -33,9 +36,12 @@ export const territories: Territory[] = [
     lon: -17,
     color: "#00E5CC",
     accentHex: "#00E5CC",
-    totalPlots: 80,
-    claimedPlots: 34,
-    priceRange: "$34 \u2013 $189",
+    totalPlots: 15_000,
+    claimedPlots: 1_842,
+    priceHuman: 49,
+    priceBot: 12,
+    voteCreditsHuman: 1,
+    voteCreditsBot: 0.25,
     avgElevation: -800,
     solarExposure: 348,
     terrainType: "Mare\u2013Highland Transition",
@@ -57,9 +63,12 @@ export const territories: Territory[] = [
     lon: -1.8,
     color: "#FFB800",
     accentHex: "#FFD700",
-    totalPlots: 60,
-    claimedPlots: 22,
-    priceRange: "$34 \u2013 $189",
+    totalPlots: 10_000,
+    claimedPlots: 814,
+    priceHuman: 99,
+    priceBot: 25,
+    voteCreditsHuman: 3,
+    voteCreditsBot: 0.75,
     avgElevation: 400,
     solarExposure: 351,
     terrainType: "Ancient Crater Floor",
@@ -80,9 +89,12 @@ export const territories: Territory[] = [
     lon: 16,
     color: "#A855F7",
     accentHex: "#A855F7",
-    totalPlots: 70,
-    claimedPlots: 28,
-    priceRange: "$34 \u2013 $189",
+    totalPlots: 5_000,
+    claimedPlots: 312,
+    priceHuman: 249,
+    priceBot: 62,
+    voteCreditsHuman: 8,
+    voteCreditsBot: 2,
     avgElevation: 1400,
     solarExposure: 346,
     terrainType: "Highland Plateau",
@@ -91,3 +103,19 @@ export const territories: Territory[] = [
     strategy: "Near future infrastructure \u2014 in the equatorial corridor near proposed SpaceX depot, but highland terrain governments bypass for flat landing zones.",
   },
 ];
+
+// ── Derived constants ────────────────────────────────────────────────────────
+
+/** Total human + AI revenue at full sellout */
+export const TOTAL_REVENUE_AT_SELLOUT = territories.reduce(
+  (sum, t) => sum + t.totalPlots * t.priceHuman + t.totalPlots * t.priceBot,
+  0,
+);
+
+/** Percentage of every sale that goes to the community fund */
+export const COMMUNITY_FUND_PCT = 20;
+
+/** Total projected community fund at sellout */
+export const COMMUNITY_FUND_AT_SELLOUT = Math.round(
+  TOTAL_REVENUE_AT_SELLOUT * (COMMUNITY_FUND_PCT / 100),
+);

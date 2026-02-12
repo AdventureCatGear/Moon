@@ -137,7 +137,7 @@ export default function Hero() {
           {/* Lobster silhouette overlay */}
           <div className="absolute inset-0 flex items-center justify-center">
             <LobsterSilhouette
-              className="w-[58%] h-[58%] text-[#00E5CC] opacity-80 drop-shadow-[0_0_12px_rgba(0,229,204,0.5)]"
+              className="w-[75%] h-[75%] text-[#D4380D] opacity-90 drop-shadow-[0_0_16px_rgba(212,56,13,0.6)]"
             />
           </div>
         </div>
@@ -155,7 +155,7 @@ export default function Hero() {
       <p className="mt-6 max-w-2xl text-center text-gray-300 text-base sm:text-lg leading-relaxed">
         Claim your own acre on the lunar surface. Real NASA coordinates.
         Real terrain data. Spectacularly unreal ownership rights.
-        <span className="text-amber font-semibold"> Starting at $34.</span>
+        <span className="text-amber font-semibold"> Starting at $49.</span>
       </p>
 
       {/* CTAs */}

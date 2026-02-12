@@ -976,7 +976,7 @@ function DetailOverlay({ item, onClose, onExplorePlots }: { item: DetailItem; on
             <div className="text-gray-500 text-[10px] uppercase tracking-wider">Available</div>
           </div>
           <div className="rounded-lg bg-white/5 px-3 py-2 text-center">
-            <div className="text-amber-400 font-bold text-lg">{t.priceRange}</div>
+            <div className="text-amber-400 font-bold text-lg">${t.priceHuman}</div>
             <div className="text-gray-500 text-[10px] uppercase tracking-wider">Price</div>
           </div>
           <div className="rounded-lg bg-white/5 px-3 py-2 text-center">

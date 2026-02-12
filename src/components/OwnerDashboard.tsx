@@ -582,7 +582,7 @@ function DataTab() {
               <p className="text-xs font-semibold text-white mb-0.5">{t.name}</p>
               <p className="text-[10px] text-gray-500">{t.avgElevation.toLocaleString()}m elev</p>
               <p className="text-[10px] text-gray-500">{t.solarExposure}hrs solar</p>
-              <p className="text-xs font-bold mt-1" style={{ color: t.color }}>{t.priceRange}</p>
+              <p className="text-xs font-bold mt-1" style={{ color: t.color }}>${t.priceHuman}</p>
             </div>
           ))}
         </div>

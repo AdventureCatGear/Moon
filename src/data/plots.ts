@@ -28,8 +28,13 @@ export interface Plot {
   terrainClass: string;
   habitabilityScore: number;
   price: number;
+  voteCredits: number;
 }
 
+/**
+ * Generate a representative sample of plots for the POC demo.
+ * Production would back this with a real database of 30,000 plots.
+ */
 function generatePlots(
   territoryId: string,
   baseLat: number,
@@ -37,7 +42,10 @@ function generatePlots(
   count: number,
   claimed: number,
   spread: number,
-  basePrice: number,
+  priceHuman: number,
+  priceBot: number,
+  voteCreditsHuman: number,
+  voteCreditsBot: number,
   terrainDefaults: Partial<Plot>
 ): Plot[] {
   const plots: Plot[] = [];
@@ -52,6 +60,8 @@ function generatePlots(
     const plotNum = String(i).padStart(4, "0");
     const isBot = isClaimed ? Math.random() > 0.6 : undefined;
     const ownerType = isBot === undefined ? undefined : isBot ? "bot" as const : "human" as const;
+    const price = ownerType === "bot" ? priceBot : priceHuman;
+    const votes = ownerType === "bot" ? voteCreditsBot : voteCreditsHuman;
 
     plots.push({
       id: `${territoryId}-${plotNum}`,
@@ -81,7 +91,8 @@ function generatePlots(
       tempMax: terrainDefaults.tempMax || 127,
       terrainClass: terrainDefaults.terrainClass || "mare_basalt",
       habitabilityScore: Math.round(40 + Math.random() * 45),
-      price: basePrice,
+      price,
+      voteCredits: votes,
     });
   }
   return plots;
@@ -139,9 +150,11 @@ function getRandomDate(): string {
   return d.toISOString();
 }
 
+// Demo samples — ~150 plots per territory for the interactive map.
+// Production backs this with a real database of 30,000 plots.
 export const allPlots: Plot[] = [
-  // Nubium Shores \u2014 mare-highland transition at the edge of Mare Nubium
-  ...generatePlots("NS", -21, -17, 80, 34, 10, 34, {
+  // Nubium Shores (15,000 total; 150 demo sample, 65 claimed)
+  ...generatePlots("NS", -21, -17, 150, 65, 10, 49, 12, 1, 0.25, {
     elevation: -800,
     solarExposure: 348,
     nearestCrater: "Bullialdus",
@@ -149,8 +162,8 @@ export const allPlots: Plot[] = [
     tempMin: -173, tempMax: 127,
     terrainClass: "mare_highland_transition",
   } as Partial<Plot>),
-  // Ptolemaeus Ring \u2014 ancient crater floor, central near side
-  ...generatePlots("PR", -9.3, -1.8, 60, 22, 10, 34, {
+  // Ptolemaeus Ring (10,000 total; 120 demo sample, 45 claimed)
+  ...generatePlots("PR", -9.3, -1.8, 120, 45, 10, 99, 25, 3, 0.75, {
     elevation: 400,
     solarExposure: 351,
     nearestCrater: "Ptolemaeus",
@@ -158,8 +171,8 @@ export const allPlots: Plot[] = [
     tempMin: -173, tempMax: 127,
     terrainClass: "ancient_crater_floor",
   } as Partial<Plot>),
-  // Descartes Highlands \u2014 highland plateau near Apollo 16
-  ...generatePlots("DH", -9, 16, 70, 28, 10, 34, {
+  // Descartes Highlands (5,000 total; 100 demo sample, 35 claimed)
+  ...generatePlots("DH", -9, 16, 100, 35, 10, 249, 62, 8, 2, {
     elevation: 1400,
     solarExposure: 346,
     nearestCrater: "Descartes",
