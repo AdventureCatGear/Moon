@@ -2,7 +2,11 @@
 
 import { useState, useEffect } from "react";
 
-export default function Navbar() {
+interface NavbarProps {
+  onDashboardClick: () => void;
+}
+
+export default function Navbar({ onDashboardClick }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -43,6 +47,12 @@ export default function Navbar() {
               {link.label}
             </a>
           ))}
+          <button
+            onClick={onDashboardClick}
+            className="text-sm text-gray-300 hover:text-cosmic-teal transition-colors"
+          >
+            Dashboard
+          </button>
           <a href="#pricing" className="btn-primary text-sm !py-2 !px-4">
             Claim Your Plot
           </a>
@@ -74,6 +84,12 @@ export default function Navbar() {
               {link.label}
             </a>
           ))}
+          <button
+            onClick={() => { onDashboardClick(); setMobileOpen(false); }}
+            className="block py-2 text-gray-300 hover:text-cosmic-teal transition-colors w-full text-left"
+          >
+            Dashboard
+          </button>
           <a
             href="#pricing"
             className="btn-primary text-sm !py-2 !px-4 mt-3 w-full justify-center"
