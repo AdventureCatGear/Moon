@@ -27,37 +27,25 @@ function LobsterSilhouette({ className }: { className?: string }) {
         strokeLinecap="round"
       />
 
-      {/* Left claw — arm (filled tapered shape) */}
+      {/* Left claw — arm */}
       <path
-        d="M76,76 C62,66 50,58 38,48 C38,52 38,54 38,56 C50,64 62,74 78,84Z"
+        d="M76,70 C60,58 46,50 34,44 L34,54 C46,62 60,72 78,84Z"
         stroke="none"
       />
-      {/* Left claw — upper prong (filled) */}
-      <path
-        d="M38,48 C30,40 18,28 10,22 C6,20 6,26 12,32 C20,40 30,46 38,50Z"
-        stroke="none"
-      />
-      {/* Left claw — lower prong (filled) */}
-      <path
-        d="M38,56 C30,60 18,66 10,64 C6,62 8,58 14,54 C22,52 30,54 38,54Z"
-        stroke="none"
-      />
+      {/* Left claw — upper finger */}
+      <ellipse cx="20" cy="30" rx="18" ry="7" transform="rotate(-35 20 30)" stroke="none" />
+      {/* Left claw — lower finger */}
+      <ellipse cx="22" cy="60" rx="16" ry="6" transform="rotate(25 22 60)" stroke="none" />
 
-      {/* Right claw — arm (filled tapered shape) */}
+      {/* Right claw — arm */}
       <path
-        d="M124,76 C138,66 150,58 162,48 C162,52 162,54 162,56 C150,64 138,74 122,84Z"
+        d="M124,70 C140,58 154,50 166,44 L166,54 C154,62 140,72 122,84Z"
         stroke="none"
       />
-      {/* Right claw — upper prong (filled) */}
-      <path
-        d="M162,48 C170,40 182,28 190,22 C194,20 194,26 188,32 C180,40 170,46 162,50Z"
-        stroke="none"
-      />
-      {/* Right claw — lower prong (filled) */}
-      <path
-        d="M162,56 C170,60 182,66 190,64 C194,62 192,58 186,54 C178,52 170,54 162,54Z"
-        stroke="none"
-      />
+      {/* Right claw — upper finger */}
+      <ellipse cx="180" cy="30" rx="18" ry="7" transform="rotate(35 180 30)" stroke="none" />
+      {/* Right claw — lower finger */}
+      <ellipse cx="178" cy="60" rx="16" ry="6" transform="rotate(-25 178 60)" stroke="none" />
 
       {/* Astronaut helmet — glass dome over head */}
       <ellipse cx="100" cy="72" rx="32" ry="26" fill="none" stroke="currentColor" strokeWidth="3" opacity="0.7" />
@@ -186,51 +174,10 @@ export default function Hero() {
             <div className="absolute top-[76%] left-[44%] w-[4%] h-[4%] rounded-full border border-white/20" />
           </div>
 
-          {/* Lobster silhouette overlay */}
-          <div className="absolute inset-0 flex items-center justify-center">
+          {/* Lobster silhouette overlay — shifted down */}
+          <div className="absolute inset-0 flex items-center justify-center translate-y-[6%]">
             <LobsterSilhouette
               className="w-[88%] h-[88%] text-[#D4380D] opacity-90 drop-shadow-[0_0_16px_rgba(212,56,13,0.6)]"
-            />
-          </div>
-
-          {/* Territory flag — on top of everything */}
-          <div
-            className="absolute z-10"
-            style={{ top: "52%", left: "36%", width: "8%", height: "14%" }}
-          >
-            {/* Flag pole */}
-            <div
-              className="absolute bottom-0 left-1/2 -translate-x-1/2"
-              style={{
-                width: "2px",
-                height: "100%",
-                backgroundColor: "rgba(0, 229, 204, 0.9)",
-                boxShadow: "0 0 4px rgba(0, 229, 204, 0.6)",
-              }}
-            />
-            {/* Flag */}
-            <div
-              className="absolute top-0 left-1/2"
-              style={{
-                width: "180%",
-                height: "40%",
-                backgroundColor: "rgba(0, 229, 204, 0.85)",
-                boxShadow: "0 0 8px rgba(0, 229, 204, 0.7), 0 0 16px rgba(0, 229, 204, 0.3)",
-                borderRadius: "0 2px 2px 0",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <span style={{ fontSize: "6px", lineHeight: 1 }}>{"\ud83e\udd9e"}</span>
-            </div>
-            {/* Ground glow */}
-            <div
-              className="absolute -bottom-[2px] left-1/2 -translate-x-1/2 w-[5px] h-[5px] rounded-full animate-pulse"
-              style={{
-                backgroundColor: "rgba(0, 229, 204, 0.5)",
-                boxShadow: "0 0 6px rgba(0, 229, 204, 0.7)",
-              }}
             />
           </div>
         </div>
