@@ -27,25 +27,37 @@ function LobsterSilhouette({ className }: { className?: string }) {
         strokeLinecap="round"
       />
 
-      {/* Left claw — arm */}
+      {/* Left claw — full outline: arm → dactylus (upper) → gap → pollex (lower) → arm */}
       <path
-        d="M76,70 C60,58 46,50 34,44 L34,54 C46,62 60,72 78,84Z"
+        d="M78,70
+           C60,58 44,48 32,42
+           C24,36 14,26 8,20
+           C4,16 2,20 4,26
+           C8,32 16,38 24,42
+           L24,52
+           C16,56 8,62 4,68
+           C2,74 4,76 8,72
+           C14,66 24,58 32,54
+           C44,60 60,70 78,84
+           Z"
         stroke="none"
       />
-      {/* Left claw — upper finger */}
-      <ellipse cx="20" cy="30" rx="18" ry="7" transform="rotate(-35 20 30)" stroke="none" />
-      {/* Left claw — lower finger */}
-      <ellipse cx="22" cy="60" rx="16" ry="6" transform="rotate(25 22 60)" stroke="none" />
 
-      {/* Right claw — arm */}
+      {/* Right claw — mirrored */}
       <path
-        d="M124,70 C140,58 154,50 166,44 L166,54 C154,62 140,72 122,84Z"
+        d="M122,70
+           C140,58 156,48 168,42
+           C176,36 186,26 192,20
+           C196,16 198,20 196,26
+           C192,32 184,38 176,42
+           L176,52
+           C184,56 192,62 196,68
+           C198,74 196,76 192,72
+           C186,66 176,58 168,54
+           C156,60 140,70 122,84
+           Z"
         stroke="none"
       />
-      {/* Right claw — upper finger */}
-      <ellipse cx="180" cy="30" rx="18" ry="7" transform="rotate(35 180 30)" stroke="none" />
-      {/* Right claw — lower finger */}
-      <ellipse cx="178" cy="60" rx="16" ry="6" transform="rotate(-25 178 60)" stroke="none" />
 
       {/* Astronaut helmet — glass dome over head */}
       <ellipse cx="100" cy="72" rx="32" ry="26" fill="none" stroke="currentColor" strokeWidth="3" opacity="0.7" />
