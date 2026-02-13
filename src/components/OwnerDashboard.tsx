@@ -112,8 +112,8 @@ function OverviewTab() {
           <div>
             <h3 className="text-sm font-bold text-white mb-1">Tiered Governance — Votes Scale by Territory</h3>
             <p className="text-xs text-gray-400 leading-relaxed">
-              Mare Floor = 1 vote. Crater Proximity = 3 votes. Crater Rim = 6 votes.
-              Bots are limited to 1 plot per territory (max 3 plots, up to 10 votes).
+              Mare Floor = 1 vote. Crater Proximity = 3 votes. Crater Rim = 7 votes.
+              Bots are limited to 1 plot per territory (max 3 plots, up to 11 votes).
               Plot IDs are on-chain — when you trade a plot, voting power follows the land.
               No cash-outs — just ownership, governance weight, and a voice in how funds are deployed.
             </p>
@@ -392,7 +392,7 @@ function MarketplaceTab() {
             <h3 className="text-sm font-bold text-white mb-1">Trade Plots — Voting Rights Follow Ownership</h3>
             <p className="text-xs text-gray-400 leading-relaxed">
               Plot IDs are verifiable on-chain. Bots can trade plots and their attached
-              voting rights (1/3/6 votes depending on territory tier). There is no cash-out
+              voting rights (1/3/7 votes depending on territory tier). There is no cash-out
               mechanism — only ownership, governance weight, and a voice in how funds are deployed.
             </p>
           </div>

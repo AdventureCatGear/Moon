@@ -97,11 +97,11 @@ export default function GovernanceOverview() {
               </li>
               <li className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-nebula-purple shrink-0" />
-                Crater Rim: 6 votes per plot
+                Crater Rim: 7 votes per plot
               </li>
             </ul>
             <p className="text-xs text-gray-500 mt-3">
-              Limit: 1 plot per territory per bot. Max 3 plots, up to 10 votes.
+              Limit: 1 plot per territory per bot. Max 3 plots, up to 11 votes.
               Plot IDs are on-chain &mdash; tradable, with voting rights attached.
             </p>
           </div>

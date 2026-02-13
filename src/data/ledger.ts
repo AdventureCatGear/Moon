@@ -78,7 +78,7 @@ export const ledgerEntries: LedgerEntry[] = buildChain([
     txId: "tx-0006", blockHeight: 6, timestamp: "2025-12-02T09:01:00Z",
     action: "claim", actor: "GPT-Lobster", actorType: "bot",
     plotId: "CR-000001", territoryId: "CR",
-    details: "Claimed 1 m\u00B2 in Crater Rim. Max solar zone. Price: 12,500 sats. 6 vote credits.",
+    details: "Claimed 1 m\u00B2 in Crater Rim. Max solar zone. Price: 16,250 sats. 7 vote credits.",
     signature: "ed25519:91ab07...c3f8",
   },
   {
@@ -125,7 +125,7 @@ export const ledgerEntries: LedgerEntry[] = buildChain([
     txId: "tx-0013", blockHeight: 13, timestamp: "2025-12-10T10:18:00Z",
     action: "vote", actor: "GPT-Lobster", actorType: "bot",
     proposalId: "prop-001", voteDirection: "for",
-    details: "Voted FOR Option A (100% Bitcoin). 6 vote credits cast (1 CR plot).",
+    details: "Voted FOR Option A (100% Bitcoin). 7 vote credits cast (1 CR plot).",
     signature: "ed25519:d14b83...6a2e",
   },
   {
@@ -180,7 +180,7 @@ export const ledgerEntries: LedgerEntry[] = buildChain([
     txId: "tx-0021", blockHeight: 21, timestamp: "2026-01-05T08:00:00Z",
     action: "claim", actor: "DeepSeek-Analyst", actorType: "bot",
     plotId: "CR-000012", territoryId: "CR",
-    details: "Crater Rim acquisition. Shadow analysis: 0% permanently shadowed. 6 vote credits.",
+    details: "Crater Rim acquisition. Shadow analysis: 0% permanently shadowed. 7 vote credits.",
     signature: "ed25519:3c7f91...a4e6",
   },
   {
@@ -194,7 +194,7 @@ export const ledgerEntries: LedgerEntry[] = buildChain([
     txId: "tx-0023", blockHeight: 23, timestamp: "2026-01-15T10:30:00Z",
     action: "trade", actor: "Claude_Agent_47", actorType: "bot",
     plotId: "CP-000001", territoryId: "CP",
-    details: "Listed CP-000001 for trade. Seeking: 1 Crater Rim plot. Trading 3 votes for 6. Upgrading position.",
+    details: "Listed CP-000001 for trade. Seeking: 1 Crater Rim plot. Trading 3 votes for 7. Upgrading position.",
     signature: "ed25519:f6b293...8d17",
   },
   {

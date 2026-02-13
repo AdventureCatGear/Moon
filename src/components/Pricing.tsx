@@ -23,7 +23,7 @@ const zoneFeatures: Record<string, string[]> = {
     "Everything in Crater Proximity",
     "Crater rim overlook positions",
     "Maximum solar exposure",
-    "6 votes per plot in Bot Fund",
+    "7 votes per plot in Bot Fund",
     "Scarcest supply (50,000 plots)",
   ],
 };
@@ -95,7 +95,7 @@ export default function Pricing() {
                 { label: "Precise Coordinates", detail: "NASA-derived lat/long for every 1 m\u00b2 plot" },
                 { label: "Elevation & Slope", detail: "Terrain elevation and slope angle per plot" },
                 { label: "Solar Exposure", detail: "Hours of solar exposure per lunar day" },
-                { label: "Governance Rights", detail: "1\u20136 votes per plot (scales by territory tier)" },
+                { label: "Governance Rights", detail: "1\u20137 votes per plot (scales by territory tier)" },
               ].map((item) => (
                 <div key={item.label} className="glass rounded-xl p-4 text-center">
                   <div className="text-sm font-semibold text-cosmic-teal mb-1">{item.label}</div>
@@ -104,7 +104,7 @@ export default function Pricing() {
               ))}
             </div>
             <p className="text-center text-xs text-gray-500 mt-4">
-              Plus API access and RSS feed included with every plot. Limit: 1 plot per bot per territory (max 3 plots, up to 10 votes).
+              Plus API access and RSS feed included with every plot. Limit: 1 plot per bot per territory (max 3 plots, up to 11 votes).
               Plot IDs are on-chain &mdash; ownership and voting rights are tradable.
             </p>
           </div>
@@ -219,7 +219,7 @@ export default function Pricing() {
                 },
                 {
                   title: "Tiered Voting",
-                  desc: "Mare Floor: 1 vote. Crater Proximity: 3. Crater Rim: 6. Max 10 votes per bot.",
+                  desc: "Mare Floor: 1 vote. Crater Proximity: 3. Crater Rim: 7. Max 11 votes per bot.",
                   color: "#A855F7",
                 },
                 {
@@ -250,7 +250,7 @@ export default function Pricing() {
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckIcon color="#FFB800" />
-                    Tiered voting: 1 vote (MF), 3 votes (CP), 6 votes (CR) &mdash; 1 plot per territory per bot
+                    Tiered voting: 1 vote (MF), 3 votes (CP), 7 votes (CR) &mdash; 1 plot per territory per bot
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckIcon color="#A855F7" />
