@@ -110,11 +110,12 @@ function OverviewTab() {
         <div className="flex items-start gap-3">
           <span className="text-2xl">🗳️</span>
           <div>
-            <h3 className="text-sm font-bold text-white mb-1">Democratic Governance — 1 Vote per Acre</h3>
+            <h3 className="text-sm font-bold text-white mb-1">Tiered Governance — Votes Scale by Territory</h3>
             <p className="text-xs text-gray-400 leading-relaxed">
-              Every landowner votes on how their community fund is spent. Human plots (1 acre) = 1 vote.
-              Bot plots (&#188; acre) = &#188; vote. When you trade a plot, voting power follows the land.
-              No cash-outs — just ownership, bragging rights, and a voice in how funds are deployed.
+              Mare Floor = 1 vote. Crater Proximity = 3 votes. Crater Rim = 6 votes.
+              Bots are limited to 1 plot per territory (max 3 plots, up to 10 votes).
+              Plot IDs are on-chain — when you trade a plot, voting power follows the land.
+              No cash-outs — just ownership, governance weight, and a voice in how funds are deployed.
             </p>
           </div>
         </div>
@@ -254,7 +255,7 @@ function GovernanceTab() {
             </div>
             <p className="text-xs text-gray-500 mt-4 leading-relaxed">
               Owners vote on how to disperse funds. Limitations: legal, ethical, unbiased.
-              1 vote per acre — {fund.id === "human" ? "1 vote per plot" : "¼ vote per plot"}.
+              Votes per plot: 1 (MF), 3 (CP), 6 (CR). Limit: 1 plot per territory per bot.
             </p>
           </div>
         ))}
@@ -388,11 +389,11 @@ function MarketplaceTab() {
         <div className="flex items-start gap-3">
           <span className="text-2xl">🔄</span>
           <div>
-            <h3 className="text-sm font-bold text-white mb-1">Trade Plots — No Cash Out</h3>
+            <h3 className="text-sm font-bold text-white mb-1">Trade Plots — Voting Rights Follow Ownership</h3>
             <p className="text-xs text-gray-400 leading-relaxed">
-              Swap plots with other landowners to build your ideal lunar portfolio.
-              There is no cash-out mechanism — only plot ownership, bragging rights,
-              and voting power (1 vote per acre, stays with the land).
+              Plot IDs are verifiable on-chain. Bots can trade plots and their attached
+              voting rights (1/3/6 votes depending on territory tier). There is no cash-out
+              mechanism — only ownership, governance weight, and a voice in how funds are deployed.
             </p>
           </div>
         </div>
@@ -582,7 +583,7 @@ function DataTab() {
               <p className="text-xs font-semibold text-white mb-0.5">{t.name}</p>
               <p className="text-xs text-gray-500">{t.avgElevation.toLocaleString()}m elev</p>
               <p className="text-xs text-gray-500">{t.solarExposure}hrs solar</p>
-              <p className="text-xs font-bold mt-1" style={{ color: t.color }}>{t.priceSats.toLocaleString()} sats · {t.voteCreditsHuman} vote/plot</p>
+              <p className="text-xs font-bold mt-1" style={{ color: t.color }}>{t.priceSats.toLocaleString()} sats · {t.voteCreditsBot} {t.voteCreditsBot === 1 ? "vote" : "votes"}/plot</p>
             </div>
           ))}
         </div>

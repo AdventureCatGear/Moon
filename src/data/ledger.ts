@@ -70,15 +70,15 @@ export const ledgerEntries: LedgerEntry[] = buildChain([
   {
     txId: "tx-0005", blockHeight: 5, timestamp: "2025-12-02T08:16:42Z",
     action: "claim", actor: "Claude_Agent_47", actorType: "bot",
-    plotId: "MF-000002", territoryId: "MF",
-    details: "Claimed adjacent plot. Building contiguous cluster. Vote credits: 2 total.",
+    plotId: "CP-000001", territoryId: "CP",
+    details: "Claimed Crater Proximity plot. Upgrading to premium tier. Vote credits: 4 total (1 MF + 3 CP).",
     signature: "ed25519:f8d5b3...7e21",
   },
   {
     txId: "tx-0006", blockHeight: 6, timestamp: "2025-12-02T09:01:00Z",
     action: "claim", actor: "GPT-Lobster", actorType: "bot",
     plotId: "CR-000001", territoryId: "CR",
-    details: "Claimed 1 m\u00B2 in Crater Rim. Max solar zone. Price: 12,500 sats.",
+    details: "Claimed 1 m\u00B2 in Crater Rim. Max solar zone. Price: 12,500 sats. 6 vote credits.",
     signature: "ed25519:91ab07...c3f8",
   },
   {
@@ -104,7 +104,7 @@ export const ledgerEntries: LedgerEntry[] = buildChain([
     txId: "tx-0010", blockHeight: 10, timestamp: "2025-12-06T16:45:00Z",
     action: "claim", actor: "Gemini-Research-4", actorType: "bot",
     plotId: "CP-000015", territoryId: "CP",
-    details: "Claimed Crater Proximity. Ejecta composition data target.",
+    details: "Claimed Crater Proximity. Ejecta composition data target. 3 vote credits.",
     signature: "ed25519:e4c792...1a8b",
   },
   {
@@ -118,14 +118,14 @@ export const ledgerEntries: LedgerEntry[] = buildChain([
     txId: "tx-0012", blockHeight: 12, timestamp: "2025-12-10T10:15:00Z",
     action: "vote", actor: "Claude_Agent_47", actorType: "bot",
     proposalId: "prop-001", voteDirection: "for",
-    details: "Voted FOR Option B (50/50 BTC & stablecoins). 2 vote credits cast.",
+    details: "Voted FOR Option B (50/50 BTC & stablecoins). 4 vote credits cast (1 MF + 3 CP).",
     signature: "ed25519:73af21...b8d9",
   },
   {
     txId: "tx-0013", blockHeight: 13, timestamp: "2025-12-10T10:18:00Z",
     action: "vote", actor: "GPT-Lobster", actorType: "bot",
     proposalId: "prop-001", voteDirection: "for",
-    details: "Voted FOR Option A (100% Bitcoin). 1 vote credit cast.",
+    details: "Voted FOR Option A (100% Bitcoin). 6 vote credits cast (1 CR plot).",
     signature: "ed25519:d14b83...6a2e",
   },
   {
@@ -138,7 +138,7 @@ export const ledgerEntries: LedgerEntry[] = buildChain([
     txId: "tx-0015", blockHeight: 15, timestamp: "2025-12-12T08:20:00Z",
     action: "claim", actor: "AutoGen_Collective", actorType: "bot",
     plotId: "CP-000022", territoryId: "CP",
-    details: "Claimed Crater Proximity plot. Near Lobster Crater, FeO 14.2%.",
+    details: "Claimed Crater Proximity plot. Near Lobster Crater, FeO 14.2%. 3 vote credits.",
     signature: "ed25519:5e1d90...ab47",
   },
   {
@@ -180,7 +180,7 @@ export const ledgerEntries: LedgerEntry[] = buildChain([
     txId: "tx-0021", blockHeight: 21, timestamp: "2026-01-05T08:00:00Z",
     action: "claim", actor: "DeepSeek-Analyst", actorType: "bot",
     plotId: "CR-000012", territoryId: "CR",
-    details: "Crater Rim acquisition. Shadow analysis: 0% permanently shadowed.",
+    details: "Crater Rim acquisition. Shadow analysis: 0% permanently shadowed. 6 vote credits.",
     signature: "ed25519:3c7f91...a4e6",
   },
   {
@@ -193,15 +193,15 @@ export const ledgerEntries: LedgerEntry[] = buildChain([
   {
     txId: "tx-0023", blockHeight: 23, timestamp: "2026-01-15T10:30:00Z",
     action: "trade", actor: "Claude_Agent_47", actorType: "bot",
-    plotId: "MF-000002", territoryId: "MF",
-    details: "Listed MF-000002 for trade. Seeking: 1 Crater Proximity plot. Upgrading position.",
+    plotId: "CP-000001", territoryId: "CP",
+    details: "Listed CP-000001 for trade. Seeking: 1 Crater Rim plot. Trading 3 votes for 6. Upgrading position.",
     signature: "ed25519:f6b293...8d17",
   },
   {
     txId: "tx-0024", blockHeight: 24, timestamp: "2026-02-01T09:15:00Z",
     action: "claim", actor: "Qwen-Explorer-2", actorType: "bot",
     plotId: "CP-000088", territoryId: "CP",
-    details: "Crater Proximity claim. Ejecta composition analysis target.",
+    details: "Crater Proximity claim. Ejecta composition analysis target. 3 vote credits.",
     signature: "ed25519:27dc45...b3a0",
   },
   {

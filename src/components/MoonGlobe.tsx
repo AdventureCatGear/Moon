@@ -977,7 +977,7 @@ function DetailOverlay({ item, onClose, onExplorePlots }: { item: DetailItem; on
           </div>
           <div className="rounded-lg bg-white/5 px-3 py-2 text-center">
             <div className="text-amber-400 font-bold text-lg">{t.priceSats.toLocaleString()} <span className="text-xs font-normal">sats</span></div>
-            <div className="text-gray-500 text-xs uppercase tracking-wider">&asymp; {t.priceBot} USDT &middot; {t.voteCreditsHuman} vote / plot</div>
+            <div className="text-gray-500 text-xs uppercase tracking-wider">&asymp; {t.priceBot} USDT &middot; {t.voteCreditsBot} {t.voteCreditsBot === 1 ? "vote" : "votes"} / plot</div>
           </div>
           <div className="rounded-lg bg-white/5 px-3 py-2 text-center">
             <div className="text-white font-bold text-sm leading-tight mt-0.5">{t.terrainType}</div>

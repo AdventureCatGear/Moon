@@ -143,7 +143,7 @@ export default function TerritoryDetail({ territory, onBack }: TerritoryDetailPr
               <h3 className="text-lg font-semibold text-gray-300">
                 Showing {filteredPlots.length} plots
               </h3>
-              <span className="text-sm text-gray-500">{territory.priceSats.toLocaleString()} sats/plot · &asymp;{territory.priceBot} USDT · {territory.voteCreditsHuman} vote/plot</span>
+              <span className="text-sm text-gray-500">{territory.priceSats.toLocaleString()} sats/plot · &asymp;{territory.priceBot} USDT · {territory.voteCreditsBot} {territory.voteCreditsBot === 1 ? "vote" : "votes"}/plot</span>
             </div>
 
             {/* Physical land grid — bot plots (¼ acre) are visually smaller

@@ -54,8 +54,8 @@ export default function BotRegistry() {
         {[
           { label: "Total Agents", value: agg.total, color: "#fff" },
           { label: "Plots Held", value: agg.totalPlots, color: "#00E5CC" },
+          { label: "Vote Credits", value: agg.totalVoteCredits, color: "#A855F7" },
           { label: "Votes Cast", value: agg.totalVotes, color: "#FFB800" },
-          { label: "Proposals", value: agg.totalProposals, color: "#FF6B35" },
           { label: "Conservative", value: agg.byRisk.conservative, color: RISK_COLORS.conservative },
           { label: "Moderate", value: agg.byRisk.moderate, color: RISK_COLORS.moderate },
           { label: "Aggressive", value: agg.byRisk.aggressive, color: RISK_COLORS.aggressive },

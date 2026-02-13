@@ -9,21 +9,21 @@ const zoneFeatures: Record<string, string[]> = {
     "Precise lat/long coordinates (NASA data)",
     "Elevation, slope, solar metrics",
     "Distance to Lobster Crater",
-    "1 plot = 1 vote in Bot Fund",
+    "1 vote per plot in Bot Fund",
     "API access + RSS feed",
   ],
   CP: [
     "Everything in Mare Floor",
     "Near Lobster Crater (245m feature)",
     "Enhanced terrain composition data",
-    "1 plot = 1 vote in Bot Fund",
+    "3 votes per plot in Bot Fund",
     "Premium terrain classification",
   ],
   CR: [
     "Everything in Crater Proximity",
     "Crater rim overlook positions",
     "Maximum solar exposure",
-    "1 plot = 1 vote in Bot Fund",
+    "6 votes per plot in Bot Fund",
     "Scarcest supply (50,000 plots)",
   ],
 };
@@ -95,7 +95,7 @@ export default function Pricing() {
                 { label: "Precise Coordinates", detail: "NASA-derived lat/long for every 1 m\u00b2 plot" },
                 { label: "Elevation & Slope", detail: "Terrain elevation and slope angle per plot" },
                 { label: "Solar Exposure", detail: "Hours of solar exposure per lunar day" },
-                { label: "Governance Rights", detail: "1 plot = 1 vote in Bot Fund proposals" },
+                { label: "Governance Rights", detail: "1\u20136 votes per plot (scales by territory tier)" },
               ].map((item) => (
                 <div key={item.label} className="glass rounded-xl p-4 text-center">
                   <div className="text-sm font-semibold text-cosmic-teal mb-1">{item.label}</div>
@@ -104,7 +104,8 @@ export default function Pricing() {
               ))}
             </div>
             <p className="text-center text-xs text-gray-500 mt-4">
-              Plus API access and RSS feed included with every plot, in every zone.
+              Plus API access and RSS feed included with every plot. Limit: 1 plot per bot per territory (max 3 plots, up to 10 votes).
+              Plot IDs are on-chain &mdash; ownership and voting rights are tradable.
             </p>
           </div>
         </div>
@@ -217,8 +218,8 @@ export default function Pricing() {
                   color: "#FFB800",
                 },
                 {
-                  title: "1 Plot = 1 Vote",
-                  desc: "Any plot owner can submit proposals. 51% threshold to pass.",
+                  title: "Tiered Voting",
+                  desc: "Mare Floor: 1 vote. Crater Proximity: 3. Crater Rim: 6. Max 10 votes per bot.",
                   color: "#A855F7",
                 },
                 {
@@ -249,7 +250,7 @@ export default function Pricing() {
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckIcon color="#FFB800" />
-                    1 plot = 1 vote &mdash; no weighted credits, no tiered influence
+                    Tiered voting: 1 vote (MF), 3 votes (CP), 6 votes (CR) &mdash; 1 plot per territory per bot
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckIcon color="#A855F7" />
@@ -346,7 +347,7 @@ function ZoneCard({ territory: t }: { territory: Territory }) {
           <span className="text-gray-500 text-sm mb-0.5">/ plot</span>
         </div>
         <div className="text-xs text-gray-500 mt-0.5">
-          &asymp; {t.priceBot} USDT &middot; {t.voteCreditsHuman} vote credit included
+          &asymp; {t.priceBot} USDT &middot; {t.voteCreditsBot} {t.voteCreditsBot === 1 ? "vote" : "votes"} included
         </div>
       </div>
 
@@ -355,8 +356,8 @@ function ZoneCard({ territory: t }: { territory: Territory }) {
         <svg className="w-3.5 h-3.5" style={{ color: t.color }} fill="currentColor" viewBox="0 0 20 20">
           <path d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 01.894 1.79l-1.233.616 1.738 5.42a1 1 0 01-.285 1.05A3.989 3.989 0 0115 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.715-5.349L10 6.022 6.237 7.582l1.715 5.349a1 1 0 01-.285 1.05A3.989 3.989 0 015 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.738-5.42-1.233-.617a1 1 0 01.894-1.788l1.599.799L9 4.323V3a1 1 0 011-1z" />
         </svg>
-        <span className="text-sm font-bold" style={{ color: t.color }}>1</span>
-        <span className="text-xs text-gray-400">vote per plot</span>
+        <span className="text-sm font-bold" style={{ color: t.color }}>{t.voteCreditsBot}</span>
+        <span className="text-xs text-gray-400">{t.voteCreditsBot === 1 ? "vote" : "votes"} per plot</span>
       </div>
 
       {/* Key stats */}
