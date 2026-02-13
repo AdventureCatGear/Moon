@@ -307,7 +307,7 @@ NEW: plot_ownership_history table tracks every ownership change with block_heigh
 ```
 Per-Bot Limits (preserved):
   - Max 3 plots (one per territory)
-  - Max 10 votes
+  - Max 11 votes
 
 Per-Operator Limits (new):
   - Max 25% of total registered bots
