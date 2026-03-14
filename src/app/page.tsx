@@ -1,22 +1,26 @@
 "use client";
 
-import StarField from "@/components/StarField";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import GovernanceOverview from "@/components/GovernanceOverview";
+import HowItWorks from "@/components/HowItWorks";
+import SampleReport from "@/components/SampleReport";
+import Pricing from "@/components/Pricing";
+import CommunityFirst from "@/components/CommunityFirst";
+import ImpactDashboard from "@/components/ImpactDashboard";
 import Footer from "@/components/Footer";
-import KonamiEasterEgg from "@/components/KonamiEasterEgg";
 
 export default function Home() {
   return (
     <>
-      <StarField />
       <Navbar />
-      <KonamiEasterEgg />
 
       <main className="relative z-10">
         <Hero />
-        <GovernanceOverview />
+        <HowItWorks />
+        <SampleReport />
+        <Pricing />
+        <CommunityFirst />
+        <ImpactDashboard />
       </main>
 
       <Footer />
